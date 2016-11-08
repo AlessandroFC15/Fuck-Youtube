@@ -1,0 +1,26 @@
+{
+  "manifest_version": 2,
+
+  "name": "F*ck YouTube",
+  "description": "This extension finds a mirror for blocked YouTube videos",
+  "version": "1.0",
+
+  "browser_action": {
+    "default_icon": "icon.png"
+  },
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "*://youtube.com/*",
+    "*://www.youtube.com/*"
+  ],
+  "background": {
+    "persistent": false,
+    "scripts": ["background.js"]
+  },
+  "content_scripts": [{
+    "matches": ["*://www.youtube.com/*"],
+    "js": ["content.js"]
+  }]
+  
+}
