@@ -12,7 +12,8 @@
     "tabs",
     "activeTab",
     "*://youtube.com/*",
-    "*://www.youtube.com/*"
+    "*://www.youtube.com/*",
+    "*://www.youpak.com/*"
   ],
   "background": {
     "persistent": false,
