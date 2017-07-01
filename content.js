@@ -7,13 +7,37 @@ var main = function () {
         if (isVideoUnavailable()) {
             showLoadingFeedback();
 
-            var links = getLinksFromYouPak(url);
+            var request = createRequestToYoupak(url);
 
-            hideWarningVideoUnavailable();
+            // Because we're dealing with an async request, we have to implement the callback below.
+            request.onreadystatechange = function() {
+                if (isXMLHttpRequestDone(request)) {
+                    var links = findVideoLinksFromYouPak(request);
 
-            createVideoFrame(links[2]);
+                    hideWarningVideoUnavailable();
+
+                    createVideoFrame(links[2]);
+                }
+            };
+
+            request.send();
         }
     }
+};
+
+var isXMLHttpRequestDone = function (request) {
+    // According to the documentation available at https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState,
+    // the number 4 represents DONE (" The operation is complete. ")
+
+    return request.readyState == 4
+};
+
+var createRequestToYoupak = function (url) {
+    var request = new XMLHttpRequest();
+
+    request.open("GET", url.replace("tube", "pak"), true);
+
+    return request;
 };
 
 var isYoutubeLink = function (url) {
@@ -29,21 +53,22 @@ var isVideoUnavailable = function () {
 };
 
 var showLoadingFeedback = function () {
-    var warning = document.createElement("h1");
-    warning.className = "message";
-    warning.style.textAlign = "center";
-    warning.innerHTML = "You know what? Fuck Youtube. Wait a second, we're loading a mirror for you...";
-
     var content = document.getElementById("player-unavailable").getElementsByClassName("content")[0];
 
-    content.appendChild(document.createElement("br"));
-    content.appendChild(warning);
+    var icon = document.getElementById("player-unavailable").getElementsByClassName("icon")[0];
+    icon.style.display = 'none';
+
+    var mainMessage = document.getElementById('unavailable-message');
+    mainMessage.innerText += " But don't you worry. F*ck Youtube's got your back!";
+
+    var submainMessage = document.getElementById('unavailable-submessage');
+    submainMessage.innerText = 'Loading video...'
+
+    content.innerHTML += '<div class="ytp-spinner" data-layer="4"><div class="ytp-spinner-dots"><div class="ytp-spinner-dot ytp-spinner-dot-0"></div><div class="ytp-spinner-dot ytp-spinner-dot-1"></div><div class="ytp-spinner-dot ytp-spinner-dot-2"></div><div class="ytp-spinner-dot ytp-spinner-dot-3"></div><div class="ytp-spinner-dot ytp-spinner-dot-4"></div><div class="ytp-spinner-dot ytp-spinner-dot-5"></div><div class="ytp-spinner-dot ytp-spinner-dot-6"></div><div class="ytp-spinner-dot ytp-spinner-dot-7"></div></div><div class="ytp-spinner-message" style="display: none;">Se a reprodução não começar em instantes, reinicie seu dispositivo.</div></div>';
 };
 
-var getLinksFromYouPak = function (youtubeUrl) {
-    var youPakUrl = youtubeUrl.replace("tube", "pak");
-
-    var htmlDoc = getHTMLDocumentFromUrl(youPakUrl);
+var findVideoLinksFromYouPak = function (request) {
+    var htmlDoc = getHTMLDocumentFromRequest(request);
 
     var sources = htmlDoc.getElementsByTagName("video")[0].children;
 
@@ -52,12 +77,8 @@ var getLinksFromYouPak = function (youtubeUrl) {
     });
 };
 
-var getHTMLDocumentFromUrl = function (url) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", url, false);
-    xhr.send();
-
-    return new DOMParser().parseFromString(xhr.responseText, "text/html");
+var getHTMLDocumentFromRequest = function (request) {
+    return new DOMParser().parseFromString(request.responseText, "text/html");
 };
 
 var hideWarningVideoUnavailable = function () {
