@@ -9,16 +9,10 @@
     "default_icon": "icon.png"
   },
   "permissions": [
-    "tabs",
-    "activeTab",
     "*://youtube.com/*",
     "*://www.youtube.com/*",
     "*://www.youpak.com/*"
   ],
-  "background": {
-    "persistent": false,
-    "scripts": ["background.js"]
-  },
   "content_scripts": [{
     "matches": ["*://www.youtube.com/*"],
     "js": ["content.js"]
