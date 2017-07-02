@@ -4,10 +4,12 @@ var main = function () {
     var url = window.location.toString();
 
     if (isYoutubeVideoLink(url)) {
-        if (isVideoUnavailable()) {
+        console.log(document);
+
+        if (isYoutubeVideoUnavailable(document)) {
             showLoadingFeedback();
 
-            var request = createRequestToYoupak(url);
+            /*var request = createRequestToYoupak(url);
 
             // Because we're dealing with an async request, we have to implement the callback below.
             request.onreadystatechange = function() {
@@ -20,7 +22,7 @@ var main = function () {
                 }
             };
 
-            request.send();
+            request.send();*/
         }
     }
 };
@@ -44,7 +46,11 @@ var isYoutubeVideoLink = function (url) {
     return /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/watch\?v=.+$/.test(url);
 };
 
-var isVideoUnavailable = function () {
+/**
+ * This function tells you if the youtube video is unavailable.
+ * @param {HTMLDocument} document - The document of a youtube video page.
+ */
+var isYoutubeVideoUnavailable = function (document) {
     var divPlayerUnavailable = document.getElementById("player-unavailable");
 
     // Para que o vídeo seja considerado indisponível, é necessário que a div acima exista e que ela não a possua

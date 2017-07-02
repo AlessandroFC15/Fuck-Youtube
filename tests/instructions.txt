@@ -1,0 +1,4 @@
+INSTRUCTIONS FOR TESTING
+------------------------
+
+1. Open test.html in your favorite browser.

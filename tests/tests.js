@@ -31,3 +31,31 @@ QUnit.test("Test to check if it is youtube video link", function (assert) {
         assert.equal(isYoutubeVideoLink(invalidLinks[j]), false, invalidLinks[j] + " is NOT valid!")
     }
 });
+
+QUnit.test("Test to check if a youtube video is unavailable", function (assert) {
+    var unavailableVideosUrls = [
+        'https://www.youtube.com/watch?v=5kI1HsfF31A'
+    ];
+
+    var done = assert.async(unavailableVideosUrls.length);
+
+    for (var i = 0; i < unavailableVideosUrls.length; i++) {
+        var request = new XMLHttpRequest();
+
+        request.open("GET", unavailableVideosUrls[i], true);
+
+        request.onreadystatechange = function() {
+            if (isXMLHttpRequestDone(request)) {
+                console.log('>> ready <<');
+
+                assert.equal(1, 1);
+
+                done()
+            }
+        };
+
+        request.send();
+    }
+
+
+});
