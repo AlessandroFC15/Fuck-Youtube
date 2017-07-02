@@ -3,7 +3,7 @@
 var main = function () {
     var url = window.location.toString();
 
-    if (isYoutubeLink(url)) {
+    if (isYoutubeVideoLink(url)) {
         if (isVideoUnavailable()) {
             showLoadingFeedback();
 
@@ -40,8 +40,8 @@ var createRequestToYoupak = function (url) {
     return request;
 };
 
-var isYoutubeLink = function (url) {
-    return /(\w*)youtube.com\/watch\?(\w*)/.test(url);
+var isYoutubeVideoLink = function (url) {
+    return /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/watch\?v=.+$/.test(url);
 };
 
 var isVideoUnavailable = function () {
@@ -62,8 +62,8 @@ var showLoadingFeedback = function () {
     mainMessage.innerText += " But don't you worry. F*ck Youtube's got your back!";
 
     var submainMessage = document.getElementById('unavailable-submessage');
-    submainMessage.innerText = 'Loading video...'
-
+    submainMessage.innerText = chrome.i18n.getMessage("loadingMessage") + '...';
+    
     content.innerHTML += '<div class="ytp-spinner" data-layer="4"><div class="ytp-spinner-dots"><div class="ytp-spinner-dot ytp-spinner-dot-0"></div><div class="ytp-spinner-dot ytp-spinner-dot-1"></div><div class="ytp-spinner-dot ytp-spinner-dot-2"></div><div class="ytp-spinner-dot ytp-spinner-dot-3"></div><div class="ytp-spinner-dot ytp-spinner-dot-4"></div><div class="ytp-spinner-dot ytp-spinner-dot-5"></div><div class="ytp-spinner-dot ytp-spinner-dot-6"></div><div class="ytp-spinner-dot ytp-spinner-dot-7"></div></div><div class="ytp-spinner-message" style="display: none;">Se a reprodução não começar em instantes, reinicie seu dispositivo.</div></div>';
 };
 
@@ -90,6 +90,7 @@ var createVideoFrame = function (link) {
     var divPlayerAPI = document.getElementById("player-api");
     // This shows the previously hidden player holder.
     divPlayerAPI.classList.remove("off-screen-target");
+    divPlayerAPI.innerHTML = '';
 
     var videoTag = document.createElement("video");
     videoTag.controls = true;

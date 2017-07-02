@@ -1,0 +1,10 @@
+{
+  "loadingMessage": {
+    "message": "Loading",
+    "description": "Loading message"
+  },
+
+  "extensionDescription": {
+    "message": "This extension allows you to watch YouTube videos that are blocked for you region."
+  }
+}

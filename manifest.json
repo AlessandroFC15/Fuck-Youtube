@@ -1,13 +1,12 @@
 {
+  "author": "Alessandro Costa",
   "manifest_version": 2,
-
   "name": "F*ck YouTube",
-  "description": "This extension finds a mirror for blocked YouTube videos",
+  "description": "__MSG_extensionDescription__",
   "version": "1.0",
 
-  "browser_action": {
-    "default_icon": "icon.png"
-  },
+  "default_locale": "en",
+
   "permissions": [
     "*://youtube.com/*",
     "*://www.youtube.com/*",
