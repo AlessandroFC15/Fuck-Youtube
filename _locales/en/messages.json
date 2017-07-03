@@ -10,5 +10,9 @@
 
   "noVideoFoundMessage": {
     "message": "F*ck Youtube tried but no mirrors were found for this video. Sorry"
+  },
+
+  "workingToFindAMirrorMessage": {
+    "message": "But don't you worry. F*ck Youtube's is working to find a mirror..."
   }
 }

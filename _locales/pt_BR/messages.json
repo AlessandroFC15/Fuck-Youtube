@@ -5,5 +5,9 @@
 
   "noVideoFoundMessage": {
     "message": "F*ck Youtube procurou mas nenhuma alternativa foi encontrada para este vídeo. Desculpe"
+  },
+
+  "workingToFindAMirrorMessage": {
+    "message": "Mas não se preocupe. F*ck Youtube está procurando uma alternativa..."
   }
 }

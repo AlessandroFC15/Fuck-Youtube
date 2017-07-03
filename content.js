@@ -49,7 +49,7 @@ var showLoadingFeedback = function () {
     removeIconVideoUnavailable();
 
     var mainMessage = document.getElementById('unavailable-message');
-    mainMessage.innerText += " But don't you worry. F*ck Youtube's is working to find a mirror...";
+    mainMessage.innerHTML += "<br><br>" + chrome.i18n.getMessage("workingToFindAMirrorMessage").replace('F*ck Youtube', "<span style='color: red;'>F*ck Youtube</span>");
 
     var submainMessage = document.getElementById('unavailable-submessage');
     submainMessage.innerText = chrome.i18n.getMessage("loadingMessage") + '...';
