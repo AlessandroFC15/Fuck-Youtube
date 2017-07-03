@@ -29,25 +29,6 @@ var main = function () {
     }
 };
 
-var showFailureMessage = function (exception) {
-    console.log(exception);
-};
-
-var isXMLHttpRequestDone = function (request) {
-    // According to the documentation available at https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState,
-    // the number 4 represents DONE (" The operation is complete. ")
-
-    return request.readyState == 4
-};
-
-var createRequestToYouPak = function (url) {
-    var request = new XMLHttpRequest();
-
-    request.open("GET", url.replace("tube", "pak"), true);
-
-    return request;
-};
-
 var isYoutubeVideoLink = function (url) {
     return /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/watch\?v=.+$/.test(url);
 };
@@ -65,18 +46,77 @@ var isYoutubeVideoUnavailable = function (document) {
 };
 
 var showLoadingFeedback = function () {
-    var content = document.getElementById("player-unavailable").getElementsByClassName("content")[0];
-
-    var icon = document.getElementById("player-unavailable").getElementsByClassName("icon")[0];
-    icon.style.display = 'none';
+    removeIconVideoUnavailable();
 
     var mainMessage = document.getElementById('unavailable-message');
-    mainMessage.innerText += " But don't you worry. F*ck Youtube's got your back!";
+    mainMessage.innerText += " But don't you worry. F*ck Youtube's is working to find a mirror...";
 
     var submainMessage = document.getElementById('unavailable-submessage');
     submainMessage.innerText = chrome.i18n.getMessage("loadingMessage") + '...';
-    
+
+    addSpinner();
+};
+
+var removeIconVideoUnavailable = function () {
+    var icon = document.getElementById("player-unavailable").getElementsByClassName("icon")[0];
+    icon.style.display = 'none';
+};
+
+var addIconVideoUnavailable = function () {
+    var icon = document.getElementById("player-unavailable").getElementsByClassName("icon")[0];
+    icon.style.display = 'block';
+};
+
+var removeSpinner = function () {
+    var spinner = document.getElementsByClassName("ytp-spinner")[0];
+
+    spinner.style.display = 'none';
+};
+
+var addSpinner = function () {
+    var content = document.getElementById("player-unavailable").getElementsByClassName("content")[0];
+
     content.innerHTML += '<div class="ytp-spinner" data-layer="4"><div class="ytp-spinner-dots"><div class="ytp-spinner-dot ytp-spinner-dot-0"></div><div class="ytp-spinner-dot ytp-spinner-dot-1"></div><div class="ytp-spinner-dot ytp-spinner-dot-2"></div><div class="ytp-spinner-dot ytp-spinner-dot-3"></div><div class="ytp-spinner-dot ytp-spinner-dot-4"></div><div class="ytp-spinner-dot ytp-spinner-dot-5"></div><div class="ytp-spinner-dot ytp-spinner-dot-6"></div><div class="ytp-spinner-dot ytp-spinner-dot-7"></div></div><div class="ytp-spinner-message" style="display: none;">Se a reprodução não começar em instantes, reinicie seu dispositivo.</div></div>';
+};
+
+// ------------------
+
+var showFailureMessage = function (exception) {
+    addIconVideoUnavailable();
+
+    var mainMessage = document.getElementById('unavailable-message');
+    mainMessage.innerText = "This video is unavailable!";
+
+    var submainMessage = document.getElementById('unavailable-submessage');
+    submainMessage.innerText = "We couldn't find a mirror. Sorry about that :(";
+
+    removeSpinner();
+
+    showErrorAlert();
+};
+
+var showErrorAlert = function () {
+    var alertsDiv = document.getElementById('editor-progress-alert-template');
+    alertsDiv.style.display = 'block';
+    alertsDiv.classList.remove('yt-alert-warn');
+    alertsDiv.classList.add("yt-alert-error");
+
+    var alertContent = alertsDiv.getElementsByClassName('yt-alert-content')[0];
+    alertContent.innerText = chrome.i18n.getMessage("noVideoFoundMessage") + " :(";
+};
+
+var createRequestToYouPak = function (url) {
+    var request = new XMLHttpRequest();
+
+    request.open("GET", url.replace("tube", "pak"), true);
+
+    return request;
+};
+
+var isXMLHttpRequestDone = function (request) {
+    // According to the documentation available at https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState,
+    // the number 4 represents DONE (" The operation is complete. ")
+    return request.readyState == 4
 };
 
 var findVideoLinksFromYouPak = function (responseText) {
@@ -109,6 +149,8 @@ var createVideoFrame = function (link) {
     // This shows the previously hidden player holder.
     divPlayerAPI.classList.remove("off-screen-target");
     divPlayerAPI.innerHTML = '';
+
+    console.log(document.getElementById('movie_player'));
 
     var videoTag = document.createElement("video");
     videoTag.controls = true;

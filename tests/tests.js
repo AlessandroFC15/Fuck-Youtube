@@ -100,7 +100,8 @@ QUnit.test("Test to collect video sources from YouPak", function (assert) {
 
     var validYouPakLinks = [
         "https://www.youpak.com/watch?v=KGCfSvwFiCw",
-        "https://www.youpak.com/watch?v=5kI1HsfF31A"
+        "https://www.youpak.com/watch?v=5kI1HsfF31A",
+        "https://www.youpak.com/watch?v=SRcpuD9isZg"
     ];
 
     var invalidYouPakLinks = [

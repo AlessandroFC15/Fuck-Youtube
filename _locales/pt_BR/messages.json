@@ -1,5 +1,9 @@
 {
   "loadingMessage": {
     "message": "Carregando"
+  },
+
+  "noVideoFoundMessage": {
+    "message": "F*ck Youtube procurou mas nenhuma alternativa foi encontrada para este vídeo. Desculpe"
   }
 }
