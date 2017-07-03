@@ -8,8 +8,9 @@ QUnit.test("Test to check if it is youtube video link", function (assert) {
         'youtube.com/watch?v=5kI1HsfF31A',
         'youtu.be/watch?v=5kI1HsfF31A',
         'https://www.youtube.com/watch?v=4KIdLTLt3zI',
-        'https://www.youtube.com/watch?v=sfLV6urfZjw&t=575s'
-        ];
+        'https://www.youtube.com/watch?v=sfLV6urfZjw&t=575s',
+        "https://www.youtube.com/watch?v=2j6RT3CDIMw&feature=youtu.be"
+    ];
 
     for (var i = 0; i < validLinks.length; i++) {
         assert.equal(isYoutubeVideoLink(validLinks[i]), true, validLinks[i] + " is valid!");
@@ -33,29 +34,81 @@ QUnit.test("Test to check if it is youtube video link", function (assert) {
 });
 
 QUnit.test("Test to check if a youtube video is unavailable", function (assert) {
+    var testVideosUrls = function (listVideoUrls, shouldBeUnavailable) {
+        var done = assert.async(listVideoUrls.length);
+
+        for (var i = 0; i < listVideoUrls.length; i++) {
+            var url = listVideoUrls[i];
+
+            $.ajax({
+                url: listVideoUrls[i],
+                method: 'GET',
+                success: function (response) {
+                    var htmlDoc = getHTMLDocumentFromText(response);
+
+                    assert.equal(isYoutubeVideoUnavailable(htmlDoc), shouldBeUnavailable, url);
+                    done()
+                }
+            });
+        }
+    };
+
     var unavailableVideosUrls = [
-        'https://www.youtube.com/watch?v=5kI1HsfF31A'
+        "https://www.youtube.com/watch?v=5kI1HsfF31A",                                      // UFC Embedded
+        "https://www.youtube.com/watch?v=SRcpuD9isZg",                                      // UFC Embedded
+        "https://www.youtube.com/watch?v=2j6RT3CDIMw&feature=youtu.be",                     // UFC Embedded
+        "https://www.youtube.com/watch?v=9TtIo1mIITY",                                      // UFC Embedded
+        "https://www.youtube.com/watch?v=-nd3_-BOPDw",                                      // UFC Embedded
+        "https://www.youtube.com/watch?v=bBNx7_TlNhE&feature=youtu.be",                     // UFC Embedded
+        "https://www.youtube.com/watch?v=2wyy6qutrk4&feature=youtu.be",                     // Random video
     ];
 
-    var done = assert.async(unavailableVideosUrls.length);
+    var availableVideosUrls = [
+        "https://www.youtube.com/watch?v=DK_0jXPuIr0",                                      // Justin Bieber Music
+        "https://www.youtube.com/watch?v=fRh_vgS2dFE",                                      // Justin Bieber Music
+        "https://www.youtube.com/watch?v=kjUQjq1CBi0",                                      // Justin Bieber Music
+        "https://www.youtube.com/watch?v=154himd-3ZE",                                      // Justin Bieber Music
+        "https://www.youtube.com/watch?v=7Oxz060iedY",                                      // Eric Thomas Video
+    ];
 
-    for (var i = 0; i < unavailableVideosUrls.length; i++) {
-        var request = new XMLHttpRequest();
+    testVideosUrls(unavailableVideosUrls, true);
+    testVideosUrls(availableVideosUrls, false);
+});
 
-        request.open("GET", unavailableVideosUrls[i], true);
+QUnit.test("Test to collect video sources from YouPak", function (assert) {
+    var testYouPakLinks = function (listLinks, shouldBeValid) {
+        var done = assert.async(listLinks.length);
 
-        request.onreadystatechange = function() {
-            if (isXMLHttpRequestDone(request)) {
-                console.log('>> ready <<');
+        for (var i = 0; i < listLinks.length; i++) {
+            $.ajax({
+                url: listLinks[i],
+                method: 'GET',
+                success: function (response) {
+                    if (shouldBeValid) {
+                        var links = findVideoLinksFromYouPak(response);
 
-                assert.equal(1, 1);
+                        assert.ok(links && links.length >= 1);
+                    } else {
+                        assert.throws(function () { findVideoLinksFromYouPak(response) }, NoVideoFoundException);
+                    }
 
-                done()
-            }
-        };
+                    done()
+                }
+            });
+        }
+    };
 
-        request.send();
-    }
+    var validYouPakLinks = [
+        "https://www.youpak.com/watch?v=KGCfSvwFiCw",
+        "https://www.youpak.com/watch?v=5kI1HsfF31A"
+    ];
 
+    var invalidYouPakLinks = [
+        "https://www.youpak.com/watch?v=2wyy6qutrk4&feature=youtu.be",
+        "https://www.youpak.com/watch?v=2wyy6qx",
+    ];
 
+    testYouPakLinks(validYouPakLinks, true);
+
+    testYouPakLinks(invalidYouPakLinks, false);
 });
