@@ -4,27 +4,33 @@ var main = function () {
     var url = window.location.toString();
 
     if (isYoutubeVideoLink(url)) {
-        console.log(document);
-
         if (isYoutubeVideoUnavailable(document)) {
             showLoadingFeedback();
 
-            /*var request = createRequestToYoupak(url);
+            var request = createRequestToYouPak(url);
 
             // Because we're dealing with an async request, we have to implement the callback below.
             request.onreadystatechange = function() {
                 if (isXMLHttpRequestDone(request)) {
-                    var links = findVideoLinksFromYouPak(request);
+                    try {
+                        var links = findVideoLinksFromYouPak(request.responseText);
 
-                    hideWarningVideoUnavailable();
+                        hideWarningVideoUnavailable();
 
-                    createVideoFrame(links[2]);
+                        createVideoFrame(links[links.length - 1]);
+                    } catch (exception) {
+                        showFailureMessage(exception);
+                    }
                 }
             };
 
-            request.send();*/
+            request.send();
         }
     }
+};
+
+var showFailureMessage = function (exception) {
+    console.log(exception);
 };
 
 var isXMLHttpRequestDone = function (request) {
@@ -34,7 +40,7 @@ var isXMLHttpRequestDone = function (request) {
     return request.readyState == 4
 };
 
-var createRequestToYoupak = function (url) {
+var createRequestToYouPak = function (url) {
     var request = new XMLHttpRequest();
 
     request.open("GET", url.replace("tube", "pak"), true);
@@ -73,18 +79,24 @@ var showLoadingFeedback = function () {
     content.innerHTML += '<div class="ytp-spinner" data-layer="4"><div class="ytp-spinner-dots"><div class="ytp-spinner-dot ytp-spinner-dot-0"></div><div class="ytp-spinner-dot ytp-spinner-dot-1"></div><div class="ytp-spinner-dot ytp-spinner-dot-2"></div><div class="ytp-spinner-dot ytp-spinner-dot-3"></div><div class="ytp-spinner-dot ytp-spinner-dot-4"></div><div class="ytp-spinner-dot ytp-spinner-dot-5"></div><div class="ytp-spinner-dot ytp-spinner-dot-6"></div><div class="ytp-spinner-dot ytp-spinner-dot-7"></div></div><div class="ytp-spinner-message" style="display: none;">Se a reprodução não começar em instantes, reinicie seu dispositivo.</div></div>';
 };
 
-var findVideoLinksFromYouPak = function (request) {
-    var htmlDoc = getHTMLDocumentFromRequest(request);
+var findVideoLinksFromYouPak = function (responseText) {
+    var htmlDoc = getHTMLDocumentFromText(responseText);
 
-    var sources = htmlDoc.getElementsByTagName("video")[0].children;
+    var videoTag = htmlDoc.getElementsByTagName("video")[0];
 
-    return Array.prototype.slice.call(sources).map(function (element) {
+    if (videoTag === undefined) {
+        throw new NoVideoFoundException()
+    }
+
+    var videoSources = videoTag.children;
+
+    return Array.prototype.slice.call(videoSources).map(function (element) {
         return element.src;
     });
 };
 
-var getHTMLDocumentFromRequest = function (request) {
-    return new DOMParser().parseFromString(request.responseText, "text/html");
+var getHTMLDocumentFromText = function (text) {
+    return new DOMParser().parseFromString(text, "text/html");
 };
 
 var hideWarningVideoUnavailable = function () {
@@ -110,6 +122,18 @@ var createVideoFrame = function (link) {
 
     videoTag.appendChild(srcTag);
     divPlayerAPI.appendChild(videoTag);
+};
+
+// Exceptions
+
+var NoVideoFoundException = function () {
+    if (chrome.i18n) {
+        this.message = chrome.i18n.getMessage("noVideoFoundMessage");
+    } else {
+        this.message = '';
+    }
+
+    this.name = 'NoVideoFoundException';
 };
 
 main();

@@ -6,5 +6,9 @@
 
   "extensionDescription": {
     "message": "This extension allows you to watch YouTube videos that are blocked for you region."
+  },
+
+  "noVideoFoundMessage": {
+    "message": "No mirrors were found for this video. Sorry :("
   }
 }
