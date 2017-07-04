@@ -9,7 +9,9 @@ QUnit.test("Test to check if it is youtube video link", function (assert) {
         'youtu.be/watch?v=5kI1HsfF31A',
         'https://www.youtube.com/watch?v=4KIdLTLt3zI',
         'https://www.youtube.com/watch?v=sfLV6urfZjw&t=575s',
-        "https://www.youtube.com/watch?v=2j6RT3CDIMw&feature=youtu.be"
+        "https://www.youtube.com/watch?v=2j6RT3CDIMw&feature=youtu.be",
+        "https://www.youtube.com/watch?feature=youtu.be&v=MIG4HL37X3M",
+        "https://www.youtube.com/watch?t=575s&v=MIG4HL37X3M"
     ];
 
     for (var i = 0; i < validLinks.length; i++) {
@@ -19,8 +21,7 @@ QUnit.test("Test to check if it is youtube video link", function (assert) {
     var invalidLinks = [
         'https://www.youtube.com/wach?v=4KIdLTLt3zI', // Typo in watch
         'https://www.youtube.com', // No id specified
-        'https://www.youtube.com/watch', // No id specified
-        'https://www.youtube.com/watch', // No id specified
+        'https://www.youtube.com/watch', // No extra parameters specified
         'https://www.youtube.com/watch?v=', // 'No id specified
         'https://ww.youtube.com/watch?v=Iz8YqU7dIZA', // Typo in www
         'https://www.youtube/watch?v=Iz8YqU7dIZA', // No .com

@@ -15,7 +15,9 @@ var main = function () {
                     try {
                         var links = findVideoLinksFromYouPak(request.responseText);
 
-                        createVideoFrame(links[links.length - 1]);
+                        var highestQualityVideoLink = links[links.length - 1];
+
+                        createVideoFrame(highestQualityVideoLink);
                     } catch (exception) {
                         showFailureMessage(exception);
                     }
@@ -28,7 +30,7 @@ var main = function () {
 };
 
 var isYoutubeVideoLink = function (url) {
-    return /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/watch\?v=.+$/.test(url);
+    return /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/watch\?(.*)(v=.+)(.*)$/.test(url);
 };
 
 /**
@@ -55,23 +57,25 @@ var showLoadingFeedback = function () {
     addSpinner();
 };
 
-
 // This functions replaces the Youtube icon used to represent a unavailable video with the extension's main icon.
 var replaceIconVideoUnavailable = function () {
     var icon = document.getElementById("player-unavailable").getElementsByClassName("icon")[0];
 
+    icon.setAttribute('previous_background_img', window.getComputedStyle(icon, null)['backgroundImage']);
     icon.style.backgroundImage = 'url(' + chrome.extension.getURL("/images/mainIcon.png") + ')';
 };
 
 var addIconVideoUnavailable = function () {
     var icon = document.getElementById("player-unavailable").getElementsByClassName("icon")[0];
-    icon.style.display = 'block';
+    icon.style.backgroundImage = icon.getAttribute('previous_background_img');
 };
 
 var removeSpinner = function () {
     var spinner = document.getElementsByClassName("ytp-spinner")[0];
 
-    spinner.style.display = 'none';
+    if (spinner) {
+        spinner.style.display = 'none';
+    }
 };
 
 var addSpinner = function () {
@@ -102,7 +106,8 @@ var showFailureMessage = function (exception) {
 };
 
 var showErrorAlert = function () {
-    var alertsDiv = document.getElementById('editor-progress-alert-template');
+    var alertsDiv = document.getElementById('error-box') || document.getElementById('editor-progress-alert-template');
+
     alertsDiv.style.display = 'block';
     alertsDiv.classList.remove('yt-alert-warn');
     alertsDiv.classList.add("yt-alert-error");
@@ -145,9 +150,8 @@ var getHTMLDocumentFromText = function (text) {
     return new DOMParser().parseFromString(text, "text/html");
 };
 
-var hideWarningVideoUnavailable = function () {
-    var divPlayerUnavailable = document.getElementById("player-unavailable");
-    divPlayerUnavailable.style.display = "none";
+var hideLoadingScreen = function () {
+    document.getElementById("player-unavailable").style.display = "none";
 };
 
 var createVideoFrame = function (link) {
@@ -164,9 +168,9 @@ var createVideoFrame = function (link) {
     videoTag.name = "media";
     videoTag.style.width = "100%";
 
-    // When we will only hide the loading screen, when the video is ready to play.
+    // We will only hide the loading screen, when the video is ready to play.
     videoTag.oncanplay = function() {
-        hideWarningVideoUnavailable();
+        hideLoadingScreen();
     };
 
     var srcTag = document.createElement("source");
