@@ -12,9 +12,14 @@
     "*://www.youtube.com/*",
     "*://www.youpak.com/*"
   ],
+
   "content_scripts": [{
     "matches": ["*://www.youtube.com/*"],
     "js": ["content.js"]
-  }]
+  }],
+
+  "web_accessible_resources": [
+    "images/*.png"
+  ]
   
 }

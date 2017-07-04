@@ -15,8 +15,6 @@ var main = function () {
                     try {
                         var links = findVideoLinksFromYouPak(request.responseText);
 
-                        hideWarningVideoUnavailable();
-
                         createVideoFrame(links[links.length - 1]);
                     } catch (exception) {
                         showFailureMessage(exception);
@@ -46,10 +44,10 @@ var isYoutubeVideoUnavailable = function (document) {
 };
 
 var showLoadingFeedback = function () {
-    removeIconVideoUnavailable();
+    replaceIconVideoUnavailable();
 
     var mainMessage = document.getElementById('unavailable-message');
-    mainMessage.innerHTML += "<br><br>" + chrome.i18n.getMessage("workingToFindAMirrorMessage").replace('F*ck Youtube', "<span style='color: red;'>F*ck Youtube</span>");
+    mainMessage.innerHTML = chrome.i18n.getMessage("workingToFindAMirrorMessage").replace('F*ck Youtube', "<span style='display: inline-block; color: red;'>F*ck Youtube</span>");
 
     var submainMessage = document.getElementById('unavailable-submessage');
     submainMessage.innerText = chrome.i18n.getMessage("loadingMessage") + '...';
@@ -57,9 +55,12 @@ var showLoadingFeedback = function () {
     addSpinner();
 };
 
-var removeIconVideoUnavailable = function () {
+var replaceIconVideoUnavailable = function () {
     var icon = document.getElementById("player-unavailable").getElementsByClassName("icon")[0];
-    icon.style.display = 'none';
+
+    var iconURL = chrome.extension.getURL("/images/mainIcon.png");
+
+    icon.style.backgroundImage = 'url(' + iconURL + ')';
 };
 
 var addIconVideoUnavailable = function () {
@@ -74,9 +75,14 @@ var removeSpinner = function () {
 };
 
 var addSpinner = function () {
-    var content = document.getElementById("player-unavailable").getElementsByClassName("content")[0];
+    var mainMessage = document.getElementById('unavailable-message');
 
-    content.innerHTML += '<div class="ytp-spinner" data-layer="4"><div class="ytp-spinner-dots"><div class="ytp-spinner-dot ytp-spinner-dot-0"></div><div class="ytp-spinner-dot ytp-spinner-dot-1"></div><div class="ytp-spinner-dot ytp-spinner-dot-2"></div><div class="ytp-spinner-dot ytp-spinner-dot-3"></div><div class="ytp-spinner-dot ytp-spinner-dot-4"></div><div class="ytp-spinner-dot ytp-spinner-dot-5"></div><div class="ytp-spinner-dot ytp-spinner-dot-6"></div><div class="ytp-spinner-dot ytp-spinner-dot-7"></div></div><div class="ytp-spinner-message" style="display: none;">Se a reprodução não começar em instantes, reinicie seu dispositivo.</div></div>';
+    mainMessage.innerHTML = '<div class="ytp-spinner" data-layer="4" style="left: 0; margin-left: 0; display: inline-block;position: relative;width: 28px;height: 22px;top: 5px;"><div class="ytp-spinner-dots">' +
+        '<div class="ytp-spinner-dot ytp-spinner-dot-0"></div><div class="ytp-spinner-dot ytp-spinner-dot-1"></div>' +
+        '<div class="ytp-spinner-dot ytp-spinner-dot-2"></div><div class="ytp-spinner-dot ytp-spinner-dot-3"></div>' +
+        '<div class="ytp-spinner-dot ytp-spinner-dot-4"></div><div class="ytp-spinner-dot ytp-spinner-dot-5"></div>' +
+        '<div class="ytp-spinner-dot ytp-spinner-dot-6"></div><div class="ytp-spinner-dot ytp-spinner-dot-7"></div></div>' +
+        '<div class="ytp-spinner-message" style="display: none;">Se a reprodução não começar em instantes, reinicie seu dispositivo.</div></div>' + mainMessage.innerHTML;
 };
 
 // ------------------
@@ -158,6 +164,11 @@ var createVideoFrame = function (link) {
     videoTag.name = "media";
     videoTag.style.width = "100%";
 
+    // When we will only hide the loading screen, when the video is ready to play.
+    videoTag.oncanplay = function() {
+        hideWarningVideoUnavailable();
+    };
+
     var srcTag = document.createElement("source");
     srcTag.src = link;
     srcTag.type = "video/mp4";
@@ -179,3 +190,4 @@ var NoVideoFoundException = function () {
 };
 
 main();
+

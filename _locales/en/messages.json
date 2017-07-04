@@ -5,14 +5,14 @@
   },
 
   "extensionDescription": {
-    "message": "This extension allows you to watch YouTube videos that are blocked for you region."
+    "message": "This extension allows you to watch YouTube videos that are blocked for your region."
   },
 
   "noVideoFoundMessage": {
-    "message": "F*ck Youtube tried but no mirrors were found for this video. Sorry"
+    "message": "F*ck Youtube tried but couldn't unblock this video. Sorry"
   },
 
   "workingToFindAMirrorMessage": {
-    "message": "But don't you worry. F*ck Youtube's is working to find a mirror..."
+    "message": "F*ck Youtube is trying to unblock this video..."
   }
 }
