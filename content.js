@@ -55,12 +55,12 @@ var showLoadingFeedback = function () {
     addSpinner();
 };
 
+
+// This functions replaces the Youtube icon used to represent a unavailable video with the extension's main icon.
 var replaceIconVideoUnavailable = function () {
     var icon = document.getElementById("player-unavailable").getElementsByClassName("icon")[0];
 
-    var iconURL = chrome.extension.getURL("/images/mainIcon.png");
-
-    icon.style.backgroundImage = 'url(' + iconURL + ')';
+    icon.style.backgroundImage = 'url(' + chrome.extension.getURL("/images/mainIcon.png") + ')';
 };
 
 var addIconVideoUnavailable = function () {
