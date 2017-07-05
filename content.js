@@ -10,7 +10,7 @@ var main = function () {
             var request = createRequestToYouPak(url);
 
             // Because we're dealing with an async request, we have to implement the callback below.
-            request.onreadystatechange = function() {
+            request.onreadystatechange = function () {
                 if (isXMLHttpRequestDone(request)) {
                     try {
                         var links = findVideoLinksFromYouPak(request.responseText);
@@ -48,13 +48,24 @@ var isYoutubeVideoUnavailable = function (document) {
 var showLoadingFeedback = function () {
     replaceIconVideoUnavailable();
 
+    removeErrorAlert();
+
     var mainMessage = document.getElementById('unavailable-message');
     mainMessage.innerHTML = chrome.i18n.getMessage("workingToFindAMirrorMessage").replace('F*ck Youtube', "<span style='display: inline-block; color: red;'>F*ck Youtube</span>");
 
     var submainMessage = document.getElementById('unavailable-submessage');
-    submainMessage.innerText = chrome.i18n.getMessage("loadingMessage") + '...';
+    submainMessage.innerText = chrome.i18n.getMessage("loadingMessage");
 
     addSpinner();
+};
+
+// This function will remove the error alert shown by YouTube if it is present
+var removeErrorAlert = function () {
+    var errorAlert = document.getElementById('error-box');
+
+    if (errorAlert) {
+        errorAlert.style.display = 'none';
+    }
 };
 
 // This functions replaces the Youtube icon used to represent a unavailable video with the extension's main icon.
@@ -89,16 +100,14 @@ var addSpinner = function () {
         '<div class="ytp-spinner-message" style="display: none;">Se a reprodução não começar em instantes, reinicie seu dispositivo.</div></div>' + mainMessage.innerHTML;
 };
 
-// ------------------
-
 var showFailureMessage = function (exception) {
     addIconVideoUnavailable();
 
     var mainMessage = document.getElementById('unavailable-message');
-    mainMessage.innerText = "This video is unavailable!";
+    mainMessage.innerText = chrome.i18n.getMessage("videoUnavailableMessage");
 
     var submainMessage = document.getElementById('unavailable-submessage');
-    submainMessage.innerText = "We couldn't find a mirror. Sorry about that :(";
+    submainMessage.innerText = chrome.i18n.getMessage("sorryMessage");
 
     removeSpinner();
 
@@ -169,7 +178,7 @@ var createVideoFrame = function (link) {
     videoTag.style.width = "100%";
 
     // We will only hide the loading screen, when the video is ready to play.
-    videoTag.oncanplay = function() {
+    videoTag.oncanplay = function () {
         hideLoadingScreen();
     };
 

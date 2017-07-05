@@ -1,10 +1,10 @@
 {
   "loadingMessage": {
-    "message": "Carregando"
+    "message": "Esse processo não deve demorar mais do que alguns segundos."
   },
 
   "noVideoFoundMessage": {
-    "message": "F*ck Youtube procurou mas nenhuma alternativa foi encontrada para este vídeo. Desculpe"
+    "message": "F*ck Youtube tentou mas não conseguiu desbloquear este vídeo. Desculpe"
   },
 
   "workingToFindAMirrorMessage": {

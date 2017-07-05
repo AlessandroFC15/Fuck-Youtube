@@ -1,6 +1,6 @@
 {
   "loadingMessage": {
-    "message": "Loading",
+    "message": "This process shouldn't take more than a few seconds.",
     "description": "Loading message"
   },
 
@@ -14,5 +14,13 @@
 
   "workingToFindAMirrorMessage": {
     "message": "F*ck Youtube is trying to unblock this video..."
+  },
+
+  "videoUnavailableMessage": {
+    "message": "This video is unavailable!"
+  },
+
+  "sorryMessage": {
+    "message": "Sorry."
   }
 }
