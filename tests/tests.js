@@ -34,7 +34,6 @@ QUnit.test("Test to check if it is youtube video link", function (assert) {
     }
 });
 
-/*
 QUnit.test("Test to check if a youtube video is unavailable", function (assert) {
     var testVideosUrls = function (listVideoUrls, shouldBeUnavailable) {
         var done = assert.async(listVideoUrls.length);
@@ -114,4 +113,4 @@ QUnit.test("Test to collect video sources from YouPak", function (assert) {
     testYouPakLinks(validYouPakLinks, true);
 
     testYouPakLinks(invalidYouPakLinks, false);
-});*/
+});
