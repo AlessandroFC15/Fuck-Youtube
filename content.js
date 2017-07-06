@@ -5,6 +5,8 @@ var main = function () {
 
     if (isYoutubeVideoLink(url)) {
         if (isYoutubeVideoUnavailable(document)) {
+            enableTheaterMode();
+
             showLoadingFeedback();
 
             var request = createRequestToYouPak(url);
@@ -26,6 +28,31 @@ var main = function () {
 
             request.send();
         }
+    }
+};
+
+
+// This function enables theater mode on a Youtube video page, centering the video frame and also hides the sidebar
+var enableTheaterMode = function () {
+    var theaterBackground = document.getElementById("theater-background");
+    theaterBackground.style.background = "transparent";
+
+    var divPage = document.getElementById("page");
+    divPage.classList.add("watch-stage-mode");
+    divPage.classList.add("watch-wide");
+    divPage.style.marginTop = "10px";
+
+    var divVideoInfo = document.getElementById("watch7-content");
+    divVideoInfo.style.float = "none";
+    divVideoInfo.style.margin = "auto";
+
+    // Hiding the sidebar
+    hideElement(document.getElementById("watch7-sidebar"))
+};
+
+var hideElement = function (element) {
+    if (element) {
+        element.style.display = "none";
     }
 };
 
@@ -61,11 +88,7 @@ var showLoadingFeedback = function () {
 
 // This function will remove the error alert shown by YouTube if it is present
 var removeErrorAlert = function () {
-    var errorAlert = document.getElementById('error-box');
-
-    if (errorAlert) {
-        errorAlert.style.display = 'none';
-    }
+    hideElement(document.getElementById('error-box'))
 };
 
 // This functions replaces the Youtube icon used to represent a unavailable video with the extension's main icon.
@@ -82,11 +105,7 @@ var addIconVideoUnavailable = function () {
 };
 
 var removeSpinner = function () {
-    var spinner = document.getElementsByClassName("ytp-spinner")[0];
-
-    if (spinner) {
-        spinner.style.display = 'none';
-    }
+    hideElement(document.getElementsByClassName("ytp-spinner")[0]);
 };
 
 var addSpinner = function () {
@@ -160,7 +179,7 @@ var getHTMLDocumentFromText = function (text) {
 };
 
 var hideLoadingScreen = function () {
-    document.getElementById("player-unavailable").style.display = "none";
+    hideElement(document.getElementById("player-unavailable"));
 };
 
 var createVideoFrame = function (link) {
