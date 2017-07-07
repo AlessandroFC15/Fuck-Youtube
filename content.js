@@ -5,7 +5,7 @@ var main = function () {
 
     if (isYoutubeVideoLink(url)) {
         if (isYoutubeVideoUnavailable(document)) {
-            enableTheaterMode();
+            enableTheaterMode(document);
 
             showLoadingFeedback();
 
@@ -33,7 +33,7 @@ var main = function () {
 
 
 // This function enables theater mode on a Youtube video page, centering the video frame and also hides the sidebar
-var enableTheaterMode = function () {
+var enableTheaterMode = function (document) {
     var theaterBackground = document.getElementById("theater-background");
     theaterBackground.style.background = "transparent";
 
@@ -142,6 +142,11 @@ var showErrorAlert = function () {
 
     var alertContent = alertsDiv.getElementsByClassName('yt-alert-content')[0];
     alertContent.innerText = chrome.i18n.getMessage("noVideoFoundMessage") + " :(";
+
+    var alertWrapper = document.getElementsByClassName("alerts-wrapper")[0];
+    if (alertWrapper) {
+        alertWrapper.style.backgroundColor = "transparent";
+    }
 };
 
 var createRequestToYouPak = function (url) {

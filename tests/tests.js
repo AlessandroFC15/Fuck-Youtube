@@ -114,3 +114,56 @@ QUnit.test("Test to collect video sources from YouPak", function (assert) {
 
     testYouPakLinks(invalidYouPakLinks, false);
 });
+
+QUnit.test("Test to check if the design is correct", function (assert) {
+    var testIfDesignIsCorrect = function (listVideoUrls) {
+        var testIfSidebarIsHidden = function (htmlDoc) {
+            assert.equal(htmlDoc.getElementById("watch7-sidebar").style.display, "none", "Sidebar is hidden!");
+        };
+
+        var testIfVideoPlayerIsCentered = function (htmlDoc) {
+            var divPage = htmlDoc.getElementById("page");
+            assert.equal(divPage.classList.contains("watch-stage-mode") &&
+                divPage.classList.contains("watch-wide"), true, "Video player holder is centered!");
+        };
+
+        var testIfVideoContentInfoIsCentered = function (htmlDoc) {
+            var divVideoInfo = htmlDoc.getElementById("watch7-content");
+            assert.equal(divVideoInfo.style.margin == "auto" && divVideoInfo.style.float == "none", true, "Video content info is centered!");
+        };
+
+        var done = assert.async(listVideoUrls.length);
+
+        for (var i = 0; i < listVideoUrls.length; i++) {
+            $.ajax({
+                url: listVideoUrls[i],
+                method: 'GET',
+                success: function (response) {
+                    var htmlDoc = getHTMLDocumentFromText(response);
+
+                    enableTheaterMode(htmlDoc);
+
+                    testIfSidebarIsHidden(htmlDoc);
+
+                    testIfVideoPlayerIsCentered(htmlDoc);
+
+                    testIfVideoContentInfoIsCentered(htmlDoc);
+
+                    done()
+                }
+            });
+        }
+    };
+
+    var videosUrls = [
+        "https://www.youtube.com/watch?v=5kI1HsfF31A",                                      // UFC Embedded
+        "https://www.youtube.com/watch?v=SRcpuD9isZg",                                      // UFC Embedded
+        "https://www.youtube.com/watch?v=2j6RT3CDIMw&feature=youtu.be",                     // UFC Embedded
+        "https://www.youtube.com/watch?v=9TtIo1mIITY",                                      // UFC Embedded
+        "https://www.youtube.com/watch?v=-nd3_-BOPDw",                                      // UFC Embedded
+        "https://www.youtube.com/watch?v=bBNx7_TlNhE&feature=youtu.be",                     // UFC Embedded
+        "https://www.youtube.com/watch?v=2wyy6qutrk4&feature=youtu.be",                     // Random video
+    ];
+
+    testIfDesignIsCorrect(videosUrls);
+});
