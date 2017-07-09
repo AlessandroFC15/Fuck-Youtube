@@ -19,7 +19,10 @@
 
   "content_scripts": [{
     "matches": ["*://www.youtube.com/*"],
-    "js": ["content.js"]
+    "js": [
+      "content.js",
+      "shortcuts.js"
+    ]
   }],
 
   "web_accessible_resources": [
