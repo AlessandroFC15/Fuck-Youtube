@@ -1,11 +1,12 @@
-/*global YoutubeUnblocker, QUnit, $ */
+/*global YoutubeUnblocker, YouPakRequestManager, YoutubePageManager, NoVideoFoundException, QUnit, $ */
 
 (function () {
     "use strict";
-    var youtubeUnblocker = new YoutubeUnblocker();
-
+    
     QUnit.test("Test to check if it is youtube video link", function (assert) {
         var i;
+        var youtubeUnblocker = new YoutubeUnblocker();
+
         var validLinks = [
             'https://www.youtube.com/watch?v=5kI1HsfF31A',
             'http://www.youtube.com/watch?v=5kI1HsfF31A',
@@ -20,7 +21,7 @@
         ];
 
         for (i = 0; i < validLinks.length; i++) {
-            assert.equal(youtubeUnblocker.isYoutubeVideoLink(validLinks[i]), true, validLinks[i] + " is valid!");
+            assert.equal(youtubeUnblocker.pageManager.isYoutubeVideoLink(validLinks[i]), true, validLinks[i] + " is valid!");
         }
 
         var invalidLinks = [
@@ -35,7 +36,7 @@
         ];
 
         for (i = 0; i < invalidLinks.length; i++) {
-            assert.equal(youtubeUnblocker.isYoutubeVideoLink(invalidLinks[i]), false, invalidLinks[i] + " is NOT valid!");
+            assert.equal(youtubeUnblocker.pageManager.isYoutubeVideoLink(invalidLinks[i]), false, invalidLinks[i] + " is NOT valid!");
         }
     });
 
@@ -44,9 +45,9 @@
             var done = assert.async(listVideoUrls.length);
 
             var successCallback = function (response) {
-                var htmlDoc = youtubeUnblocker.getHTMLDocumentFromText(response);
+                var htmlDoc = new YouPakRequestManager().getHTMLDocumentFromText(response);
 
-                assert.equal(youtubeUnblocker.isYoutubeVideoUnavailable(htmlDoc), shouldBeUnavailable);
+                assert.equal(new YoutubePageManager(htmlDoc).isYoutubeVideoUnavailable(htmlDoc), shouldBeUnavailable);
                 done();
             };
 
@@ -88,13 +89,13 @@
 
             var successCallback = function (response) {
                 if (shouldBeValid) {
-                    var links = youtubeUnblocker.findVideoLinksFromYouPak(response);
+                    var links = new YouPakRequestManager().findVideoLinksFromYouPak(response);
 
                     assert.ok(links && links.length >= 1);
                 } else {
                     assert.throws(function () {
-                        youtubeUnblocker.findVideoLinksFromYouPak(response);
-                    }, youtubeUnblocker.NoVideoFoundException);
+                        new YouPakRequestManager().findVideoLinksFromYouPak(response);
+                    }, NoVideoFoundException);
                 }
 
                 done();
@@ -149,9 +150,9 @@
             var done = assert.async(listVideoUrls.length);
 
             var successCallback = function (response) {
-                var htmlDoc = youtubeUnblocker.getHTMLDocumentFromText(response);
+                var htmlDoc = new YouPakRequestManager().getHTMLDocumentFromText(response);
 
-                youtubeUnblocker.enableTheaterMode(htmlDoc);
+                new YoutubePageManager(htmlDoc).enableTheaterMode(htmlDoc);
 
                 testIfSidebarIsHidden(htmlDoc);
 

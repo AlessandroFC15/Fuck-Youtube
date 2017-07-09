@@ -1,21 +1,19 @@
-/*global chrome, DOMParser*/
+/*global chrome, DOMParser, NoVideoFoundException */
 
-var YoutubeUnblocker = (function () {
+var YoutubePageManager;
+(function () {
     "use strict";
 
-    var YoutubeUnblocker = function () {
-        this.NoVideoFoundException = function () {
-            if (chrome.i18n) {
-                this.message = chrome.i18n.getMessage("noVideoFoundMessage");
-            } else {
-                this.message = '';
-            }
-
-            this.name = 'NoVideoFoundException';
-        };
+    /**
+     * This component is responsible for all the changes made in the Youtube interface, such as adding/removing elements,
+     * as well as checking if elements exists or not..
+     * @param {HTMLDocument} document - The document of a page.
+     */
+    YoutubePageManager = function (document) {
+        this.document = document;
     };
 
-    YoutubeUnblocker.prototype.isYoutubeVideoLink = function (url) {
+    YoutubePageManager.prototype.isYoutubeVideoLink = function (url) {
         return (/^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/watch\?(.*)(v=.+)(.*)$/).test(url);
     };
 
@@ -23,15 +21,15 @@ var YoutubeUnblocker = (function () {
      * This function tells you if the youtube video is unavailable.
      * @param {HTMLDocument} document - The document of a youtube video page.
      */
-    YoutubeUnblocker.prototype.isYoutubeVideoUnavailable = function (document) {
-        var divPlayerUnavailable = document.getElementById("player-unavailable");
+    YoutubePageManager.prototype.isYoutubeVideoUnavailable = function () {
+        var divPlayerUnavailable = this.document.getElementById("player-unavailable");
 
         // Para que o vídeo seja considerado indisponível, é necessário que a div acima exista e que ela não a possua
         // classe "hid", visto que esta classe tem como função esconder os elementos.
         return divPlayerUnavailable !== undefined && divPlayerUnavailable.className.indexOf("hid") === -1;
     };
 
-    YoutubeUnblocker.prototype.hideElement = function (element) {
+    YoutubePageManager.prototype.hideElement = function (element) {
         if (element) {
             element.style.display = "none";
         }
@@ -39,18 +37,17 @@ var YoutubeUnblocker = (function () {
 
     /**
      * This function enables theater mode on a Youtube video page, centering the video frame and also hides the sidebar
-     * @param {HTMLDocument} document - The document of a youtube video page.
      */
-    YoutubeUnblocker.prototype.enableTheaterMode = function (document) {
-        var theaterBackground = document.getElementById("theater-background");
+    YoutubePageManager.prototype.enableTheaterMode = function () {
+        var theaterBackground = this.document.getElementById("theater-background");
         theaterBackground.style.background = "transparent";
 
-        var divPage = document.getElementById("page");
+        var divPage = this.document.getElementById("page");
         divPage.classList.add("watch-stage-mode");
         divPage.classList.add("watch-wide");
         divPage.style.marginTop = "7px";
 
-        var divVideoInfo = document.getElementById("watch7-content");
+        var divVideoInfo = this.document.getElementById("watch7-content");
         divVideoInfo.style.float = "none";
         divVideoInfo.style.margin = "auto";
         divVideoInfo.style.left = "0";
@@ -60,24 +57,24 @@ var YoutubeUnblocker = (function () {
         divVideoInfo.id = "new-watch7-content";
 
         // Hiding the sidebar
-        this.hideElement(document.getElementById("watch7-sidebar"));
+        this.hideElement(this.document.getElementById("watch7-sidebar"));
     };
 
     // This function replaces the Youtube icon used to represent a unavailable video with the extension's main icon.
-    YoutubeUnblocker.prototype.replaceIconVideoUnavailable = function () {
-        var icon = document.getElementById("player-unavailable").getElementsByClassName("icon")[0];
+    YoutubePageManager.prototype.replaceIconVideoUnavailable = function () {
+        var icon = this.document.getElementById("player-unavailable").getElementsByClassName("icon")[0];
 
         icon.setAttribute('previous_background_img', window.getComputedStyle(icon, null).backgroundImage);
         icon.style.backgroundImage = 'url(' + chrome.extension.getURL("/images/mainIcon.png") + ')';
     };
 
     // This function will remove the error alert shown by YouTube if it is present
-    YoutubeUnblocker.prototype.removeErrorAlert = function () {
-        this.hideElement(document.getElementById('error-box'));
+    YoutubePageManager.prototype.removeErrorAlert = function () {
+        this.hideElement(this.document.getElementById('error-box'));
     };
 
-    YoutubeUnblocker.prototype.addSpinner = function () {
-        var mainMessage = document.getElementById('unavailable-message');
+    YoutubePageManager.prototype.addSpinner = function () {
+        var mainMessage = this.document.getElementById('unavailable-message');
 
         mainMessage.innerHTML = '<div class="ytp-spinner" data-layer="4" style="left: 0; margin-left: 0; display: inline-block;position: relative;width: 28px;height: 22px;top: 5px;"><div class="ytp-spinner-dots">' +
             '<div class="ytp-spinner-dot ytp-spinner-dot-0"></div><div class="ytp-spinner-dot ytp-spinner-dot-1"></div>' +
@@ -87,67 +84,33 @@ var YoutubeUnblocker = (function () {
             '<div class="ytp-spinner-message" style="display: none;">Se a reprodução não começar em instantes, reinicie seu dispositivo.</div></div>' + mainMessage.innerHTML;
     };
 
-    YoutubeUnblocker.prototype.showLoadingFeedback = function () {
+    YoutubePageManager.prototype.showLoadingFeedback = function () {
         this.replaceIconVideoUnavailable();
 
         this.removeErrorAlert();
 
-        var mainMessage = document.getElementById('unavailable-message');
+        var mainMessage = this.document.getElementById('unavailable-message');
         mainMessage.innerHTML = chrome.i18n.getMessage("workingToFindAMirrorMessage").replace('F*ck Youtube', "<span style='display: inline-block; color: red;'>F*ck Youtube</span>");
 
-        var submainMessage = document.getElementById('unavailable-submessage');
+        var submainMessage = this.document.getElementById('unavailable-submessage');
         submainMessage.innerText = chrome.i18n.getMessage("loadingMessage");
 
         this.addSpinner();
     };
 
-    YoutubeUnblocker.prototype.createRequestToYouPak = function (url) {
-        var request = new XMLHttpRequest();
-
-        request.open("GET", url.replace("tube", "pak"), true);
-
-        return request;
+    YoutubePageManager.prototype.hideLoadingScreen = function () {
+        this.hideElement(this.document.getElementById("player-unavailable"));
     };
 
-    YoutubeUnblocker.prototype.isXMLHttpRequestDone = function (request) {
-        // According to the documentation available at https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState,
-        // the number 4 represents DONE (" The operation is complete. ")
-        return request.readyState === 4;
-    };
-
-    YoutubeUnblocker.prototype.getHTMLDocumentFromText = function (text) {
-        return new DOMParser().parseFromString(text, "text/html");
-    };
-
-    YoutubeUnblocker.prototype.findVideoLinksFromYouPak = function (responseText) {
-        var htmlDoc = this.getHTMLDocumentFromText(responseText);
-
-        var videoTag = htmlDoc.getElementsByTagName("video")[0];
-
-        if (videoTag === undefined) {
-            throw new this.NoVideoFoundException();
-        }
-
-        var videoSources = videoTag.children;
-
-        return Array.prototype.slice.call(videoSources).map(function (element) {
-            return element.src;
-        });
-    };
-
-    YoutubeUnblocker.prototype.hideLoadingScreen = function () {
-        this.hideElement(document.getElementById("player-unavailable"));
-    };
-
-    YoutubeUnblocker.prototype.createVideoFrame = function (link) {
-        var divPlayerAPI = document.getElementById("player-api");
+    YoutubePageManager.prototype.createVideoFrame = function (link) {
+        var divPlayerAPI = this.document.getElementById("player-api");
         // This shows the previously hidden player holder.
         divPlayerAPI.classList.remove("off-screen-target");
         divPlayerAPI.innerHTML = '';
 
-        console.log(document.getElementById('movie_player'));
+        console.log(this.document.getElementById('movie_player'));
 
-        var videoTag = document.createElement("video");
+        var videoTag = this.document.createElement("video");
         videoTag.controls = true;
         videoTag.autoplay = true;
         videoTag.name = "media";
@@ -163,7 +126,7 @@ var YoutubeUnblocker = (function () {
             that.hideLoadingScreen();
         };
 
-        var srcTag = document.createElement("source");
+        var srcTag = this.document.createElement("source");
         srcTag.src = link;
         srcTag.type = "video/mp4";
 
@@ -171,17 +134,17 @@ var YoutubeUnblocker = (function () {
         divPlayerAPI.appendChild(videoTag);
     };
 
-    YoutubeUnblocker.prototype.addIconVideoUnavailable = function () {
-        var icon = document.getElementById("player-unavailable").getElementsByClassName("icon")[0];
+    YoutubePageManager.prototype.addIconVideoUnavailable = function () {
+        var icon = this.document.getElementById("player-unavailable").getElementsByClassName("icon")[0];
         icon.style.backgroundImage = icon.getAttribute('previous_background_img');
     };
 
-    YoutubeUnblocker.prototype.removeSpinner = function () {
-        this.hideElement(document.getElementsByClassName("ytp-spinner")[0]);
+    YoutubePageManager.prototype.removeSpinner = function () {
+        this.hideElement(this.document.getElementsByClassName("ytp-spinner")[0]);
     };
 
-    YoutubeUnblocker.prototype.showErrorAlert = function () {
-        var alertsDiv = document.getElementById('error-box') || document.getElementById('editor-progress-alert-template');
+    YoutubePageManager.prototype.showErrorAlert = function () {
+        var alertsDiv = this.document.getElementById('error-box') || this.document.getElementById('editor-progress-alert-template');
 
         alertsDiv.style.display = 'block';
         alertsDiv.classList.remove('yt-alert-warn');
@@ -190,19 +153,19 @@ var YoutubeUnblocker = (function () {
         var alertContent = alertsDiv.getElementsByClassName('yt-alert-content')[0];
         alertContent.innerText = chrome.i18n.getMessage("noVideoFoundMessage") + " :(";
 
-        var alertWrapper = document.getElementsByClassName("alerts-wrapper")[0];
+        var alertWrapper = this.document.getElementsByClassName("alerts-wrapper")[0];
         if (alertWrapper) {
             alertWrapper.style.backgroundColor = "transparent";
         }
     };
 
-    YoutubeUnblocker.prototype.showFailureMessage = function () {
+    YoutubePageManager.prototype.showFailureMessage = function () {
         this.addIconVideoUnavailable();
 
-        var mainMessage = document.getElementById('unavailable-message');
+        var mainMessage = this.document.getElementById('unavailable-message');
         mainMessage.innerText = chrome.i18n.getMessage("videoUnavailableMessage");
 
-        var submainMessage = document.getElementById('unavailable-submessage');
+        var submainMessage = this.document.getElementById('unavailable-submessage');
         submainMessage.innerText = chrome.i18n.getMessage("sorryMessage");
 
         this.removeSpinner();
@@ -210,31 +173,84 @@ var YoutubeUnblocker = (function () {
         this.showErrorAlert();
     };
 
+}());
+
+var YouPakRequestManager;
+(function () {
+    "use strict";
+
+    YouPakRequestManager = function (url) {
+        this.url = url;
+    };
+
+    YouPakRequestManager.prototype.createRequestToYouPak = function () {
+        var request = new XMLHttpRequest();
+
+        request.open("GET", this.url.replace("tube", "pak"), true);
+
+        return request;
+    };
+
+    YouPakRequestManager.prototype.isXMLHttpRequestDone = function (request) {
+        // According to the documentation available at https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState,
+        // the number 4 represents DONE (" The operation is complete. ")
+        return request.readyState === 4;
+    };
+
+    YouPakRequestManager.prototype.getHTMLDocumentFromText = function (text) {
+        return new DOMParser().parseFromString(text, "text/html");
+    };
+
+    YouPakRequestManager.prototype.findVideoLinksFromYouPak = function (responseText) {
+        var htmlDoc = this.getHTMLDocumentFromText(responseText);
+
+        var videoTag = htmlDoc.getElementsByTagName("video")[0];
+
+        if (videoTag === undefined) {
+            throw new NoVideoFoundException();
+        }
+
+        var videoSources = videoTag.children;
+
+        return Array.prototype.slice.call(videoSources).map(function (element) {
+            return element.src;
+        });
+    };
+}());
+
+var YoutubeUnblocker;
+(function () {
+    "use strict";
+
+    YoutubeUnblocker = function (document, url) {
+        this.pageManager = new YoutubePageManager(document);
+        this.requestManager = new YouPakRequestManager(url);
+    };
+
     YoutubeUnblocker.prototype.execute = function () {
         var url = window.location.toString();
 
-        if (this.isYoutubeVideoLink(url)) {
-            if (this.isYoutubeVideoUnavailable(document)) {
-                this.enableTheaterMode(document);
+        if (this.pageManager.isYoutubeVideoLink(url)) {
+            if (this.pageManager.isYoutubeVideoUnavailable(document)) {
+                this.pageManager.enableTheaterMode(document);
 
-                this.showLoadingFeedback();
+                this.pageManager.showLoadingFeedback();
 
-                var request = this.createRequestToYouPak(url);
+                var request = this.requestManager.createRequestToYouPak();
 
-                var youtubeUnblocker = this;
+                var that = this;
 
                 // Because we're dealing with an async request, we have to implement the callback below.
                 request.onreadystatechange = function () {
-
-                    if (youtubeUnblocker.isXMLHttpRequestDone(request)) {
+                    if (that.requestManager.isXMLHttpRequestDone(request)) {
                         try {
-                            var links = youtubeUnblocker.findVideoLinksFromYouPak(request.responseText);
+                            var links = that.requestManager.findVideoLinksFromYouPak(request.responseText);
 
                             var highestQualityVideoLink = links[links.length - 1];
 
-                            youtubeUnblocker.createVideoFrame(highestQualityVideoLink);
+                            that.pageManager.createVideoFrame(highestQualityVideoLink);
                         } catch (exception) {
-                            youtubeUnblocker.showFailureMessage();
+                            that.pageManager.showFailureMessage();
                         }
                     }
                 };
@@ -243,8 +259,6 @@ var YoutubeUnblocker = (function () {
             }
         }
     };
-
-    return YoutubeUnblocker;
 }());
 
-new YoutubeUnblocker().execute();
+new YoutubeUnblocker(document, window.location.toString()).execute();
