@@ -211,6 +211,31 @@ var createVideoFrame = function (link) {
         hideLoadingScreen();
     };
 
+    document.onkeydown = function (event) {
+        var charToKeyCode = {
+            "spacebar": 32,
+            "k": 75,
+            "rightArrow": 39,
+            "leftArrow": 37
+        };
+
+        var keyPressed = event.which || event.keyCode;
+
+        if (keyPressed == charToKeyCode["spacebar"] || keyPressed == charToKeyCode["k"]) {
+            if (videoTag.paused) {
+                videoTag.play();
+            } else {
+                videoTag.pause()
+            }
+
+            event.preventDefault();
+        } else if (keyPressed == charToKeyCode["rightArrow"]){
+            videoTag.currentTime += 5;
+        } else if (keyPressed == charToKeyCode["leftArrow"]) {
+            videoTag.currentTime -= 5;
+        }
+    };
+
     var srcTag = document.createElement("source");
     srcTag.src = link;
     srcTag.type = "video/mp4";
@@ -232,4 +257,3 @@ var NoVideoFoundException = function () {
 };
 
 main();
-
