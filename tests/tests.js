@@ -90,7 +90,9 @@ QUnit.test("Test to collect video sources from YouPak", function (assert) {
 
                         assert.ok(links && links.length >= 1);
                     } else {
-                        assert.throws(function () { findVideoLinksFromYouPak(response) }, NoVideoFoundException);
+                        assert.throws(function () {
+                            findVideoLinksFromYouPak(response)
+                        }, NoVideoFoundException);
                     }
 
                     done()
@@ -128,8 +130,11 @@ QUnit.test("Test to check if the design is correct", function (assert) {
         };
 
         var testIfVideoContentInfoIsCentered = function (htmlDoc) {
-            var divVideoInfo = htmlDoc.getElementById("watch7-content");
-            assert.equal(divVideoInfo.style.margin == "auto" && divVideoInfo.style.float == "none", true, "Video content info is centered!");
+            var divVideoInfo = htmlDoc.getElementById("new-watch7-content");
+            assert.equal(divVideoInfo.style.margin == "auto" &&
+                divVideoInfo.style.float == "none" &&
+                divVideoInfo.style.left == "0px" &&
+                divVideoInfo.classList.contains("player-width"), true, "Video content info is centered!");
         };
 
         var done = assert.async(listVideoUrls.length);

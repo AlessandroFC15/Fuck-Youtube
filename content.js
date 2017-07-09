@@ -40,11 +40,16 @@ var enableTheaterMode = function (document) {
     var divPage = document.getElementById("page");
     divPage.classList.add("watch-stage-mode");
     divPage.classList.add("watch-wide");
-    divPage.style.marginTop = "10px";
+    divPage.style.marginTop = "7px";
 
     var divVideoInfo = document.getElementById("watch7-content");
     divVideoInfo.style.float = "none";
     divVideoInfo.style.margin = "auto";
+    divVideoInfo.style.left = "0";
+    divVideoInfo.classList.add("player-width");
+
+    // We change the id, so that styles related to the old id don't apply anymore.
+    divVideoInfo.id = "new-watch7-content";
 
     // Hiding the sidebar
     hideElement(document.getElementById("watch7-sidebar"))
