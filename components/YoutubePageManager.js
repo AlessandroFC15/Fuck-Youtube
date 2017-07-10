@@ -1,14 +1,18 @@
 /*global chrome, VideoShortcutManager */
 
+/**
+ * This component is responsible for all the changes made in the Youtube interface, such as adding/removing elements,
+ * as well as checking if elements exists or not..
+ * Inputs:
+ *      - A HTMLDocument object representing hopefully a YouTube video page.
+ * Results:
+ *      - This component will make the necessary changes to the interface as requested by the user.
+ */
+
 var YoutubePageManager;
 (function () {
     "use strict";
 
-    /**
-     * This component is responsible for all the changes made in the Youtube interface, such as adding/removing elements,
-     * as well as checking if elements exists or not..
-     * @param {HTMLDocument} document - The document of a page.
-     */
     YoutubePageManager = function (document) {
         this.document = document;
         this.shortcutManager = null;
@@ -32,9 +36,7 @@ var YoutubePageManager;
         }
     };
 
-    /**
-     * This function enables theater mode on a Youtube video page, centering the video frame and also hides the sidebar
-     */
+    // This function enables theater mode on a Youtube video page, centering the video frame and also hides the sidebar
     YoutubePageManager.prototype.enableTheaterMode = function () {
         var theaterBackground = this.document.getElementById("theater-background");
         theaterBackground.style.background = "transparent";
@@ -65,9 +67,9 @@ var YoutubePageManager;
         icon.style.backgroundImage = 'url(' + chrome.extension.getURL("/images/mainIcon.png") + ')';
     };
 
-    // This function will remove the error alert shown by YouTube if it is present
-    YoutubePageManager.prototype.removeErrorAlert = function () {
-        this.hideElement(this.document.getElementById('error-box'));
+    YoutubePageManager.prototype.addIconVideoUnavailable = function () {
+        var icon = this.document.getElementById("player-unavailable").getElementsByClassName("icon")[0];
+        icon.style.backgroundImage = icon.getAttribute('previous_background_img');
     };
 
     YoutubePageManager.prototype.addSpinner = function () {
@@ -79,6 +81,10 @@ var YoutubePageManager;
             '<div class="ytp-spinner-dot ytp-spinner-dot-4"></div><div class="ytp-spinner-dot ytp-spinner-dot-5"></div>' +
             '<div class="ytp-spinner-dot ytp-spinner-dot-6"></div><div class="ytp-spinner-dot ytp-spinner-dot-7"></div></div>' +
             '<div class="ytp-spinner-message" style="display: none;">Se a reprodução não começar em instantes, reinicie seu dispositivo.</div></div>' + mainMessage.innerHTML;
+    };
+
+    YoutubePageManager.prototype.removeSpinner = function () {
+        this.hideElement(this.document.getElementsByClassName("ytp-spinner")[0]);
     };
 
     YoutubePageManager.prototype.showLoadingFeedback = function () {
@@ -131,13 +137,9 @@ var YoutubePageManager;
         divPlayerAPI.appendChild(videoTag);
     };
 
-    YoutubePageManager.prototype.addIconVideoUnavailable = function () {
-        var icon = this.document.getElementById("player-unavailable").getElementsByClassName("icon")[0];
-        icon.style.backgroundImage = icon.getAttribute('previous_background_img');
-    };
-
-    YoutubePageManager.prototype.removeSpinner = function () {
-        this.hideElement(this.document.getElementsByClassName("ytp-spinner")[0]);
+    // This function will remove the error alert shown by YouTube if it is present
+    YoutubePageManager.prototype.removeErrorAlert = function () {
+        this.hideElement(this.document.getElementById('error-box'));
     };
 
     YoutubePageManager.prototype.showErrorAlert = function () {
