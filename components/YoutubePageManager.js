@@ -1,4 +1,4 @@
-/*global chrome, DOMParser, NoVideoFoundException */
+/*global chrome, VideoShortcutManager */
 
 var YoutubePageManager;
 (function () {
@@ -11,16 +11,13 @@ var YoutubePageManager;
      */
     YoutubePageManager = function (document) {
         this.document = document;
+        this.shortcutManager = null;
     };
 
     YoutubePageManager.prototype.isYoutubeVideoLink = function (url) {
         return (/^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/watch\?(.*)(v=.+)(.*)$/).test(url);
     };
 
-    /**
-     * This function tells you if the youtube video is unavailable.
-     * @param {HTMLDocument} document - The document of a youtube video page.
-     */
     YoutubePageManager.prototype.isYoutubeVideoUnavailable = function () {
         var divPlayerUnavailable = this.document.getElementById("player-unavailable");
 
@@ -117,8 +114,8 @@ var YoutubePageManager;
         videoTag.style.width = "100%";
         videoTag.id = "videoTag";
 
-        window.postMessage({type: "ENABLE_VIDEO_SHORTCUTS", videoTagId: videoTag.id}, "*");
-
+        this.shortcutManager = new VideoShortcutManager(videoTag);
+        
         var that = this;
 
         // We will only hide the loading screen, when the video is ready to play.
@@ -174,91 +171,3 @@ var YoutubePageManager;
     };
 
 }());
-
-var YouPakRequestManager;
-(function () {
-    "use strict";
-
-    YouPakRequestManager = function (url) {
-        this.url = url;
-    };
-
-    YouPakRequestManager.prototype.createRequestToYouPak = function () {
-        var request = new XMLHttpRequest();
-
-        request.open("GET", this.url.replace("tube", "pak"), true);
-
-        return request;
-    };
-
-    YouPakRequestManager.prototype.isXMLHttpRequestDone = function (request) {
-        // According to the documentation available at https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState,
-        // the number 4 represents DONE (" The operation is complete. ")
-        return request.readyState === 4;
-    };
-
-    YouPakRequestManager.prototype.getHTMLDocumentFromText = function (text) {
-        return new DOMParser().parseFromString(text, "text/html");
-    };
-
-    YouPakRequestManager.prototype.findVideoLinksFromYouPak = function (responseText) {
-        var htmlDoc = this.getHTMLDocumentFromText(responseText);
-
-        var videoTag = htmlDoc.getElementsByTagName("video")[0];
-
-        if (videoTag === undefined) {
-            throw new NoVideoFoundException();
-        }
-
-        var videoSources = videoTag.children;
-
-        return Array.prototype.slice.call(videoSources).map(function (element) {
-            return element.src;
-        });
-    };
-}());
-
-var YoutubeUnblocker;
-(function () {
-    "use strict";
-
-    YoutubeUnblocker = function (document, url) {
-        this.pageManager = new YoutubePageManager(document);
-        this.requestManager = new YouPakRequestManager(url);
-    };
-
-    YoutubeUnblocker.prototype.execute = function () {
-        var url = window.location.toString();
-
-        if (this.pageManager.isYoutubeVideoLink(url)) {
-            if (this.pageManager.isYoutubeVideoUnavailable(document)) {
-                this.pageManager.enableTheaterMode(document);
-
-                this.pageManager.showLoadingFeedback();
-
-                var request = this.requestManager.createRequestToYouPak();
-
-                var that = this;
-
-                // Because we're dealing with an async request, we have to implement the callback below.
-                request.onreadystatechange = function () {
-                    if (that.requestManager.isXMLHttpRequestDone(request)) {
-                        try {
-                            var links = that.requestManager.findVideoLinksFromYouPak(request.responseText);
-
-                            var highestQualityVideoLink = links[links.length - 1];
-
-                            that.pageManager.createVideoFrame(highestQualityVideoLink);
-                        } catch (exception) {
-                            that.pageManager.showFailureMessage();
-                        }
-                    }
-                };
-
-                request.send();
-            }
-        }
-    };
-}());
-
-new YoutubeUnblocker(document, window.location.toString()).execute();

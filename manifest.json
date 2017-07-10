@@ -20,8 +20,11 @@
   "content_scripts": [{
     "matches": ["*://www.youtube.com/*"],
     "js": [
-      "content.js",
-      "shortcuts.js"
+      "exceptions.js",
+      "components/VideoShortcutManager.js",
+      "components/YoutubePageManager.js",
+      "components/YouPakRequestManager.js",
+      "components/YoutubeUnblocker.js"
     ]
   }],
 
