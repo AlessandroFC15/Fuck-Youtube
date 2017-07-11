@@ -27,7 +27,7 @@ var YoutubePageManager;
 
         // Para que o vídeo seja considerado indisponível, é necessário que a div acima exista e que ela não a possua
         // classe "hid", visto que esta classe tem como função esconder os elementos.
-        return divPlayerUnavailable !== undefined && divPlayerUnavailable.className.indexOf("hid") === -1;
+        return divPlayerUnavailable && divPlayerUnavailable.className.indexOf("hid") === -1;
     };
 
     YoutubePageManager.prototype.hideElement = function (element) {

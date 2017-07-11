@@ -14,6 +14,7 @@ var VideoShortcutManager;
     VideoShortcutManager = function (videoTag) {
         this.video = videoTag;
         this.document = videoTag.ownerDocument;
+        this.videoFrameId = "player-api";
 
         this.enableYouTubeShortcuts();
     };
@@ -121,7 +122,7 @@ var VideoShortcutManager;
             };
 
             var isVideoFrameSelected = function (keyPressEvent) {
-                return keyPressEvent.target.id === "player-api";
+                return keyPressEvent.target.id === that.videoFrameId;
             };
 
             if (event.target.tagName !== "INPUT" && event.target.tagName !== "TEXTAREA") {
