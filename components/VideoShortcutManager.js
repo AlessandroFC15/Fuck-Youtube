@@ -24,12 +24,12 @@ var VideoShortcutManager;
             return Math.round(number * 100) / 100;
         };
 
-        this.video.goBack = function (seconds) {
-            this.currentTime -= seconds;
-        };
-
         this.video.goForward = function (seconds) {
             this.currentTime += seconds;
+        };
+
+        this.video.goBack = function (seconds) {
+            this.currentTime -= seconds;
         };
 
         this.video.togglePlayPause = function () {
