@@ -1,11 +1,14 @@
-/* 
+/*
  * This component is responsible for enabling shortcuts usage for a given video frame.
  * It attempts to simulate what YouTube does for its videos.
+ *
  * Inputs:
  *      - A <video> tag
+ *
  * Results:
  *      - The <video> tag passed as input now supports certain keyboard commands to control its behavior.
  */
+
 
 var VideoShortcutManager;
 (function () {
@@ -108,23 +111,24 @@ var VideoShortcutManager;
     };
 
     VideoShortcutManager.prototype.enableYouTubeShortcuts = function () {
-        this.createVideoFunctions();
-
         var that = this;
 
+        this.createVideoFunctions();
+
         this.document.addEventListener("keydown", function (event) {
-            var keys = that.getKeyCodes();
+            var keys = that.getKeyCodes(),
+                keyPressed,
 
-            var isNumberPressed = function (keyPressed, number) {
-                return keyPressed === keys["numPad" + number.toString()] || keyPressed === keys[number.toString()];
-            };
+                isNumberPressed = function (keyPressed, number) {
+                    return keyPressed === keys["numPad" + number.toString()] || keyPressed === keys[number.toString()];
+                },
 
-            var isVideoFrameSelected = function (keyPressEvent) {
-                return keyPressEvent.target.id === that.videoFrameId;
-            };
+                isVideoFrameSelected = function (keyPressEvent) {
+                    return keyPressEvent.target.id === that.videoFrameId;
+                };
 
             if (event.target.tagName !== "INPUT" && event.target.tagName !== "TEXTAREA") {
-                var keyPressed = event.which || event.keyCode;
+                keyPressed = event.which || event.keyCode;
 
                 if (isVideoFrameSelected(event)) {
                     if (keyPressed === keys.home) {

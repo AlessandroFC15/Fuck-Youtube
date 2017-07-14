@@ -27,15 +27,13 @@ var YouPakRequestManager;
     };
 
     YouPakRequestManager.prototype.findVideoLinksFromYouPak = function (responseText) {
-        var htmlDoc = this.getHTMLDocumentFromText(responseText);
-
-        var videoTag = htmlDoc.getElementsByTagName("video")[0];
+        var htmlDoc = this.getHTMLDocumentFromText(responseText),
+            videoTag = htmlDoc.getElementsByTagName("video")[0],
+            videoSources = videoTag.children;
 
         if (videoTag === undefined) {
             throw new NoVideoFoundException();
         }
-
-        var videoSources = videoTag.children;
 
         return Array.prototype.slice.call(videoSources).map(function (element) {
             return element.src;

@@ -40,15 +40,17 @@ var YoutubePageManager;
 
     // This function enables theater mode on a Youtube video page, centering the video frame and also hides the sidebar
     YoutubePageManager.prototype.enableTheaterMode = function () {
-        var theaterBackground = this.document.getElementById("theater-background");
+        var theaterBackground, divPage, divVideoInfo;
+
+        theaterBackground = this.document.getElementById("theater-background");
         theaterBackground.style.background = "transparent";
 
-        var divPage = this.document.getElementById("page");
+        divPage = this.document.getElementById("page");
         divPage.classList.add("watch-stage-mode");
         divPage.classList.add("watch-wide");
         divPage.style.marginTop = "7px";
 
-        var divVideoInfo = this.document.getElementById("watch7-content");
+        divVideoInfo = this.document.getElementById("watch7-content");
         divVideoInfo.style.float = "none";
         divVideoInfo.style.margin = "auto";
         divVideoInfo.style.left = "0";
@@ -91,14 +93,16 @@ var YoutubePageManager;
     };
 
     YoutubePageManager.prototype.showLoadingFeedback = function () {
+        var mainMessage, submainMessage;
+
         this.replaceIconVideoUnavailable();
 
         this.removeErrorAlert();
 
-        var mainMessage = this.document.getElementById('unavailable-message');
+        mainMessage = this.document.getElementById('unavailable-message');
         mainMessage.innerHTML = chrome.i18n.getMessage("workingToFindAMirrorMessage").replace('F*ck Youtube', "<span style='display: inline-block; color: red;'>F*ck Youtube</span>");
 
-        var submainMessage = this.document.getElementById('unavailable-submessage');
+        submainMessage = this.document.getElementById('unavailable-submessage');
         submainMessage.innerText = chrome.i18n.getMessage("loadingMessage");
 
         this.addSpinner();
@@ -109,14 +113,16 @@ var YoutubePageManager;
     };
 
     YoutubePageManager.prototype.createVideoFrame = function (link) {
-        var divPlayerAPI = this.document.getElementById("player-api");
+        var divPlayerAPI, videoTag, self, srcTag;
+
+        divPlayerAPI = this.document.getElementById("player-api");
         // This shows the previously hidden player holder.
         divPlayerAPI.classList.remove("off-screen-target");
         divPlayerAPI.innerHTML = '';
 
         console.log(this.document.getElementById('movie_player'));
 
-        var videoTag = this.document.createElement("video");
+        videoTag = this.document.createElement("video");
         videoTag.controls = true;
         videoTag.autoplay = true;
         videoTag.name = "media";
@@ -125,15 +131,15 @@ var YoutubePageManager;
 
         this.shortcutManager = new VideoShortcutManager(videoTag);
         this.shortcutManager.enableYouTubeShortcuts();
-        
-        var that = this;
+
+        self = this;
 
         // We will only hide the loading screen, when the video is ready to play.
         videoTag.oncanplay = function () {
-            that.hideLoadingScreen();
+            self.hideLoadingScreen();
         };
 
-        var srcTag = this.document.createElement("source");
+        srcTag = this.document.createElement("source");
         srcTag.src = link;
         srcTag.type = "video/mp4";
 
@@ -147,28 +153,33 @@ var YoutubePageManager;
     };
 
     YoutubePageManager.prototype.showErrorAlert = function () {
-        var alertsDiv = this.document.getElementById('error-box') || this.document.getElementById('editor-progress-alert-template');
+        var alertsDiv, alertContent, alertWrapper;
+
+        alertsDiv = this.document.getElementById('error-box') || this.document.getElementById('editor-progress-alert-template');
 
         alertsDiv.style.display = 'block';
         alertsDiv.classList.remove('yt-alert-warn');
         alertsDiv.classList.add("yt-alert-error");
 
-        var alertContent = alertsDiv.getElementsByClassName('yt-alert-content')[0];
+        alertContent = alertsDiv.getElementsByClassName('yt-alert-content')[0];
         alertContent.innerText = chrome.i18n.getMessage("noVideoFoundMessage") + " :(";
 
-        var alertWrapper = this.document.getElementsByClassName("alerts-wrapper")[0];
+        alertWrapper = this.document.getElementsByClassName("alerts-wrapper")[0];
+        
         if (alertWrapper) {
             alertWrapper.style.backgroundColor = "transparent";
         }
     };
 
     YoutubePageManager.prototype.showFailureMessage = function () {
+        var mainMessage, submainMessage;
+        
         this.addIconVideoUnavailable();
 
-        var mainMessage = this.document.getElementById('unavailable-message');
+        mainMessage = this.document.getElementById('unavailable-message');
         mainMessage.innerText = chrome.i18n.getMessage("videoUnavailableMessage");
 
-        var submainMessage = this.document.getElementById('unavailable-submessage');
+        submainMessage = this.document.getElementById('unavailable-submessage');
         submainMessage.innerText = chrome.i18n.getMessage("sorryMessage");
 
         this.removeSpinner();

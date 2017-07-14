@@ -10,7 +10,9 @@ var YoutubeUnblocker;
     };
 
     YoutubeUnblocker.prototype.execute = function () {
-        var url = window.location.toString();
+        var url = window.location.toString(),
+            request,
+            self;
 
         if (this.pageManager.isYoutubeVideoLink(url)) {
             if (this.pageManager.isYoutubeVideoUnavailable(document)) {
@@ -18,21 +20,24 @@ var YoutubeUnblocker;
 
                 this.pageManager.showLoadingFeedback();
 
-                var request = this.requestManager.createRequestToYouPak();
+                request = this.requestManager.createRequestToYouPak();
 
-                var that = this;
+                self = this;
 
                 // Because we're dealing with an async request, we have to implement the callback below.
                 request.onreadystatechange = function () {
-                    if (that.requestManager.isXMLHttpRequestDone(request)) {
+                    var links,
+                        highestQualityVideoLink;
+
+                    if (self.requestManager.isXMLHttpRequestDone(request)) {
                         try {
-                            var links = that.requestManager.findVideoLinksFromYouPak(request.responseText);
+                            links = self.requestManager.findVideoLinksFromYouPak(request.responseText);
 
-                            var highestQualityVideoLink = links[links.length - 1];
+                            highestQualityVideoLink = links[links.length - 1];
 
-                            that.pageManager.createVideoFrame(highestQualityVideoLink);
+                            self.pageManager.createVideoFrame(highestQualityVideoLink);
                         } catch (exception) {
-                            that.pageManager.showFailureMessage();
+                            self.pageManager.showFailureMessage();
                         }
                     }
                 };
@@ -41,6 +46,8 @@ var YoutubeUnblocker;
             }
         }
     };
+
+    new YoutubeUnblocker(document, window.location.toString()).execute();
 }());
 
-new YoutubeUnblocker(document, window.location.toString()).execute();
+
