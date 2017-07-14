@@ -15,8 +15,6 @@ var VideoShortcutManager;
         this.video = videoTag;
         this.document = videoTag.ownerDocument;
         this.videoFrameId = "player-api";
-
-        this.enableYouTubeShortcuts();
     };
 
     VideoShortcutManager.prototype.createVideoFunctions = function () {

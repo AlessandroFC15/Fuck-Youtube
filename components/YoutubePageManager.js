@@ -1,4 +1,6 @@
-/*global chrome, VideoShortcutManager */
+/* globals chrome: FALSE, i18n: FALSE, VideoShortcutManager: FALSE */
+/** @namespace chrome.extension.getURL **/
+/** @namespace chrome.i18n.getMessage **/
 
 /**
  * This component is responsible for all the changes made in the Youtube interface, such as adding/removing elements,
@@ -64,6 +66,7 @@ var YoutubePageManager;
         var icon = this.document.getElementById("player-unavailable").getElementsByClassName("icon")[0];
 
         icon.setAttribute('previous_background_img', window.getComputedStyle(icon, null).backgroundImage);
+
         icon.style.backgroundImage = 'url(' + chrome.extension.getURL("/images/mainIcon.png") + ')';
     };
 
@@ -121,6 +124,7 @@ var YoutubePageManager;
         videoTag.id = "videoTag";
 
         this.shortcutManager = new VideoShortcutManager(videoTag);
+        this.shortcutManager.enableYouTubeShortcuts();
         
         var that = this;
 
