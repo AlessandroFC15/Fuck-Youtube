@@ -21,9 +21,9 @@ var VideoShortcutManager;
     };
 
     VideoShortcutManager.prototype.createVideoFunctions = function () {
-        var roundBy2Decimals = function (number) {
+        function roundBy2Decimals(number) {
             return Math.round(number * 100) / 100;
-        };
+        }
 
         this.video.goForward = function (seconds) {
             this.currentTime += seconds;
@@ -117,15 +117,15 @@ var VideoShortcutManager;
 
         this.document.addEventListener("keydown", function (event) {
             var keys = that.getKeyCodes(),
-                keyPressed,
+                keyPressed;
 
-                isNumberPressed = function (keyPressed, number) {
-                    return keyPressed === keys["numPad" + number.toString()] || keyPressed === keys[number.toString()];
-                },
+            function isNumberPressed(keyPressed, number) {
+                return keyPressed === keys["numPad" + number.toString()] || keyPressed === keys[number.toString()];
+            }
 
-                isVideoFrameSelected = function (keyPressEvent) {
-                    return keyPressEvent.target.id === that.videoFrameId;
-                };
+            function isVideoFrameSelected(keyPressEvent) {
+                return keyPressEvent.target.id === that.videoFrameId;
+            }
 
             if (event.target.tagName !== "INPUT" && event.target.tagName !== "TEXTAREA") {
                 keyPressed = event.which || event.keyCode;
