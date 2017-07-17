@@ -12,7 +12,7 @@ var YoutubeUnblocker;
     YoutubeUnblocker.prototype.execute = function () {
         var url = window.location.toString(),
             request,
-            self;
+            self = this;
 
         if (this.pageManager.isYoutubeVideoLink(url)) {
             if (this.pageManager.isYoutubeVideoUnavailable(document)) {
@@ -21,8 +21,6 @@ var YoutubeUnblocker;
                 this.pageManager.showLoadingFeedback();
 
                 request = this.requestManager.createRequestToYouPak();
-
-                self = this;
 
                 // Because we're dealing with an async request, we have to implement the callback below.
                 request.onreadystatechange = function () {
@@ -49,5 +47,3 @@ var YoutubeUnblocker;
 
     new YoutubeUnblocker(document, window.location.toString()).execute();
 }());
-
-
