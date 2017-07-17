@@ -113,7 +113,7 @@ var YoutubePageManager;
     };
 
     YoutubePageManager.prototype.createVideoFrame = function (link) {
-        var divPlayerAPI, videoTag, self, srcTag;
+        var divPlayerAPI, videoTag, self = this, srcTag;
 
         divPlayerAPI = this.document.getElementById("player-api");
         // This shows the previously hidden player holder.
@@ -132,8 +132,6 @@ var YoutubePageManager;
         this.shortcutManager = new VideoShortcutManager(videoTag);
         this.shortcutManager.enableYouTubeShortcuts();
 
-        self = this;
-
         // We will only hide the loading screen, when the video is ready to play.
         videoTag.oncanplay = function () {
             self.hideLoadingScreen();
@@ -142,6 +140,9 @@ var YoutubePageManager;
         srcTag = this.document.createElement("source");
         srcTag.src = link;
         srcTag.type = "video/mp4";
+        srcTag.onerror = function () {
+            self.showFailureMessage();
+        };
 
         videoTag.appendChild(srcTag);
         divPlayerAPI.appendChild(videoTag);

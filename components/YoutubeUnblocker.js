@@ -30,7 +30,7 @@ var YoutubeUnblocker;
                     if (self.requestManager.isXMLHttpRequestDone(request)) {
                         try {
                             links = self.requestManager.findVideoLinksFromYouPak(request.responseText);
-
+                            
                             highestQualityVideoLink = links[links.length - 1];
 
                             self.pageManager.createVideoFrame(highestQualityVideoLink);
