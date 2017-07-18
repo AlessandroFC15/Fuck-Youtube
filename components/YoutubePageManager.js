@@ -1,4 +1,4 @@
-/* globals chrome: FALSE, i18n: FALSE, VideoShortcutManager: FALSE */
+/* globals chrome: FALSE, i18n: FALSE, VideoShortcutManager: FALSE, VideoPlayerManager: FALSE */
 /** @namespace chrome.extension.getURL **/
 /** @namespace chrome.i18n.getMessage **/
 
@@ -17,7 +17,6 @@ var YoutubePageManager;
 
     YoutubePageManager = function (document) {
         this.document = document;
-        this.shortcutManager = null;
     };
 
     YoutubePageManager.prototype.isYoutubeVideoLink = function (url) {
@@ -113,7 +112,7 @@ var YoutubePageManager;
     };
 
     YoutubePageManager.prototype.createVideoFrame = function (link) {
-        var divPlayerAPI, videoTag, self = this, srcTag;
+        var divPlayerAPI, videoPlayerManager;
 
         divPlayerAPI = this.document.getElementById("player-api");
         // This shows the previously hidden player holder.
@@ -122,30 +121,41 @@ var YoutubePageManager;
 
         console.log(this.document.getElementById('movie_player'));
 
-        videoTag = this.document.createElement("video");
-        videoTag.controls = true;
-        videoTag.autoplay = true;
-        videoTag.name = "media";
-        videoTag.style.width = "100%";
-        videoTag.id = "videoTag";
+        videoPlayerManager = new VideoPlayerManager(this, link);
 
-        this.shortcutManager = new VideoShortcutManager(videoTag);
-        this.shortcutManager.enableYouTubeShortcuts();
+        divPlayerAPI.appendChild(videoPlayerManager.controlsBar);
+        divPlayerAPI.appendChild(videoPlayerManager.videoTag);
+    };
 
-        // We will only hide the loading screen, when the video is ready to play.
-        videoTag.oncanplay = function () {
-            self.hideLoadingScreen();
-        };
+    YoutubePageManager.prototype.createVideoControls = function () {
+        var outerDiv = this.document.createElement('div');
+        outerDiv.className = "ytp-chrome-bottom";
+        outerDiv.style.display = "block!imporant";
+        outerDiv.style.width = "calc(100% - 20px)";
+        outerDiv.style.left = "10px";
+        outerDiv.style.zIndex = "2147483647";
 
-        srcTag = this.document.createElement("source");
-        srcTag.src = link;
-        srcTag.type = "video/mp4";
-        srcTag.onerror = function () {
-            self.showFailureMessage();
-        };
+        var chromeControls = this.document.createElement("div");
+        chromeControls.className = "ytp-chrome-controls";
 
-        videoTag.appendChild(srcTag);
-        divPlayerAPI.appendChild(videoTag);
+        var leftControls = this.document.createElement("div");
+        leftControls.className = "ytp-left-controls";
+
+        var playButton = this.document.createElement("button");
+        playButton.className = "ytp-play-button ytp-button";
+        playButton.label = "Play";
+        playButton.innerHTML = '<svg height="100%" version="1.1" viewBox="0 0 36 36" width="100%">' +
+            '<use class="ytp-svg-shadow" xmlns:xlink="http://www.w3.org/1999/xlink"' +
+            ' xlink:href="#ytp-id-39"></use>' +
+            '<path class="ytp-svg-fill" d="M 12,26 18.5,22 18.5,14 12,10 z M 18.5,22 25,18 25,18 18.5,14 z"' +
+            ' id="ytp-id-39"></path>' +
+            '</svg>';
+
+        leftControls.appendChild(playButton);
+        chromeControls.appendChild(leftControls);
+        outerDiv.appendChild(chromeControls);
+
+        return outerDiv;
     };
 
     // This function will remove the error alert shown by YouTube if it is present

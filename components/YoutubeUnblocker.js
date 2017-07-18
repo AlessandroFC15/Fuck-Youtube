@@ -35,6 +35,7 @@ var YoutubeUnblocker;
 
                             self.pageManager.createVideoFrame(highestQualityVideoLink);
                         } catch (exception) {
+                            console.log(exception);
                             self.pageManager.showFailureMessage();
                         }
                     }
