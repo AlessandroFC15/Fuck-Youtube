@@ -1,4 +1,4 @@
-/* globals chrome: FALSE, i18n: FALSE, VideoShortcutManager: FALSE, VideoPlayerManager: FALSE */
+/* globals chrome: FALSE, i18n: FALSE, VideoShortcutManager: FALSE */
 /** @namespace chrome.extension.getURL **/
 /** @namespace chrome.i18n.getMessage **/
 
@@ -17,6 +17,7 @@ var YoutubePageManager;
 
     YoutubePageManager = function (document) {
         this.document = document;
+        this.shortcutManager = null;
     };
 
     YoutubePageManager.prototype.isYoutubeVideoLink = function (url) {
@@ -27,7 +28,7 @@ var YoutubePageManager;
         var divPlayerUnavailable = this.document.getElementById("player-unavailable");
 
         // Para que o vídeo seja considerado indisponível, é necessário que a div acima exista e que ela não a possua
-        // classe "hid", visto que essa classe tem como função esconder os elementos.
+        // classe "hid", visto que esta classe tem como função esconder os elementos.
         return divPlayerUnavailable && divPlayerUnavailable.className.indexOf("hid") === -1;
     };
 
@@ -112,7 +113,7 @@ var YoutubePageManager;
     };
 
     YoutubePageManager.prototype.createVideoFrame = function (link) {
-        var divPlayerAPI, videoPlayerManager;
+        var divPlayerAPI, videoTag, self = this, srcTag;
 
         divPlayerAPI = this.document.getElementById("player-api");
         // This shows the previously hidden player holder.
@@ -121,41 +122,30 @@ var YoutubePageManager;
 
         console.log(this.document.getElementById('movie_player'));
 
-        videoPlayerManager = new VideoPlayerManager(this, link);
+        videoTag = this.document.createElement("video");
+        videoTag.controls = true;
+        videoTag.autoplay = true;
+        videoTag.name = "media";
+        videoTag.style.width = "100%";
+        videoTag.id = "videoTag";
 
-        divPlayerAPI.appendChild(videoPlayerManager.controlsBar);
-        divPlayerAPI.appendChild(videoPlayerManager.videoTag);
-    };
+        this.shortcutManager = new VideoShortcutManager(videoTag);
+        this.shortcutManager.enableYouTubeShortcuts();
 
-    YoutubePageManager.prototype.createVideoControls = function () {
-        var outerDiv = this.document.createElement('div');
-        outerDiv.className = "ytp-chrome-bottom";
-        outerDiv.style.display = "block!imporant";
-        outerDiv.style.width = "calc(100% - 20px)";
-        outerDiv.style.left = "10px";
-        outerDiv.style.zIndex = "2147483647";
+        // We will only hide the loading screen, when the video is ready to play.
+        videoTag.oncanplay = function () {
+            self.hideLoadingScreen();
+        };
 
-        var chromeControls = this.document.createElement("div");
-        chromeControls.className = "ytp-chrome-controls";
+        srcTag = this.document.createElement("source");
+        srcTag.src = link;
+        srcTag.type = "video/mp4";
+        srcTag.onerror = function () {
+            self.showFailureMessage();
+        };
 
-        var leftControls = this.document.createElement("div");
-        leftControls.className = "ytp-left-controls";
-
-        var playButton = this.document.createElement("button");
-        playButton.className = "ytp-play-button ytp-button";
-        playButton.label = "Play";
-        playButton.innerHTML = '<svg height="100%" version="1.1" viewBox="0 0 36 36" width="100%">' +
-            '<use class="ytp-svg-shadow" xmlns:xlink="http://www.w3.org/1999/xlink"' +
-            ' xlink:href="#ytp-id-39"></use>' +
-            '<path class="ytp-svg-fill" d="M 12,26 18.5,22 18.5,14 12,10 z M 18.5,22 25,18 25,18 18.5,14 z"' +
-            ' id="ytp-id-39"></path>' +
-            '</svg>';
-
-        leftControls.appendChild(playButton);
-        chromeControls.appendChild(leftControls);
-        outerDiv.appendChild(chromeControls);
-
-        return outerDiv;
+        videoTag.appendChild(srcTag);
+        divPlayerAPI.appendChild(videoTag);
     };
 
     // This function will remove the error alert shown by YouTube if it is present
@@ -176,7 +166,7 @@ var YoutubePageManager;
         alertContent.innerText = chrome.i18n.getMessage("noVideoFoundMessage") + " :(";
 
         alertWrapper = this.document.getElementsByClassName("alerts-wrapper")[0];
-        
+
         if (alertWrapper) {
             alertWrapper.style.backgroundColor = "transparent";
         }
@@ -184,7 +174,7 @@ var YoutubePageManager;
 
     YoutubePageManager.prototype.showFailureMessage = function () {
         var mainMessage, submainMessage;
-        
+
         this.addIconVideoUnavailable();
 
         mainMessage = this.document.getElementById('unavailable-message');

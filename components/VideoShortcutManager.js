@@ -39,8 +39,6 @@ var VideoShortcutManager;
             } else {
                 this.pause();
             }
-
-            this.dispatchEvent(new Event('togglePlayPause'));
         };
 
         this.video.goToSpecificTime = function (seconds) {
