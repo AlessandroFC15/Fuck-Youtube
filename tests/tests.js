@@ -1,10 +1,10 @@
-/*global YoutubeUnblocker, YouPakRequestManager, YoutubePageManager, NoVideoFoundException, QUnit, $ */
+/*global YoutubeVideoUnblocker, MirrorFinder, YoutubeInterfaceManager, NoVideoFoundException, QUnit, $ */
 
 (function () {
     "use strict";
 
     QUnit.test("Test to check if it is youtube video link", function (assert) {
-        var youtubeUnblocker = new YoutubeUnblocker(),
+        var YoutubeVideoUnblocker = new YoutubeVideoUnblocker(),
             validLinks,
             invalidLinks,
             i;
@@ -23,7 +23,7 @@
         ];
 
         for (i = 0; i < validLinks.length; i++) {
-            assert.equal(youtubeUnblocker.pageManager.isYoutubeVideoLink(validLinks[i]), true, validLinks[i] + " is valid!");
+            assert.equal(YoutubeVideoUnblocker.interfaceManager.isYoutubeVideoLink(validLinks[i]), true, validLinks[i] + " is valid!");
         }
 
         invalidLinks = [
@@ -38,7 +38,7 @@
         ];
 
         for (i = 0; i < invalidLinks.length; i++) {
-            assert.equal(youtubeUnblocker.pageManager.isYoutubeVideoLink(invalidLinks[i]), false, invalidLinks[i] + " is NOT valid!");
+            assert.equal(YoutubeVideoUnblocker.interfaceManager.isYoutubeVideoLink(invalidLinks[i]), false, invalidLinks[i] + " is NOT valid!");
         }
     });
 
@@ -47,9 +47,9 @@
                 var done = assert.async(listVideoUrls.length),
 
                     successCallback = function (response) {
-                        var htmlDoc = new YouPakRequestManager().getHTMLDocumentFromText(response);
+                        var htmlDoc = new MirrorFinder().getHTMLDocumentFromText(response);
 
-                        assert.equal(new YoutubePageManager(htmlDoc).isYoutubeVideoUnavailable(htmlDoc), shouldBeUnavailable);
+                        assert.equal(new YoutubeInterfaceManager(htmlDoc).isYoutubeVideoUnavailable(htmlDoc), shouldBeUnavailable);
                         done();
                     },
 
@@ -94,12 +94,12 @@
                         var links;
 
                         if (shouldBeValid) {
-                            links = new YouPakRequestManager().findVideoLinksFromYouPak(response);
+                            links = new MirrorFinder().findVideoLinksFromYouPak(response);
 
                             assert.ok(links && links.length >= 1);
                         } else {
                             assert.throws(function () {
-                                new YouPakRequestManager().findVideoLinksFromYouPak(response);
+                                new MirrorFinder().findVideoLinksFromYouPak(response);
                             }, NoVideoFoundException);
                         }
 
@@ -135,59 +135,59 @@
 
     QUnit.test("Test to check if the design is correct", function (assert) {
         var testIfDesignIsCorrect = function (listVideoUrls) {
-            var testIfSidebarIsHidden = function (htmlDoc) {
-                    assert.equal(htmlDoc.getElementById("watch7-sidebar").style.display, "none", "Sidebar is hidden!");
-                },
+                var testIfSidebarIsHidden = function (htmlDoc) {
+                        assert.equal(htmlDoc.getElementById("watch7-sidebar").style.display, "none", "Sidebar is hidden!");
+                    },
 
-                testIfVideoPlayerIsCentered = function (htmlDoc) {
-                    var divPage = htmlDoc.getElementById("page");
-                    assert.equal(divPage.classList.contains("watch-stage-mode") &&
-                        divPage.classList.contains("watch-wide"), true, "Video player holder is centered!");
-                },
+                    testIfVideoPlayerIsCentered = function (htmlDoc) {
+                        var divPage = htmlDoc.getElementById("page");
+                        assert.equal(divPage.classList.contains("watch-stage-mode") &&
+                            divPage.classList.contains("watch-wide"), true, "Video player holder is centered!");
+                    },
 
-                testIfVideoContentInfoIsCentered = function (htmlDoc) {
-                    var divVideoInfo = htmlDoc.getElementById("new-watch7-content");
-                    assert.equal(divVideoInfo.style.margin === "auto" &&
-                        divVideoInfo.style.float === "none" &&
-                        divVideoInfo.style.left === "0px" &&
-                        divVideoInfo.classList.contains("player-width"), true, "Video content info is centered!");
-                },
+                    testIfVideoContentInfoIsCentered = function (htmlDoc) {
+                        var divVideoInfo = htmlDoc.getElementById("new-watch7-content");
+                        assert.equal(divVideoInfo.style.margin === "auto" &&
+                            divVideoInfo.style.float === "none" &&
+                            divVideoInfo.style.left === "0px" &&
+                            divVideoInfo.classList.contains("player-width"), true, "Video content info is centered!");
+                    },
 
-                done = assert.async(listVideoUrls.length),
+                    done = assert.async(listVideoUrls.length),
 
-                successCallback = function (response) {
-                    var htmlDoc = new YouPakRequestManager().getHTMLDocumentFromText(response);
+                    successCallback = function (response) {
+                        var htmlDoc = new MirrorFinder().getHTMLDocumentFromText(response);
 
-                    new YoutubePageManager(htmlDoc).enableTheaterMode(htmlDoc);
+                        new YoutubeInterfaceManager(htmlDoc).enableTheaterMode(htmlDoc);
 
-                    testIfSidebarIsHidden(htmlDoc);
+                        testIfSidebarIsHidden(htmlDoc);
 
-                    testIfVideoPlayerIsCentered(htmlDoc);
+                        testIfVideoPlayerIsCentered(htmlDoc);
 
-                    testIfVideoContentInfoIsCentered(htmlDoc);
+                        testIfVideoContentInfoIsCentered(htmlDoc);
 
-                    done();
-                },
+                        done();
+                    },
 
-                i;
-            for (i = 0; i < listVideoUrls.length; i++) {
-                $.ajax({
-                    url: listVideoUrls[i],
-                    method: 'GET',
-                    success: successCallback
-                });
-            }
+                    i;
+                for (i = 0; i < listVideoUrls.length; i++) {
+                    $.ajax({
+                        url: listVideoUrls[i],
+                        method: 'GET',
+                        success: successCallback
+                    });
+                }
             },
 
             videosUrls = [
-            "https://www.youtube.com/watch?v=5kI1HsfF31A",                                      // UFC Embedded
-            "https://www.youtube.com/watch?v=SRcpuD9isZg",                                      // UFC Embedded
-            "https://www.youtube.com/watch?v=2j6RT3CDIMw&feature=youtu.be",                     // UFC Embedded
-            "https://www.youtube.com/watch?v=9TtIo1mIITY",                                      // UFC Embedded
-            "https://www.youtube.com/watch?v=-nd3_-BOPDw",                                      // UFC Embedded
-            "https://www.youtube.com/watch?v=bBNx7_TlNhE&feature=youtu.be",                     // UFC Embedded
-            "https://www.youtube.com/watch?v=2wyy6qutrk4&feature=youtu.be"                     // Random video
-        ];
+                "https://www.youtube.com/watch?v=5kI1HsfF31A",                                      // UFC Embedded
+                "https://www.youtube.com/watch?v=SRcpuD9isZg",                                      // UFC Embedded
+                "https://www.youtube.com/watch?v=2j6RT3CDIMw&feature=youtu.be",                     // UFC Embedded
+                "https://www.youtube.com/watch?v=9TtIo1mIITY",                                      // UFC Embedded
+                "https://www.youtube.com/watch?v=-nd3_-BOPDw",                                      // UFC Embedded
+                "https://www.youtube.com/watch?v=bBNx7_TlNhE&feature=youtu.be",                     // UFC Embedded
+                "https://www.youtube.com/watch?v=2wyy6qutrk4&feature=youtu.be"                     // Random video
+            ];
 
         testIfDesignIsCorrect(videosUrls);
     });

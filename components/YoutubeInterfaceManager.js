@@ -1,30 +1,26 @@
-/* globals chrome: FALSE, i18n: FALSE, VideoShortcutManager: FALSE */
+/* globals chrome: FALSE, i18n: FALSE, VideoPlayerManager: FALSE */
 /** @namespace chrome.extension.getURL **/
 /** @namespace chrome.i18n.getMessage **/
 
 /**
  * This component is responsible for all the changes made in the Youtube interface, such as adding/removing elements,
- * as well as checking if elements exists or not..
+ * as well as checking if elements exists or not.
  * Inputs:
  *      - A HTMLDocument object representing hopefully a YouTube video page.
  * Results:
  *      - This component will make the necessary changes to the interface as requested by the user.
  */
 
-var YoutubePageManager;
+var YoutubeInterfaceManager;
 (function () {
     "use strict";
 
-    YoutubePageManager = function (document) {
+    YoutubeInterfaceManager = function (document) {
         this.document = document;
-        this.shortcutManager = null;
+        this.videoPlayerManager = null;
     };
 
-    YoutubePageManager.prototype.isYoutubeVideoLink = function (url) {
-        return (/^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/watch\?(.*)(v=.+)(.*)$/).test(url);
-    };
-
-    YoutubePageManager.prototype.isYoutubeVideoUnavailable = function () {
+    YoutubeInterfaceManager.prototype.isYoutubeVideoUnavailable = function () {
         var divPlayerUnavailable = this.document.getElementById("player-unavailable");
 
         // Para que o vídeo seja considerado indisponível, é necessário que a div acima exista e que ela não a possua
@@ -32,14 +28,14 @@ var YoutubePageManager;
         return divPlayerUnavailable && divPlayerUnavailable.className.indexOf("hid") === -1;
     };
 
-    YoutubePageManager.prototype.hideElement = function (element) {
+    YoutubeInterfaceManager.prototype.hideElement = function (element) {
         if (element) {
             element.style.display = "none";
         }
     };
 
     // This function enables theater mode on a Youtube video page, centering the video frame and also hides the sidebar
-    YoutubePageManager.prototype.enableTheaterMode = function () {
+    YoutubeInterfaceManager.prototype.enableTheaterMode = function () {
         var theaterBackground, divPage, divVideoInfo;
 
         theaterBackground = this.document.getElementById("theater-background");
@@ -64,7 +60,7 @@ var YoutubePageManager;
     };
 
     // This function replaces the Youtube icon used to represent a unavailable video with the extension's main icon.
-    YoutubePageManager.prototype.replaceIconVideoUnavailable = function () {
+    YoutubeInterfaceManager.prototype.replaceIconVideoUnavailable = function () {
         var icon = this.document.getElementById("player-unavailable").getElementsByClassName("icon")[0];
 
         icon.setAttribute('previous_background_img', window.getComputedStyle(icon, null).backgroundImage);
@@ -72,12 +68,12 @@ var YoutubePageManager;
         icon.style.backgroundImage = 'url(' + chrome.extension.getURL("/images/mainIcon.png") + ')';
     };
 
-    YoutubePageManager.prototype.addIconVideoUnavailable = function () {
+    YoutubeInterfaceManager.prototype.addIconVideoUnavailable = function () {
         var icon = this.document.getElementById("player-unavailable").getElementsByClassName("icon")[0];
         icon.style.backgroundImage = icon.getAttribute('previous_background_img');
     };
 
-    YoutubePageManager.prototype.addSpinner = function () {
+    YoutubeInterfaceManager.prototype.addSpinner = function () {
         var mainMessage = this.document.getElementById('unavailable-message');
 
         mainMessage.innerHTML = '<div class="ytp-spinner" data-layer="4" style="left: 0; margin-left: 0; display: inline-block;position: relative;width: 28px;height: 22px;top: 5px;"><div class="ytp-spinner-dots">' +
@@ -88,11 +84,11 @@ var YoutubePageManager;
             '<div class="ytp-spinner-message" style="display: none;">Se a reprodução não começar em instantes, reinicie seu dispositivo.</div></div>' + mainMessage.innerHTML;
     };
 
-    YoutubePageManager.prototype.removeSpinner = function () {
+    YoutubeInterfaceManager.prototype.removeSpinner = function () {
         this.hideElement(this.document.getElementsByClassName("ytp-spinner")[0]);
     };
 
-    YoutubePageManager.prototype.showLoadingFeedback = function () {
+    YoutubeInterfaceManager.prototype.showLoadingFeedback = function () {
         var mainMessage, submainMessage;
 
         this.replaceIconVideoUnavailable();
@@ -108,12 +104,12 @@ var YoutubePageManager;
         this.addSpinner();
     };
 
-    YoutubePageManager.prototype.hideLoadingScreen = function () {
+    YoutubeInterfaceManager.prototype.hideLoadingScreen = function () {
         this.hideElement(this.document.getElementById("player-unavailable"));
     };
 
-    YoutubePageManager.prototype.createVideoFrame = function (link) {
-        var divPlayerAPI, videoTag, self = this, srcTag;
+    YoutubeInterfaceManager.prototype.createVideoFrame = function (link) {
+        var divPlayerAPI, self = this;
 
         divPlayerAPI = this.document.getElementById("player-api");
         // This shows the previously hidden player holder.
@@ -122,38 +118,21 @@ var YoutubePageManager;
 
         console.log(this.document.getElementById('movie_player'));
 
-        videoTag = this.document.createElement("video");
-        videoTag.controls = true;
-        videoTag.autoplay = true;
-        videoTag.name = "media";
-        videoTag.style.width = "100%";
-        videoTag.id = "videoTag";
-
-        this.shortcutManager = new VideoShortcutManager(videoTag);
-        this.shortcutManager.enableYouTubeShortcuts();
-
+        // By creating the video player manager, we create the video frame
+        this.videoPlayerManager = new VideoPlayerManager(link, divPlayerAPI, this);
+        
         // We will only hide the loading screen, when the video is ready to play.
-        videoTag.oncanplay = function () {
+        this.videoPlayerManager.video.oncanplay = function () {
             self.hideLoadingScreen();
         };
-
-        srcTag = this.document.createElement("source");
-        srcTag.src = link;
-        srcTag.type = "video/mp4";
-        srcTag.onerror = function () {
-            self.showFailureMessage();
-        };
-
-        videoTag.appendChild(srcTag);
-        divPlayerAPI.appendChild(videoTag);
     };
 
     // This function will remove the error alert shown by YouTube if it is present
-    YoutubePageManager.prototype.removeErrorAlert = function () {
+    YoutubeInterfaceManager.prototype.removeErrorAlert = function () {
         this.hideElement(this.document.getElementById('error-box'));
     };
 
-    YoutubePageManager.prototype.showErrorAlert = function () {
+    YoutubeInterfaceManager.prototype.showErrorAlert = function () {
         var alertsDiv, alertContent, alertWrapper;
 
         alertsDiv = this.document.getElementById('error-box') || this.document.getElementById('editor-progress-alert-template');
@@ -172,7 +151,7 @@ var YoutubePageManager;
         }
     };
 
-    YoutubePageManager.prototype.showFailureMessage = function () {
+    YoutubeInterfaceManager.prototype.showFailureMessage = function () {
         var mainMessage, submainMessage;
 
         this.addIconVideoUnavailable();
@@ -187,5 +166,4 @@ var YoutubePageManager;
 
         this.showErrorAlert();
     };
-
 }());

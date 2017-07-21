@@ -18,52 +18,8 @@ var VideoShortcutManager;
         this.video = videoTag;
         this.document = videoTag.ownerDocument;
         this.videoFrameId = "player-api";
-    };
 
-    VideoShortcutManager.prototype.createVideoFunctions = function () {
-        function roundBy2Decimals(number) {
-            return Math.round(number * 100) / 100;
-        }
-
-        this.video.goForward = function (seconds) {
-            this.currentTime += seconds;
-        };
-
-        this.video.goBack = function (seconds) {
-            this.currentTime -= seconds;
-        };
-
-        this.video.togglePlayPause = function () {
-            if (this.paused) {
-                this.play();
-            } else {
-                this.pause();
-            }
-        };
-
-        this.video.goToSpecificTime = function (seconds) {
-            this.currentTime = seconds;
-        };
-
-        this.video.increaseVolumeBy5Percent = function () {
-            this.volume = Math.min(roundBy2Decimals(this.volume + 0.05), 1);
-        };
-
-        this.video.decreaseVolumeBy5Percent = function () {
-            this.volume = Math.max(0, roundBy2Decimals(this.volume - 0.05));
-        };
-
-        this.video.increaseSpeed = function () {
-            this.playbackRate = Math.min(this.playbackRate + 0.25, 2);
-        };
-
-        this.video.decreaseSpeed = function () {
-            this.playbackRate = Math.max(0.25, this.playbackRate - 0.25);
-        };
-
-        this.video.toggleMuteUnmuteAudio = function () {
-            this.muted = !this.muted;
-        };
+        this.enableYouTubeShortcuts();
     };
 
     VideoShortcutManager.prototype.getKeyCodes = function () {
@@ -112,8 +68,6 @@ var VideoShortcutManager;
 
     VideoShortcutManager.prototype.enableYouTubeShortcuts = function () {
         var that = this;
-
-        this.createVideoFunctions();
 
         this.document.addEventListener("keydown", function (event) {
             var keys = that.getKeyCodes(),

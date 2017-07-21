@@ -1,0 +1,3 @@
+video::-webkit-media-controls-enclosure {
+    max-width: 100% !important;
+}

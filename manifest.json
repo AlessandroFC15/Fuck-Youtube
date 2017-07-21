@@ -22,9 +22,13 @@
     "js": [
       "exceptions.js",
       "components/VideoShortcutManager.js",
-      "components/YoutubePageManager.js",
-      "components/YouPakRequestManager.js",
-      "components/YoutubeUnblocker.js"
+      "components/VideoPlayerManager.js",
+      "components/YoutubeInterfaceManager.js",
+      "components/MirrorFinder.js",
+      "components/YoutubeVideoUnblocker.js"
+    ],
+    "css": [
+      "styles.css"
     ]
   }],
 
