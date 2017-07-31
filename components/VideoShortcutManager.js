@@ -1,4 +1,4 @@
-/*
+/**
  * This component is responsible for enabling shortcuts usage for a given video frame.
  * It attempts to simulate what YouTube does for its videos.
  *

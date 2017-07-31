@@ -1,5 +1,18 @@
 /* globals VideoShortcutManager: FALSE */
 
+/**
+ * This component is responsible for behavior present in the video player that will be embedded within
+ * the YouTube page.
+ *
+ * Inputs:
+ *      - A video source
+ *      - The outer div that the video player will be contained within
+ *      - An interface manager, therefore, a YoutubeInterfaceManager object
+ *
+ * Results:
+ *      - This component will create the video element and be responsible for all the behavior related to it.
+ */
+
 var VideoPlayerManager;
 
 (function () {

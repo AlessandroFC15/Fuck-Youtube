@@ -1,6 +1,6 @@
 /*global DOMParser, NoVideoFoundException */
 
-/*
+/**
  * This component is responsible for finding a video source that works (a mirror)
  * It attempts to do so by making a request to the YouPak website and finding their sources for the video.
  *

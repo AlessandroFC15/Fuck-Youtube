@@ -5,8 +5,10 @@
 /**
  * This component is responsible for all the changes made in the Youtube interface, such as adding/removing elements,
  * as well as checking if elements exists or not.
+ *
  * Inputs:
  *      - A HTMLDocument object representing hopefully a YouTube video page.
+ *
  * Results:
  *      - This component will make the necessary changes to the interface as requested by the user.
  */
