@@ -20,7 +20,7 @@ var YoutubeVideoUnblocker;
 
                 this.interfaceManager.showLoadingFeedback();
 
-                request = this.mirrorFinder.createRequestToYouPak();
+                /* request = this.mirrorFinder.createRequestToYouPak();
 
                 // Because we're dealing with an async request, we have to implement the callback below.
                 request.onreadystatechange = function () {
@@ -41,7 +41,7 @@ var YoutubeVideoUnblocker;
                     }
                 };
 
-                request.send();
+                 request.send();*/
             }
         }
     };

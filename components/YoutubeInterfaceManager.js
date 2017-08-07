@@ -78,12 +78,13 @@ var YoutubeInterfaceManager;
     YoutubeInterfaceManager.prototype.addSpinner = function () {
         var mainMessage = this.document.getElementById('unavailable-message');
 
-        mainMessage.innerHTML = '<div class="ytp-spinner" data-layer="4" style="left: 0; margin-left: 0; display: inline-block;position: relative;width: 28px;height: 22px;top: 5px;"><div class="ytp-spinner-dots">' +
-            '<div class="ytp-spinner-dot ytp-spinner-dot-0"></div><div class="ytp-spinner-dot ytp-spinner-dot-1"></div>' +
-            '<div class="ytp-spinner-dot ytp-spinner-dot-2"></div><div class="ytp-spinner-dot ytp-spinner-dot-3"></div>' +
-            '<div class="ytp-spinner-dot ytp-spinner-dot-4"></div><div class="ytp-spinner-dot ytp-spinner-dot-5"></div>' +
-            '<div class="ytp-spinner-dot ytp-spinner-dot-6"></div><div class="ytp-spinner-dot ytp-spinner-dot-7"></div></div>' +
-            '<div class="ytp-spinner-message" style="display: none;">Se a reprodução não começar em instantes, reinicie seu dispositivo.</div></div>' + mainMessage.innerHTML;
+        mainMessage.innerHTML = '<div class="ytp-spinner" style="display: inline-block; position: relative; width: 25px;top: -8px;margin-right: 10px;" data-layer="4">' +
+            '<div class="ytp-spinner-container">' +
+            '<div class="ytp-spinner-rotator">' +
+            '<div class="ytp-spinner-left">' +
+            '<div class="ytp-spinner-circle"></div></div>' +
+            '<div class="ytp-spinner-right">' +
+            '<div class="ytp-spinner-circle"></div></div></div></div></div>' + mainMessage.innerHTML;
     };
 
     YoutubeInterfaceManager.prototype.removeSpinner = function () {

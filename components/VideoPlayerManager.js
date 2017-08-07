@@ -75,6 +75,32 @@ var VideoPlayerManager;
         video.toggleMuteUnmuteAudio = function () {
             this.muted = !this.muted;
         };
+
+        video.enterFullScreenMode = function () {
+            if (this.webkitRequestFullscreen) {
+                // Chrome & Opera
+                this.webkitRequestFullScreen();
+            } else if (this.mozRequestFullScreen) {
+                // Firefox
+                this.mozRequestFullScreen();
+            } else if (this.msRequestFullscreen) {
+                // Internet Explorer 11
+                this.msRequestFullscreen();
+            }
+        };
+
+        video.exitFullScreenMode = function () {
+            if (this.ownerDocument.webkitExitFullscreen) {
+                // Chrome & Opera
+                this.ownerDocument.webkitExitFullscreen();
+            } else if (this.ownerDocument.mozCancelFullScreen) {
+                // Firefox
+                this.ownerDocument.mozCancelFullScreen();
+            } else if (this.ownerDocument.msExitFullscreen) {
+                // Internet Explorer 11
+                this.ownerDocument.msExitFullscreen();
+            }
+        };
     };
 
     VideoPlayerManager.prototype.createVideoElement = function (videoLink) {
@@ -91,6 +117,8 @@ var VideoPlayerManager;
         this.createVideoFunctions(videoTag);
 
         this.enablePlayPauseVideoControlOnClick(videoTag);
+
+        this.enableFullScreenModeOnDoubleClick(videoTag);
 
         srcTag.src = videoLink;
         srcTag.type = "video/mp4";
@@ -157,6 +185,22 @@ var VideoPlayerManager;
     VideoPlayerManager.prototype.enablePlayPauseVideoControlOnClick = function (video) {
         video.addEventListener('click', function () {
             this.togglePlayPause();
+        });
+    };
+
+    VideoPlayerManager.prototype.isFullScreenModeEnabled = function () {
+        return this.outerDiv.ownerDocument.webkitFullscreenElement !== null;
+    };
+
+    VideoPlayerManager.prototype.enableFullScreenModeOnDoubleClick = function (video) {
+        var self = this;
+
+        video.addEventListener('dblclick', function () {
+            if (self.isFullScreenModeEnabled()) {
+                this.exitFullScreenMode();
+            } else {
+                this.enterFullScreenMode();
+            }
         });
     };
 }());

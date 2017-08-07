@@ -131,8 +131,7 @@ var VideoShortcutManager;
                 } else if (isNumberPressed(keyPressed, 9)) {
                     that.video.goToSpecificTime(that.video.duration * 0.9);
                 } else if (keyPressed === keys.f) {
-                    // This request to fullscreen will only work on Chrome.
-                    that.video.webkitRequestFullScreen();
+                    that.video.enterFullScreenMode();
                 } else if (event.shiftKey && keyPressed === keys.period) {
                     that.video.increaseSpeed();
                 } else if (event.shiftKey && keyPressed === keys.comma) {
