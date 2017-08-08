@@ -1,19 +1,18 @@
 {
+  "extensionDescription": {
+    "message": "This extension allows you to watch YouTube videos that are blocked for your region."
+  },
+  "workingToFindAMirrorMessage": {
+    "message": "F*ck Youtube is trying to unblock this video..."
+  },
+
   "loadingMessage": {
     "message": "This process shouldn't take more than a few seconds.",
     "description": "Loading message"
   },
 
-  "extensionDescription": {
-    "message": "This extension allows you to watch YouTube videos that are blocked for your region."
-  },
-
   "noVideoFoundMessage": {
     "message": "F*ck Youtube tried but couldn't unblock this video. Sorry"
-  },
-
-  "workingToFindAMirrorMessage": {
-    "message": "F*ck Youtube is trying to unblock this video..."
   },
 
   "videoUnavailableMessage": {
@@ -22,5 +21,8 @@
 
   "sorryMessage": {
     "message": "Sorry."
+  },
+  "popupMessage": {
+    "message": "<p> The extension is <strong>up and running</strong>.</p> <p>Just <strong>relax</strong> and <strong>enjoy</strong> it.</p> <p>As soon as you access a YouTube video that is blocked for your region, <strong>the magic will happen!</strong></p>"
   }
 }

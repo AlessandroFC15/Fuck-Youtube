@@ -1,0 +1,24 @@
+{
+  "extensionDescription": {
+    "message": "この拡張機能により、あなたの地域でブロックされているYouTube動画を見ることができます。"
+  },
+  "workingToFindAMirrorMessage": {
+    "message": "F*ck Youtube がこの動画のブロックを解除しようとしています..."
+  },
+  "loadingMessage": {
+    "message": "このプロセスには数秒を要しません。",
+    "description": "Loading message"
+  },
+  "noVideoFoundMessage": {
+    "message": "F*ck Youtubeは試しましたが、この動画のブロックを解除できませんでした。ごめんなさい"
+  },
+  "videoUnavailableMessage": {
+    "message": "このビデオは入手できません！"
+  },
+  "sorryMessage": {
+    "message": "ごめんなさい."
+  },
+  "popupMessage": {
+    "message": "<p> 拡張機能が起動しています。</p> <p>リラックスしてお楽しみください。</p> <p>あなたの地域でブロックされているビデオにアクセスするとすぐに、魔法が起こります！</p>"
+  }
+}

@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
     <title></title>
     <style>
         body {
-            min-width: 270px;
+            min-width: 250px;
             overflow: hidden;
             background-color: #f8f8f8;
         }
@@ -31,9 +32,27 @@
             position: relative;
         }
 
+        #content {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
         #content p {
-            font-size: 15px;
+            font-size: 14px;
             font-family: notoSans, sans-serif;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        button {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        #hideBtnInfo p {
+            padding: 5px;
         }
     </style>
 </head>
@@ -47,14 +66,16 @@
 <hr>
 
 <div id="content">
-    <p>The extension is <strong>up and running</strong>.
 
-    <p>You don't have to do anything more.</p>
-
-    <p>Just <strong>relax</strong> and <strong>enjoy</strong> it.</p>
-
-    <p>As soon as you access YouTube video that is blocked, the magic will happen!</p>
 </div>
+<!--
+<hr>
+
+<div id="btn-container">
+    <button>Review Extension</button>
+</div>-->
+
+<script src="popup.js"></script>
 
 </body>
 </html>

@@ -1,0 +1,24 @@
+{
+  "extensionDescription": {
+    "message": "Questa estensione consente di visualizzare i video di YouTube bloccati per la tua regione."
+  },
+  "workingToFindAMirrorMessage": {
+    "message": "F*ck Youtube sta cercando di sbloccare questo video..."
+  },
+  "loadingMessage": {
+    "message": "Questo processo non dovrebbe richiedere più di pochi secondi.",
+    "description": "Loading message"
+  },
+  "noVideoFoundMessage": {
+    "message": "F*ck Youtube ha provato ma non ha potuto sbloccare questo video. Scusate"
+  },
+  "videoUnavailableMessage": {
+    "message": "Questo video non è disponibile!"
+  },
+  "sorryMessage": {
+    "message": "Scusate."
+  },
+  "popupMessage": {
+    "message": "<p> L'estensione è in esecuzione.</p> <p>Solo rilassatevi e godetelo.</p> <p>Non appena accedi a un video bloccato per la tua regione, la magia accadrà!</p>"
+  }
+}

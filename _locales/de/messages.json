@@ -1,0 +1,24 @@
+{
+  "extensionDescription": {
+    "message": "Mit dieser Erweiterung können Sie YouTube-Videos ansehen, die für Ihre Region gesperrt sind."
+  },
+  "workingToFindAMirrorMessage": {
+    "message": "F*ck Youtube versucht, dieses Video zu entsperren..."
+  },
+  "loadingMessage": {
+    "message": "Dieser Vorgang sollte nicht mehr als ein paar Sekunden dauern.",
+    "description": "Loading message"
+  },
+  "noVideoFoundMessage": {
+    "message": "F*ck Youtube versucht aber konnte dieses Video nicht freigeben. Es tut uns leid"
+  },
+  "videoUnavailableMessage": {
+    "message": "Dieses Video ist nicht verfügbar!"
+  },
+  "sorryMessage": {
+    "message": "Es tut uns leid."
+  },
+  "popupMessage": {
+    "message": "<p>Die Erweiterung läuft und läuft.</p> <p>Einfach nur entspannen und genießen.</p> <p>Sobald Sie auf ein Video zugreifen, das für Ihre Region gesperrt ist, wird die Magie passieren!</p>"
+  }
+}

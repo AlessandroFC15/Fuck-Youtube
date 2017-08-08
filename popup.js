@@ -1,0 +1,1 @@
+document.getElementById("content").innerHTML = chrome.i18n.getMessage('popupMessage');

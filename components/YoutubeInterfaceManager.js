@@ -113,7 +113,7 @@ var YoutubeInterfaceManager;
         this.removeErrorAlert();
 
         mainMessage = this.document.getElementById('unavailable-message');
-        mainMessage.innerHTML = chrome.i18n.getMessage("workingToFindAMirrorMessage").replace('F*ck Youtube', "<span style='display: inline-block; color: red;'>F*ck Youtube</span>");
+        mainMessage.innerHTML = chrome.i18n.getMessage("workingToFindAMirrorMessage").replace('F*ck Youtube', "<span style='display: inline-block; color: #ff4646;'>F*ck Youtube</span>");
 
         submainMessage = this.document.getElementById('unavailable-submessage');
         submainMessage.innerText = chrome.i18n.getMessage("loadingMessage");

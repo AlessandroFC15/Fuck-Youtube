@@ -1,0 +1,24 @@
+{
+  "extensionDescription": {
+    "message": "Cette extension vous permet de regarder des vidéos YouTube bloquées pour votre région."
+  },
+  "workingToFindAMirrorMessage": {
+    "message": "essaie de débloquer cette vidéo..."
+  },
+  "loadingMessage": {
+    "message": "Ce processus ne devrait pas prendre plus de quelques secondes.",
+    "description": "Loading message"
+  },
+  "noVideoFoundMessage": {
+    "message": "F*ck Youtube a essayé mais n'a pas pu débloquer cette vidéo. Pardon"
+  },
+  "videoUnavailableMessage": {
+    "message": "Cette vidéo n'est pas disponible!"
+  },
+  "sorryMessage": {
+    "message": "Pardon."
+  },
+  "popupMessage": {
+    "message": "<p>L'extension est opérationnelle.</p> <p>Détendez-vous et profitez-en.</p> <p>Dès que vous accédez à une vidéo bloquée pour votre région, la magie se produira!</p>"
+  }
+}

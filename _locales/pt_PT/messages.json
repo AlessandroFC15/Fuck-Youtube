@@ -1,5 +1,25 @@
 {
+  "extensionDescription": {
+    "message": "Essa extensão permite que você assista vídeos do YouTube que são bloqueados para seu país."
+  },
+  "workingToFindAMirrorMessage": {
+    "message": "F*ck Youtube está trabalhando para liberar o vídeo..."
+  },
+
   "loadingMessage": {
-    "message": "Carregando"
+    "message": "Esse processo não deve demorar mais do que alguns segundos.",
+    "description": "Loading message"
+  },
+  "noVideoFoundMessage": {
+    "message": "F*ck Youtube tentou mas não conseguiu desbloquear este vídeo. Desculpe"
+  },
+  "videoUnavailableMessage": {
+    "message": "Este vídeo está indisponível!"
+  },
+  "sorryMessage": {
+    "message": "Desculpe."
+  },
+  "popupMessage": {
+    "message": "<p> A extensão está <strong>funcionando!</strong></p> <p>Pode <strong>relaxar</strong> e <strong>ficar tranquilo</strong> :)</p> <p>Assim que você acessar um vídeo que esteja bloqueado no seu país, <strong>a mágica acontecerá.</strong></p>"
   }
 }
