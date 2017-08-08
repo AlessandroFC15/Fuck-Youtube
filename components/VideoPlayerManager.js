@@ -76,6 +76,19 @@ var VideoPlayerManager;
             this.muted = !this.muted;
         };
 
+        video.isFullScreenModeEnabled = function () {
+            // TO-DO: Will only work on Chrome
+            return this.ownerDocument.webkitFullscreenElement !== null;
+        };
+
+        video.toggleFullScreenMode = function () {
+            if (this.isFullScreenModeEnabled()) {
+                this.exitFullScreenMode();
+            } else {
+                this.enterFullScreenMode();
+            }
+        };
+
         video.enterFullScreenMode = function () {
             if (this.webkitRequestFullscreen) {
                 // Chrome & Opera
@@ -116,9 +129,9 @@ var VideoPlayerManager;
 
         this.createVideoFunctions(videoTag);
 
-        this.enablePlayPauseVideoControlOnClick(videoTag);
-
         this.enableFullScreenModeOnDoubleClick(videoTag);
+
+        this.enablePlayPauseVideoControlOnClick(videoTag);
 
         srcTag.src = videoLink;
         srcTag.type = "video/mp4";
@@ -188,15 +201,9 @@ var VideoPlayerManager;
         });
     };
 
-    VideoPlayerManager.prototype.isFullScreenModeEnabled = function () {
-        return this.outerDiv.ownerDocument.webkitFullscreenElement !== null;
-    };
-
     VideoPlayerManager.prototype.enableFullScreenModeOnDoubleClick = function (video) {
-        var self = this;
-
         video.addEventListener('dblclick', function () {
-            if (self.isFullScreenModeEnabled()) {
+            if (this.isFullScreenModeEnabled()) {
                 this.exitFullScreenMode();
             } else {
                 this.enterFullScreenMode();

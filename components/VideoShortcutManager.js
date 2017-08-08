@@ -9,7 +9,6 @@
  *      - The <video> tag passed as input now supports certain keyboard commands to control its behavior.
  */
 
-
 var VideoShortcutManager;
 (function () {
     "use strict";
@@ -84,63 +83,70 @@ var VideoShortcutManager;
             if (event.target.tagName !== "INPUT" && event.target.tagName !== "TEXTAREA") {
                 keyPressed = event.which || event.keyCode;
 
+                // Some shortcuts only work when the video frame is selected
                 if (isVideoFrameSelected(event)) {
                     if (keyPressed === keys.home) {
                         that.video.goToSpecificTime(0);
                     } else if (keyPressed === keys.end) {
                         that.video.goToSpecificTime(that.video.duration);
-                        event.preventDefault();
                     } else if (keyPressed === keys.upArrow) {
                         that.video.increaseVolumeBy5Percent();
-                        event.preventDefault();
                     } else if (keyPressed === keys.downArrow) {
                         that.video.decreaseVolumeBy5Percent();
-                        event.preventDefault();
+                    } else if (keyPressed === keys.spacebar) {
+                        that.video.togglePlayPause();
+                    } else if (keyPressed === keys.rightArrow) {
+                        that.video.goForward(5);
+                    } else if (keyPressed === keys.leftArrow) {
+                        that.video.goBack(5);
+                    } else if (isNumberPressed(keyPressed, 0)) {
+                        that.video.goToSpecificTime(0);
+                    } else if (isNumberPressed(keyPressed, 1)) {
+                        that.video.goToSpecificTime(that.video.duration * 0.1);
+                    } else if (isNumberPressed(keyPressed, 2)) {
+                        that.video.goToSpecificTime(that.video.duration * 0.2);
+                    } else if (isNumberPressed(keyPressed, 3)) {
+                        that.video.goToSpecificTime(that.video.duration * 0.3);
+                    } else if (isNumberPressed(keyPressed, 4)) {
+                        that.video.goToSpecificTime(that.video.duration * 0.4);
+                    } else if (isNumberPressed(keyPressed, 5)) {
+                        that.video.goToSpecificTime(that.video.duration * 0.5);
+                    } else if (isNumberPressed(keyPressed, 6)) {
+                        that.video.goToSpecificTime(that.video.duration * 0.6);
+                    } else if (isNumberPressed(keyPressed, 7)) {
+                        that.video.goToSpecificTime(that.video.duration * 0.7);
+                    } else if (isNumberPressed(keyPressed, 8)) {
+                        that.video.goToSpecificTime(that.video.duration * 0.8);
+                    } else if (isNumberPressed(keyPressed, 9)) {
+                        that.video.goToSpecificTime(that.video.duration * 0.9);
                     }
+
+                    event.preventDefault();
                 }
 
-                if (keyPressed === keys.spacebar || keyPressed === keys.k) {
+                if (keyPressed === keys.k) {
                     that.video.togglePlayPause();
                     event.preventDefault();
-                } else if (keyPressed === keys.rightArrow) {
-                    that.video.goForward(5);
                 } else if (keyPressed === keys.l) {
                     that.video.goForward(10);
-                } else if (keyPressed === keys.leftArrow) {
-                    that.video.goBack(5);
+                    event.preventDefault();
                 } else if (keyPressed === keys.j) {
                     that.video.goBack(10);
-                } else if (isNumberPressed(keyPressed, 0)) {
-                    that.video.goToSpecificTime(0);
-                } else if (isNumberPressed(keyPressed, 1)) {
-                    that.video.goToSpecificTime(that.video.duration * 0.1);
-                } else if (isNumberPressed(keyPressed, 2)) {
-                    that.video.goToSpecificTime(that.video.duration * 0.2);
-                } else if (isNumberPressed(keyPressed, 3)) {
-                    that.video.goToSpecificTime(that.video.duration * 0.3);
-                } else if (isNumberPressed(keyPressed, 4)) {
-                    that.video.goToSpecificTime(that.video.duration * 0.4);
-                } else if (isNumberPressed(keyPressed, 5)) {
-                    that.video.goToSpecificTime(that.video.duration * 0.5);
-                } else if (isNumberPressed(keyPressed, 6)) {
-                    that.video.goToSpecificTime(that.video.duration * 0.6);
-                } else if (isNumberPressed(keyPressed, 7)) {
-                    that.video.goToSpecificTime(that.video.duration * 0.7);
-                } else if (isNumberPressed(keyPressed, 8)) {
-                    that.video.goToSpecificTime(that.video.duration * 0.8);
-                } else if (isNumberPressed(keyPressed, 9)) {
-                    that.video.goToSpecificTime(that.video.duration * 0.9);
+                    event.preventDefault();
                 } else if (keyPressed === keys.f) {
-                    that.video.enterFullScreenMode();
+                    that.video.toggleFullScreenMode();
+                    event.preventDefault();
                 } else if (event.shiftKey && keyPressed === keys.period) {
                     that.video.increaseSpeed();
+                    event.preventDefault();
                 } else if (event.shiftKey && keyPressed === keys.comma) {
                     that.video.decreaseSpeed();
+                    event.preventDefault();
                 } else if (keyPressed === keys.m) {
                     that.video.toggleMuteUnmuteAudio();
+                    event.preventDefault();
                 }
             }
         });
     };
-
 }());

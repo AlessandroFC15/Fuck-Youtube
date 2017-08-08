@@ -75,16 +75,30 @@ var YoutubeInterfaceManager;
         icon.style.backgroundImage = icon.getAttribute('previous_background_img');
     };
 
-    YoutubeInterfaceManager.prototype.addSpinner = function () {
+    YoutubeInterfaceManager.prototype.addLoadingSpinner = function () {
         var mainMessage = this.document.getElementById('unavailable-message');
 
-        mainMessage.innerHTML = '<div class="ytp-spinner" style="display: inline-block; position: relative; width: 25px;top: -8px;margin-right: 10px;" data-layer="4">' +
-            '<div class="ytp-spinner-container">' +
+        var spinner = this.document.createElement('div');
+        spinner.className = "ytp-spinner";
+        spinner.style.display = "inline-block";
+        spinner.style.position = "relative";
+        spinner.style.width = "22px";
+        spinner.style.top = "-8px";
+        spinner.style.marginRight = "10px";
+        spinner.style.left = "0";
+        spinner.style.marginLeft = "0px";
+        spinner.innerHTML = '<div class="ytp-spinner-container">' +
             '<div class="ytp-spinner-rotator">' +
             '<div class="ytp-spinner-left">' +
-            '<div class="ytp-spinner-circle"></div></div>' +
+            '<div class="ytp-spinner-circle"></div>' +
+            '</div>' +
             '<div class="ytp-spinner-right">' +
-            '<div class="ytp-spinner-circle"></div></div></div></div></div>' + mainMessage.innerHTML;
+            '<div class="ytp-spinner-circle"></div>' +
+            '</div>' +
+            '</div>' +
+            '</div>';
+
+        mainMessage.insertAdjacentElement('afterbegin', spinner);
     };
 
     YoutubeInterfaceManager.prototype.removeSpinner = function () {
@@ -104,7 +118,7 @@ var YoutubeInterfaceManager;
         submainMessage = this.document.getElementById('unavailable-submessage');
         submainMessage.innerText = chrome.i18n.getMessage("loadingMessage");
 
-        this.addSpinner();
+        this.addLoadingSpinner();
     };
 
     YoutubeInterfaceManager.prototype.hideLoadingScreen = function () {
