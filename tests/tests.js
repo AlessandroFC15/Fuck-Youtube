@@ -3,8 +3,8 @@
 (function () {
     "use strict";
 
-    QUnit.test("Test to check if it is youtube video link", function (assert) {
-        var YoutubeVideoUnblocker = new YoutubeVideoUnblocker(),
+    /*QUnit.test("Test to check if it is youtube video link", function (assert) {
+     var youtubeVideoUnblocker,
             validLinks,
             invalidLinks,
             i;
@@ -23,7 +23,9 @@
         ];
 
         for (i = 0; i < validLinks.length; i++) {
-            assert.equal(YoutubeVideoUnblocker.interfaceManager.isYoutubeVideoLink(validLinks[i]), true, validLinks[i] + " is valid!");
+     youtubeVideoUnblocker = new YoutubeVideoUnblocker(null, validLinks[i]);
+
+     assert.equal(youtubeVideoUnblocker.isYoutubeVideoLink(validLinks[i]), true, validLinks[i] + " is valid!");
         }
 
         invalidLinks = [
@@ -38,18 +40,25 @@
         ];
 
         for (i = 0; i < invalidLinks.length; i++) {
-            assert.equal(YoutubeVideoUnblocker.interfaceManager.isYoutubeVideoLink(invalidLinks[i]), false, invalidLinks[i] + " is NOT valid!");
+     youtubeVideoUnblocker = new YoutubeVideoUnblocker(null, invalidLinks[i]);
+
+     assert.equal(youtubeVideoUnblocker.isYoutubeVideoLink(invalidLinks[i]), false, invalidLinks[i] + " is NOT valid!");
         }
-    });
+     });*/
 
     QUnit.test("Test to check if a youtube video is unavailable", function (assert) {
         var testVideosUrls = function (listVideoUrls, shouldBeUnavailable) {
                 var done = assert.async(listVideoUrls.length),
 
                     successCallback = function (response) {
+                        console.log(response);
+
                         var htmlDoc = new MirrorFinder().getHTMLDocumentFromText(response);
 
-                        assert.equal(new YoutubeInterfaceManager(htmlDoc).isYoutubeVideoUnavailable(htmlDoc), shouldBeUnavailable);
+                        console.log(new YoutubeInterfaceManager(htmlDoc).document);
+
+                        assert.equal(new YoutubeInterfaceManager(htmlDoc).isYoutubeVideoUnavailable(), shouldBeUnavailable);
+
                         done();
                     },
 
@@ -66,27 +75,32 @@
 
             unavailableVideosUrls = [
                 "https://www.youtube.com/watch?v=5kI1HsfF31A",                                      // UFC Embedded
-                "https://www.youtube.com/watch?v=SRcpuD9isZg",                                      // UFC Embedded
-                "https://www.youtube.com/watch?v=2j6RT3CDIMw&feature=youtu.be",                     // UFC Embedded
+                //"https://www.youtube.com/watch?v=SRcpuD9isZg",                                      // UFC Embedded
+                /*"https://www.youtube.com/watch?v=2j6RT3CDIMw&feature=youtu.be",                     // UFC Embedded
                 "https://www.youtube.com/watch?v=9TtIo1mIITY",                                      // UFC Embedded
                 "https://www.youtube.com/watch?v=-nd3_-BOPDw",                                      // UFC Embedded
                 "https://www.youtube.com/watch?v=bBNx7_TlNhE&feature=youtu.be",                     // UFC Embedded
-                "https://www.youtube.com/watch?v=2wyy6qutrk4&feature=youtu.be"                    // Random video
+                 "https://www.youtube.com/watch?v=2wyy6qutrk4&feature=youtu.be"      */              // Random video
             ],
 
             availableVideosUrls = [
                 "https://www.youtube.com/watch?v=DK_0jXPuIr0",                                      // Justin Bieber Music
-                "https://www.youtube.com/watch?v=fRh_vgS2dFE",                                      // Justin Bieber Music
+                /* "https://www.youtube.com/watch?v=fRh_vgS2dFE",                                      // Justin Bieber Music
                 "https://www.youtube.com/watch?v=kjUQjq1CBi0",                                      // Justin Bieber Music
                 "https://www.youtube.com/watch?v=154himd-3ZE",                                      // Justin Bieber Music
-                "https://www.youtube.com/watch?v=7Oxz060iedY"                                       // Eric Thomas Video
+                 "https://www.youtube.com/watch?v=7Oxz060iedY"   */                                    // Eric Thomas Video
             ];
 
+        console.log("-- UNAVAILABLE --");
+
         testVideosUrls(unavailableVideosUrls, true);
+
+        console.log("-- AVAILABLE --");
+
         testVideosUrls(availableVideosUrls, false);
     });
 
-    QUnit.test("Test to collect video sources from YouPak", function (assert) {
+    /*QUnit.test("Test to collect video sources from YouPak", function (assert) {
         var testYouPakLinks = function (listLinks, shouldBeValid) {
                 var done = assert.async(listLinks.length),
 
@@ -190,6 +204,6 @@
             ];
 
         testIfDesignIsCorrect(videosUrls);
-    });
+     });*/
 }());
 

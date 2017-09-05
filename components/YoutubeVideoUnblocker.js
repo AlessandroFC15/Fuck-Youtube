@@ -1,6 +1,7 @@
 /*global YoutubeInterfaceManager, MirrorFinder */
 
 var YoutubeVideoUnblocker;
+
 (function () {
     "use strict";
 
@@ -15,8 +16,11 @@ var YoutubeVideoUnblocker;
             self = this;
 
         if (this.isYoutubeVideoLink()) {
+
             if (this.interfaceManager.isYoutubeVideoUnavailable(document)) {
-                this.interfaceManager.enableTheaterMode(document);
+                console.log("Unavailable");
+
+                /*this.interfaceManager.enableTheaterMode(document);
 
                 this.interfaceManager.showLoadingFeedback();
 
@@ -41,7 +45,10 @@ var YoutubeVideoUnblocker;
                     }
                 };
 
-                request.send();
+                 request.send();*/
+            } else {
+                console.log("Available");
+
             }
         }
     };
