@@ -22,9 +22,9 @@ var VideoPlayerManager;
         this.interfaceManager = interfaceManager;
         this.outerDiv = outerDiv;
         this.video = this.createVideoElement(videoLink);
-        this.shortcutManager = new VideoShortcutManager(this.video);
+        //this.shortcutManager = new VideoShortcutManager(this.video);
 
-        this.enableVisualFeedbacks();
+        //this.enableVisualFeedbacks();
 
         this.outerDiv.appendChild(this.video);
     };
@@ -126,6 +126,7 @@ var VideoPlayerManager;
         videoTag.name = "media";
         videoTag.style.width = "100%";
         videoTag.id = "videoTag";
+        videoTag.className = "video-stream html5-main-video";
 
         this.createVideoFunctions(videoTag);
 

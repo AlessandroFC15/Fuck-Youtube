@@ -20,11 +20,6 @@ var YoutubeInterfaceManager;
     YoutubeInterfaceManager = function (document) {
         this.document = document;
         this.videoPlayerManager = null;
-
-        if (this.document) {
-            this.youtubeDataApi = new YoutubeDataAPI(this.document.documentElement.innerHTML);
-        }
-
     };
 
     YoutubeInterfaceManager.prototype.isInterfaceReadyForEnablingTheaterMode = function (mutation) {
@@ -43,45 +38,57 @@ var YoutubeInterfaceManager;
         return mutation.target.tagName === "DIV" && mutation.target.id === "container";
     };
 
-    YoutubeInterfaceManager.prototype.makeNecessaryAdjustmentsToInterface = function () {
-        var self = this;
+    YoutubeInterfaceManager.prototype.changeLoadingText = function () {
+        var div, loadingMessage;
 
-        var observer = new MutationObserver(function (mutations) {
-            console.log('makeNecessaryAdjustments');
+        div = this.document.querySelector('div.ytd-player-error-message-renderer');
 
-            mutations.forEach(function (mutation) {
-                if (self.isInterfaceReadyForEnablingTheaterMode(mutation)) {
-                    self.enableTheaterMode();
-                } else if (self.isInterfaceReadyForShowingLoadingFeedback(mutation)) {
-                    self.replaceIconVideoUnavailable();
-                } else if (self.isInterfaceReadyToChangeLoadingText(mutation)) {
-                    var element = $(mutation.target.childNodes[0]);
+        if (div) {
+            div.innerHTML = chrome.i18n.getMessage("workingToFindAMirrorMessage").replace('F*ck Youtube',
+                    "<span style='display: inline-block; color: #ff4646;'>F*ck Youtube</span>") + '</div>';
+        }
 
-                    var children = element.children();
+        loadingMessage = this.document.createElement('div');
+        loadingMessage.className = "text";
+        loadingMessage.innerText = chrome.i18n.getMessage("loadingMessage");
 
-                    for (var i = 1; i < children.length; i++) {
-                        children[i].remove();
-                    }
-
-                    element.append($('<div class="text style-scope ytd-player-error-message-renderer">' +
-                        chrome.i18n.getMessage("workingToFindAMirrorMessage").replace('F*ck Youtube',
-                            "<span style='display: inline-block; color: #ff4646;'>F*ck Youtube</span>") + '</div>'));
-
-                    element.append($('<div class="text">' + chrome.i18n.getMessage("loadingMessage") + '</div>'));
-
-                    self.addLoadingSpinner();
-                }
-            });
-        });
-
-        // pass in the target node, as well as the observer options
-        observer.observe(this.document.body, {attributes: false, childList: true, characterData: true, subtree: true});
+        div.appendChild(loadingMessage);
     };
 
-    YoutubeInterfaceManager.prototype.isYoutubeVideoUnavailable = function () {
-        var videoData = this.youtubeDataApi.getJSONData();
+    YoutubeInterfaceManager.prototype.makeNecessaryAdjustmentsToInterface = function () {
+        //this.enableTheaterMode();
+        this.replaceIconVideoUnavailable();
+        this.changeLoadingText();
+        //this.addLoadingSpinner();
+    };
 
-        return videoData.playabilityStatus.status !== "OK";
+    YoutubeInterfaceManager.prototype.isYoutubeVideoUnavailable = function (mutations) {
+        var element, mutation, i;
+
+        for (i = 0; i < mutations.length; i++) {
+            mutation = mutations[i];
+
+            if (mutation.target.nodeName === "YTD-PLAYABILITY-ERROR-SUPPORTED-RENDERERS") {
+                if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
+                    return true;
+                } else if (mutation.type === "attributes" && mutation.attributeName === "hidden") {
+                    element = document.getElementsByTagName('ytd-playability-error-supported-renderers')[0];
+
+                    if (!element.hidden) {
+                        return true;
+                    }
+                }
+            } else if (mutation.target.nodeName === "YT-PAGE-NAVIGATION-PROGRESS" &&
+                mutation.type === "attributes" && mutation.attributeName === "hidden" && mutation.oldValue === null) {
+                element = document.getElementsByTagName('ytd-playability-error-supported-renderers')[0];
+
+                if (!element.hidden) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     };
 
     YoutubeInterfaceManager.prototype.hideElement = function (element) {
@@ -126,14 +133,15 @@ var YoutubeInterfaceManager;
 
     // This function replaces the Youtube icon used to represent a unavailable video with the extension's main icon.
     YoutubeInterfaceManager.prototype.replaceIconVideoUnavailable = function () {
-        var icon = this.document.querySelector('.ytd-player-error-message-renderer');
+        var iconDiv, oldIconImg, newIconImg;
 
-        var oldIconImg = icon.querySelector('img');
+        iconDiv = this.document.querySelector('.ytd-player-error-message-renderer');
+        oldIconImg = iconDiv.querySelector('img');
         oldIconImg.remove();
 
-        var newIconImg = this.document.createElement('img');
+        newIconImg = this.document.createElement('img');
         newIconImg.src = chrome.extension.getURL("/images/mainIcon.png");
-        icon.appendChild(newIconImg);
+        iconDiv.appendChild(newIconImg);
     };
 
     YoutubeInterfaceManager.prototype.addIconVideoUnavailable = function () {
@@ -173,14 +181,23 @@ var YoutubeInterfaceManager;
     };
 
     YoutubeInterfaceManager.prototype.createVideoFrame = function (link) {
-        var divPlayerAPI, self = this;
+        var outerDiv, divPlayerAPI, errorDiv, self = this, ytd_watch_div;
+
+        errorDiv = this.document.querySelector('ytd-playability-error-supported-renderers');
+        errorDiv.removeAttribute('hidden');
+
+        /*  ytd_watch_div = this.document.querySelector('ytd-watch');
+         ytd_watch_div.setAttribute("hidden", '');
+         */
+        outerDiv = this.document.getElementById("player");
+        outerDiv.removeAttribute('hidden');
 
         divPlayerAPI = this.document.getElementById("player-api");
         // This shows the previously hidden player holder.
         divPlayerAPI.classList.remove("off-screen-target");
         divPlayerAPI.innerHTML = '';
 
-        console.log(this.document.getElementById('movie_player'));
+        //console.log(this.document.getElementById('movie_player'));
 
         // By creating the video player manager, we create the video frame
         this.videoPlayerManager = new VideoPlayerManager(link, divPlayerAPI, this);
