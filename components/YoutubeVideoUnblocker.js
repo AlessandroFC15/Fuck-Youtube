@@ -21,14 +21,10 @@ var YoutubeVideoUnblocker;
         if (this.isYoutubeVideoLink()) {
             this.interfaceManager = new YoutubeInterfaceManager(document);
 
-            console.log('yt video');
-
             this.observer = new MutationObserver(function (mutations) {
                 if (self.interfaceManager.isYoutubeVideoUnavailable(mutations)) {
                     if (self.isVideoUnavailable === undefined) {
                         self.isVideoUnavailable = true;
-
-                        console.log("UNAVAILABLE");
 
                         self.interfaceManager.makeNecessaryAdjustmentsToInterface();
 
@@ -46,25 +42,18 @@ var YoutubeVideoUnblocker;
 
                                     highestQualityVideoLink = links[links.length - 1];
 
-                                    console.log(highestQualityVideoLink);
                                     self.interfaceManager.createVideoFrame(highestQualityVideoLink);
                                 } catch (exception) {
-                                    console.log(exception);
-                                    //self.interfaceManager.showFailureMessage();
+                                    self.interfaceManager.showFailureMessage();
                                 }
                             }
                         };
 
                         request.send();
-
-
-                    } else {
-                        console.log("Vídeo já passou pelo processo");
                     }
                 }
             });
 
-            // pass in the target node, as well as the observer options
             this.observer.observe(document.body, {
                 attributes: true,
                 childList: true,
@@ -82,14 +71,9 @@ var YoutubeVideoUnblocker;
         setInterval(function () {
             if (self.url !== window.location.href) {
                 if (self.interfaceManager) {
-                    if (self.interfaceManager.videoPlayerManager) {
-                        console.log('mudou');
-                        self.interfaceManager.videoPlayerManager.video.remove();
-                        document.querySelector('#player').setAttribute('hidden', true);
-                    }
+                    self.interfaceManager.resetChanges();
                 }
 
-                // page has changed, set new page as 'current'
                 self.url = window.location.href;
                 self.isVideoUnavailable = undefined;
 

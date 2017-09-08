@@ -21,8 +21,6 @@
     "matches": ["*://www.youtube.com/*"],
     "js": [
       "exceptions.js",
-      "tests/jquery/jquery-3.2.1.min.js",
-      "components/YoutubeDataAPI.js",
       "components/VideoShortcutManager.js",
       "components/VideoPlayerManager.js",
       "components/YoutubeInterfaceManager.js",

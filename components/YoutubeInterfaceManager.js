@@ -22,22 +22,6 @@ var YoutubeInterfaceManager;
         this.videoPlayerManager = null;
     };
 
-    YoutubeInterfaceManager.prototype.isInterfaceReadyForEnablingTheaterMode = function (mutation) {
-        var array = [].slice.call(mutation.addedNodes);
-
-        return array.some(function (element) {
-            return element.nodeName === "YTD-APP";
-        });
-    };
-
-    YoutubeInterfaceManager.prototype.isInterfaceReadyForShowingLoadingFeedback = function (mutation) {
-        return mutation.target.tagName === "YTD-PLAYABILITY-ERROR-SUPPORTED-RENDERERS" && mutation.addedNodes.length > 0;
-    };
-
-    YoutubeInterfaceManager.prototype.isInterfaceReadyToChangeLoadingText = function (mutation) {
-        return mutation.target.tagName === "DIV" && mutation.target.id === "container";
-    };
-
     YoutubeInterfaceManager.prototype.changeLoadingText = function () {
         var div, loadingMessage;
 
@@ -55,11 +39,85 @@ var YoutubeInterfaceManager;
         div.appendChild(loadingMessage);
     };
 
+    YoutubeInterfaceManager.prototype.centerVideoPlayer = function () {
+        var watchElement = this.document.getElementsByTagName('ytd-watch');
+
+        if (watchElement.length > 0) {
+            watchElement[0].setAttribute('theater-requested_', '');
+            watchElement[0].setAttribute('theater', '');
+        } else {
+            throw new DOMException();
+        }
+    };
+
+    YoutubeInterfaceManager.prototype.removeVideo = function () {
+        document.querySelector('#player').setAttribute('hidden', '');
+
+        if (this.videoPlayerManager) {
+            this.videoPlayerManager.video.remove();
+        }
+    };
+
+    YoutubeInterfaceManager.prototype.hideSidebar = function () {
+        var sideBarDiv = this.document.getElementById('related');
+
+        if (sideBarDiv) {
+            sideBarDiv.setAttribute('hidden', '');
+        }
+    };
+
+    YoutubeInterfaceManager.prototype.showSidebar = function () {
+        var sideBarDiv = this.document.getElementById('related');
+
+        if (sideBarDiv) {
+            sideBarDiv.removeAttribute('hidden');
+        }
+    };
+
+    YoutubeInterfaceManager.prototype.centerVideoInfo = function () {
+        var divVideoInfoTop, divVideoInfoBottom;
+
+        divVideoInfoTop = this.document.getElementById('info');
+        if (divVideoInfoTop) {
+            divVideoInfoTop.style.padding = "0";
+        }
+
+        divVideoInfoBottom = this.document.getElementById('meta');
+        if (divVideoInfoBottom) {
+            divVideoInfoBottom.style.padding = "0";
+        }
+    };
+
+    YoutubeInterfaceManager.prototype.resetChangesToVideoInfo = function () {
+        var divVideoInfoTop, divVideoInfoBottom;
+
+        divVideoInfoTop = this.document.getElementById('info');
+        if (divVideoInfoTop) {
+            divVideoInfoTop.style.padding = null;
+        }
+
+        divVideoInfoBottom = this.document.getElementById('meta');
+        if (divVideoInfoBottom) {
+            divVideoInfoBottom.style.padding = null;
+        }
+    };
+
+    YoutubeInterfaceManager.prototype.resetChanges = function () {
+        this.removeVideo();
+
+        this.showSidebar();
+
+        this.resetChangesToVideoInfo();
+    };
+
     YoutubeInterfaceManager.prototype.makeNecessaryAdjustmentsToInterface = function () {
-        //this.enableTheaterMode();
+        this.enableTheaterMode();
+
         this.replaceIconVideoUnavailable();
+
         this.changeLoadingText();
-        //this.addLoadingSpinner();
+
+        this.addLoadingSpinner();
     };
 
     YoutubeInterfaceManager.prototype.isYoutubeVideoUnavailable = function (mutations) {
@@ -99,36 +157,15 @@ var YoutubeInterfaceManager;
 
     // This function enables theater mode on a Youtube video page, centering the video frame and also hides the sidebar
     YoutubeInterfaceManager.prototype.enableTheaterMode = function () {
-        var watchElement, divPage, divVideoInfo;
+        this.centerVideoPlayer();
 
-        watchElement = this.document.getElementsByTagName('ytd-watch');
+        this.hideSidebar();
 
-        if (watchElement.length > 0) {
-            watchElement[0].setAttribute('theater-requested_', '');
-            watchElement[0].setAttribute('theater', '');
-        } else {
-            throw new DOMException();
-        }
+        this.centerVideoInfo();
 
         /* theaterBackground = this.document.getElementById("theater-background");
          theaterBackground.style.background = "transparent";
-
-         divPage = this.document.getElementById("page");
-         divPage.classList.add("watch-stage-mode");
-         divPage.classList.add("watch-wide");
-         divPage.style.marginTop = "7px";
-
-         divVideoInfo = this.document.getElementById("watch7-content");
-         divVideoInfo.style.float = "none";
-         divVideoInfo.style.margin = "auto";
-         divVideoInfo.style.left = "0";
-         divVideoInfo.classList.add("player-width");
-
-         // We change the id, so that styles related to the old id don't apply anymore.
-         divVideoInfo.id = "new-watch7-content";
-
-         // Hiding the sidebar
-         this.hideElement(this.document.getElementById("watch7-sidebar"));*/
+         */
     };
 
     // This function replaces the Youtube icon used to represent a unavailable video with the extension's main icon.
@@ -150,13 +187,15 @@ var YoutubeInterfaceManager;
     };
 
     YoutubeInterfaceManager.prototype.addLoadingSpinner = function () {
-        var loadingFeedbackDiv = this.document.getElementsByTagName('ytd-player-error-message-renderer');
+        var spinner, loadingText, loadingFeedbackDiv = this.document.getElementsByTagName('ytd-player-error-message-renderer');
 
-        var spinner = this.document.createElement('div');
+        spinner = this.document.createElement('div');
         spinner.className = "ytp-spinner";
+        spinner.id = "createdSpinner";
         spinner.style.display = "inline-block";
         spinner.style.position = "relative";
-        spinner.style.top = "70px";
+        spinner.style.width = "20px";
+        spinner.style.top = "50px";
         spinner.style.left = "20px";
         spinner.innerHTML = '<div class="ytp-spinner-container">' +
             '<div class="ytp-spinner-rotator">' +
@@ -173,7 +212,7 @@ var YoutubeInterfaceManager;
     };
 
     YoutubeInterfaceManager.prototype.removeSpinner = function () {
-        this.hideElement(this.document.getElementsByClassName("ytp-spinner")[0]);
+        this.document.getElementById('createdSpinner').remove();
     };
 
     YoutubeInterfaceManager.prototype.hideLoadingScreen = function () {
@@ -182,6 +221,8 @@ var YoutubeInterfaceManager;
 
     YoutubeInterfaceManager.prototype.createVideoFrame = function (link) {
         var outerDiv, divPlayerAPI, errorDiv, self = this, ytd_watch_div;
+
+        this.removeSpinner();
 
         errorDiv = this.document.querySelector('ytd-playability-error-supported-renderers');
         errorDiv.removeAttribute('hidden');

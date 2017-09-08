@@ -16,7 +16,6 @@ var VideoShortcutManager;
     VideoShortcutManager = function (videoTag) {
         this.video = videoTag;
         this.document = videoTag.ownerDocument;
-        this.videoFrameId = "player-api";
 
         this.enableYouTubeShortcuts();
     };
@@ -76,79 +75,65 @@ var VideoShortcutManager;
                 return keyPressed === keys["numPad" + number.toString()] || keyPressed === keys[number.toString()];
             }
 
-            function isVideoFrameSelected(keyPressEvent) {
-                return keyPressEvent.target.id === that.videoFrameId;
-            }
-
             if (event.target.tagName !== "INPUT" && event.target.tagName !== "TEXTAREA") {
                 keyPressed = event.which || event.keyCode;
 
                 // If the ctrl key is pressed, we won't listen for our video's shortcuts, because it's probably a browser
                 // shortcut that is being called.
                 if (!event.ctrlKey) {
-                    // Some shortcuts only work when the video frame is selected
-                    if (isVideoFrameSelected(event)) {
-                        if (keyPressed === keys.home) {
-                            that.video.goToSpecificTime(0);
-                        } else if (keyPressed === keys.end) {
-                            that.video.goToSpecificTime(that.video.duration);
-                        } else if (keyPressed === keys.upArrow) {
-                            that.video.increaseVolumeBy5Percent();
-                        } else if (keyPressed === keys.downArrow) {
-                            that.video.decreaseVolumeBy5Percent();
-                        } else if (keyPressed === keys.spacebar) {
-                            that.video.togglePlayPause();
-                        } else if (keyPressed === keys.rightArrow) {
-                            that.video.goForward(5);
-                        } else if (keyPressed === keys.leftArrow) {
-                            that.video.goBack(5);
-                        } else if (isNumberPressed(keyPressed, 0)) {
-                            that.video.goToSpecificTime(0);
-                        } else if (isNumberPressed(keyPressed, 1)) {
-                            that.video.goToSpecificTime(that.video.duration * 0.1);
-                        } else if (isNumberPressed(keyPressed, 2)) {
-                            that.video.goToSpecificTime(that.video.duration * 0.2);
-                        } else if (isNumberPressed(keyPressed, 3)) {
-                            that.video.goToSpecificTime(that.video.duration * 0.3);
-                        } else if (isNumberPressed(keyPressed, 4)) {
-                            that.video.goToSpecificTime(that.video.duration * 0.4);
-                        } else if (isNumberPressed(keyPressed, 5)) {
-                            that.video.goToSpecificTime(that.video.duration * 0.5);
-                        } else if (isNumberPressed(keyPressed, 6)) {
-                            that.video.goToSpecificTime(that.video.duration * 0.6);
-                        } else if (isNumberPressed(keyPressed, 7)) {
-                            that.video.goToSpecificTime(that.video.duration * 0.7);
-                        } else if (isNumberPressed(keyPressed, 8)) {
-                            that.video.goToSpecificTime(that.video.duration * 0.8);
-                        } else if (isNumberPressed(keyPressed, 9)) {
-                            that.video.goToSpecificTime(that.video.duration * 0.9);
-                        }
-
-                        event.preventDefault();
-                    }
-
-                    if (keyPressed === keys.k) {
+                    if (keyPressed === keys.home) {
+                        that.video.goToSpecificTime(0);
+                    } else if (keyPressed === keys.end) {
+                        that.video.goToSpecificTime(that.video.duration);
+                    } else if (keyPressed === keys.upArrow) {
+                        that.video.increaseVolumeBy5Percent();
+                    } else if (keyPressed === keys.downArrow) {
+                        that.video.decreaseVolumeBy5Percent();
+                    } else if (keyPressed === keys.spacebar) {
                         that.video.togglePlayPause();
-                        event.preventDefault();
+                    } else if (keyPressed === keys.rightArrow) {
+                        that.video.goForward(5);
+                    } else if (keyPressed === keys.leftArrow) {
+                        that.video.goBack(5);
+                    } else if (isNumberPressed(keyPressed, 0)) {
+                        that.video.goToSpecificTime(0);
+                    } else if (isNumberPressed(keyPressed, 1)) {
+                        that.video.goToSpecificTime(that.video.duration * 0.1);
+                    } else if (isNumberPressed(keyPressed, 2)) {
+                        that.video.goToSpecificTime(that.video.duration * 0.2);
+                    } else if (isNumberPressed(keyPressed, 3)) {
+                        that.video.goToSpecificTime(that.video.duration * 0.3);
+                    } else if (isNumberPressed(keyPressed, 4)) {
+                        that.video.goToSpecificTime(that.video.duration * 0.4);
+                    } else if (isNumberPressed(keyPressed, 5)) {
+                        that.video.goToSpecificTime(that.video.duration * 0.5);
+                    } else if (isNumberPressed(keyPressed, 6)) {
+                        that.video.goToSpecificTime(that.video.duration * 0.6);
+                    } else if (isNumberPressed(keyPressed, 7)) {
+                        that.video.goToSpecificTime(that.video.duration * 0.7);
+                    } else if (isNumberPressed(keyPressed, 8)) {
+                        that.video.goToSpecificTime(that.video.duration * 0.8);
+                    } else if (isNumberPressed(keyPressed, 9)) {
+                        that.video.goToSpecificTime(that.video.duration * 0.9);
+                    } else if (keyPressed === keys.k) {
+                        that.video.togglePlayPause();
                     } else if (keyPressed === keys.l) {
                         that.video.goForward(10);
-                        event.preventDefault();
                     } else if (keyPressed === keys.j) {
                         that.video.goBack(10);
-                        event.preventDefault();
                     } else if (keyPressed === keys.f) {
                         that.video.toggleFullScreenMode();
-                        event.preventDefault();
                     } else if (event.shiftKey && keyPressed === keys.period) {
                         that.video.increaseSpeed();
-                        event.preventDefault();
                     } else if (event.shiftKey && keyPressed === keys.comma) {
                         that.video.decreaseSpeed();
-                        event.preventDefault();
                     } else if (keyPressed === keys.m) {
                         that.video.toggleMuteUnmuteAudio();
-                        event.preventDefault();
+                    } else {
+                        return;
                     }
+
+                    event.preventDefault();
                 }
             }
         });

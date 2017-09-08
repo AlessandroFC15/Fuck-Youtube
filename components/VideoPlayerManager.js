@@ -22,9 +22,9 @@ var VideoPlayerManager;
         this.interfaceManager = interfaceManager;
         this.outerDiv = outerDiv;
         this.video = this.createVideoElement(videoLink);
-        //this.shortcutManager = new VideoShortcutManager(this.video);
+        this.shortcutManager = new VideoShortcutManager(this.video);
 
-        //this.enableVisualFeedbacks();
+        this.enableVisualFeedbacks();
 
         this.outerDiv.appendChild(this.video);
     };
