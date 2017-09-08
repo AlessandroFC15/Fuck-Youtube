@@ -26,6 +26,8 @@ var VideoPlayerManager;
 
         this.enableVisualFeedbacks();
 
+        this.enableLastVolumeChosenToBeSaved();
+
         this.outerDiv.appendChild(this.video);
     };
 
@@ -208,6 +210,16 @@ var VideoPlayerManager;
                 this.exitFullScreenMode();
             } else {
                 this.enterFullScreenMode();
+            }
+        });
+    };
+
+    VideoPlayerManager.prototype.enableLastVolumeChosenToBeSaved = function () {
+        var self = this;
+
+        this.video.addEventListener("volumechange", function (event) {
+            if (event.isTrusted) {
+                chrome.storage.local.set({'volumeChosen': self.video.volume});
             }
         });
     };

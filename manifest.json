@@ -14,7 +14,8 @@
   "permissions": [
     "*://youtube.com/*",
     "*://www.youtube.com/*",
-    "*://www.youpak.com/*"
+    "*://www.youpak.com/*",
+    "storage"
   ],
 
   "content_scripts": [{

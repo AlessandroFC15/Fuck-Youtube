@@ -246,6 +246,12 @@ var YoutubeInterfaceManager;
         // We will only hide the loading screen, when the video is ready to play.
         this.videoPlayerManager.video.oncanplay = function () {
             self.hideLoadingScreen();
+
+            chrome.storage.local.get('volumeChosen', function (data) {
+                if (data.volumeChosen) {
+                    self.videoPlayerManager.video.volume = data.volumeChosen;
+                }
+            });
         };
     };
 
