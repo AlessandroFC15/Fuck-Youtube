@@ -177,13 +177,15 @@ var YoutubeInterfaceManager;
         oldIconImg.remove();
 
         newIconImg = this.document.createElement('img');
-        newIconImg.src = chrome.extension.getURL("/images/mainIcon.png");
+        newIconImg.src = chrome.extension.getURL("/assets/pictures/logo.png");
+        newIconImg.setAttribute('unavailable-src', '/yts/img/meh7-vflGevej7.png');
         iconDiv.appendChild(newIconImg);
     };
 
     YoutubeInterfaceManager.prototype.addIconVideoUnavailable = function () {
-        var icon = this.document.getElementById("player-unavailable").getElementsByClassName("icon")[0];
-        icon.style.backgroundImage = icon.getAttribute('previous_background_img');
+        var icon = this.document.querySelector('.ytd-player-error-message-renderer img');
+
+        icon.src = icon.getAttribute('unavailable-src');
     };
 
     YoutubeInterfaceManager.prototype.addLoadingSpinner = function () {
@@ -280,18 +282,16 @@ var YoutubeInterfaceManager;
     };
 
     YoutubeInterfaceManager.prototype.showFailureMessage = function () {
-        var mainMessage, submainMessage;
+        var mainMessage;
 
         this.addIconVideoUnavailable();
 
-        mainMessage = this.document.getElementById('unavailable-message');
-        mainMessage.innerText = chrome.i18n.getMessage("videoUnavailableMessage");
-
-        submainMessage = this.document.getElementById('unavailable-submessage');
-        submainMessage.innerText = chrome.i18n.getMessage("sorryMessage");
+        mainMessage = this.document.querySelector('div.ytd-player-error-message-renderer');
+        mainMessage.innerHTML = '<p>' + chrome.i18n.getMessage("videoUnavailableMessage") + '</p>';
+        mainMessage.innerHTML += '<p>' + chrome.i18n.getMessage("noVideoFoundMessage") + ' :( </p>';
 
         this.removeSpinner();
 
-        this.showErrorAlert();
+        // this.showErrorAlert();
     };
 }());
