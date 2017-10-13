@@ -123,6 +123,8 @@ var VideoShortcutManager;
                         that.video.goBack(10);
                     } else if (keyPressed === keys.f) {
                         that.video.toggleFullScreenMode();
+                        event.preventDefault();
+                        event.stopPropagation();
                     } else if (event.shiftKey && keyPressed === keys.period) {
                         that.video.increaseSpeed();
                     } else if (event.shiftKey && keyPressed === keys.comma) {
@@ -136,6 +138,9 @@ var VideoShortcutManager;
                     event.preventDefault();
                 }
             }
+
+            console.log(event.which);
+            console.log(event.keyCOde);
         });
     };
 }());

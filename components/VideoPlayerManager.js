@@ -79,8 +79,11 @@ var VideoPlayerManager;
         };
 
         video.isFullScreenModeEnabled = function () {
+            var fullScreenElement = this.ownerDocument.webkitFullscreenElement;
+
             // TO-DO: Will only work on Chrome
-            return this.ownerDocument.webkitFullscreenElement !== null;
+
+            return fullScreenElement !== null && fullScreenElement.tagName === "VIDEO";
         };
 
         video.toggleFullScreenMode = function () {
@@ -206,11 +209,7 @@ var VideoPlayerManager;
 
     VideoPlayerManager.prototype.enableFullScreenModeOnDoubleClick = function (video) {
         video.addEventListener('dblclick', function () {
-            if (this.isFullScreenModeEnabled()) {
-                this.exitFullScreenMode();
-            } else {
-                this.enterFullScreenMode();
-            }
+            video.toggleFullScreenMode();
         });
     };
 

@@ -111,7 +111,7 @@ var YoutubeInterfaceManager;
     };
 
     YoutubeInterfaceManager.prototype.makeNecessaryAdjustmentsToInterface = function () {
-        this.enableTheaterMode();
+        this.enableTheaterModeForNewLayout();
 
         this.replaceIconVideoUnavailable();
 
@@ -156,7 +156,7 @@ var YoutubeInterfaceManager;
     };
 
     // This function enables theater mode on a Youtube video page, centering the video frame and also hides the sidebar
-    YoutubeInterfaceManager.prototype.enableTheaterMode = function () {
+    YoutubeInterfaceManager.prototype.enableTheaterModeForNewLayout = function () {
         this.centerVideoPlayer();
 
         this.hideSidebar();
@@ -229,9 +229,6 @@ var YoutubeInterfaceManager;
         errorDiv = this.document.querySelector('ytd-playability-error-supported-renderers');
         errorDiv.removeAttribute('hidden');
 
-        /*  ytd_watch_div = this.document.querySelector('ytd-watch');
-         ytd_watch_div.setAttribute("hidden", '');
-         */
         outerDiv = this.document.getElementById("player");
         outerDiv.removeAttribute('hidden');
 
@@ -239,6 +236,7 @@ var YoutubeInterfaceManager;
         // This shows the previously hidden player holder.
         divPlayerAPI.classList.remove("off-screen-target");
         divPlayerAPI.innerHTML = '';
+        divPlayerAPI.style.marginTop = "-24px";
 
         //console.log(this.document.getElementById('movie_player'));
 
@@ -262,6 +260,141 @@ var YoutubeInterfaceManager;
         this.hideElement(this.document.getElementById('error-box'));
     };
 
+    YoutubeInterfaceManager.prototype.showFailureMessage = function () {
+        var mainMessage;
+
+        this.addIconVideoUnavailable();
+
+        mainMessage = this.document.querySelector('div.ytd-player-error-message-renderer');
+        mainMessage.innerHTML = '<p>' + chrome.i18n.getMessage("videoUnavailableMessage") + '</p>';
+        mainMessage.innerHTML += '<p>' + chrome.i18n.getMessage("noVideoFoundMessage") + ' :( </p>';
+
+        this.removeSpinner();
+
+        // this.showErrorAlert();
+    };
+
+    // -------------------- OLD LAYOUT ------------------ //
+
+    YoutubeInterfaceManager.prototype.enableTheaterModeForOldLayout = function () {
+        var theaterBackground, divPage, divVideoInfo;
+
+        theaterBackground = this.document.getElementById("theater-background");
+        theaterBackground.style.background = "transparent";
+
+        divPage = this.document.getElementById("page");
+        divPage.classList.add("watch-stage-mode");
+        divPage.classList.add("watch-wide");
+        divPage.style.marginTop = "7px";
+
+        divVideoInfo = this.document.getElementById("watch7-content");
+        divVideoInfo.style.float = "none";
+        divVideoInfo.style.margin = "auto";
+        divVideoInfo.style.left = "0";
+        divVideoInfo.classList.add("player-width");
+
+        // We change the id, so that styles related to the old id don't apply anymore.
+        divVideoInfo.id = "new-watch7-content";
+
+        // Hiding the sidebar
+        this.hideElement(this.document.getElementById("watch7-sidebar"));
+    };
+
+
+    YoutubeInterfaceManager.prototype.showLoadingFeedback = function () {
+        var mainMessage, submainMessage;
+
+        this.replaceIconVideoUnavailableOldLayout();
+
+        this.removeErrorAlert();
+
+        mainMessage = this.document.getElementById('unavailable-message');
+        mainMessage.innerHTML = chrome.i18n.getMessage("workingToFindAMirrorMessage").replace('F*ck Youtube', "<span style='display: inline-block; color: #ff4646;'>F*ck Youtube</span>");
+
+        submainMessage = this.document.getElementById('unavailable-submessage');
+        submainMessage.innerText = chrome.i18n.getMessage("loadingMessage");
+
+        this.addLoadingSpinnerOldLayout();
+    };
+
+    // This function replaces the Youtube icon used to represent a unavailable video with the extension's main icon.
+    YoutubeInterfaceManager.prototype.replaceIconVideoUnavailableOldLayout = function () {
+        var icon = this.document.getElementById("player-unavailable").getElementsByClassName("icon")[0];
+
+        icon.setAttribute('previous_background_img', window.getComputedStyle(icon, null).backgroundImage);
+
+        icon.style.backgroundImage = 'url(' + chrome.extension.getURL("/assets/pictures/logo.png") + ')';
+        icon.sytle.backgroundPosition = "center";
+    };
+
+    YoutubeInterfaceManager.prototype.addLoadingSpinnerOldLayout = function () {
+        var mainMessage = this.document.getElementById('unavailable-message');
+
+        var spinner = this.document.createElement('div');
+        spinner.className = "ytp-spinner";
+        spinner.style.display = "inline-block";
+        spinner.style.position = "relative";
+        spinner.style.width = "22px";
+        spinner.style.top = "-8px";
+        spinner.style.marginRight = "10px";
+        spinner.style.left = "0";
+        spinner.style.marginLeft = "0px";
+        spinner.innerHTML = '<div class="ytp-spinner-container">' +
+            '<div class="ytp-spinner-rotator">' +
+            '<div class="ytp-spinner-left">' +
+            '<div class="ytp-spinner-circle"></div>' +
+            '</div>' +
+            '<div class="ytp-spinner-right">' +
+            '<div class="ytp-spinner-circle"></div>' +
+            '</div>' +
+            '</div>' +
+            '</div>';
+
+        mainMessage.insertAdjacentElement('afterbegin', spinner);
+    };
+
+    YoutubeInterfaceManager.prototype.createVideoFrameOldLayout = function (link) {
+        var divPlayerAPI, self = this;
+
+        divPlayerAPI = this.document.getElementById("player-api");
+        // This shows the previously hidden player holder.
+        divPlayerAPI.classList.remove("off-screen-target");
+        divPlayerAPI.innerHTML = '';
+
+        // By creating the video player manager, we create the video frame
+        this.videoPlayerManager = new VideoPlayerManager(link, divPlayerAPI, this);
+
+        // We will only hide the loading screen, when the video is ready to play.
+        this.videoPlayerManager.video.oncanplay = function () {
+            self.hideLoadingScreen();
+        };
+    };
+
+    YoutubeInterfaceManager.prototype.showFailureMessageOldLayout = function () {
+        var mainMessage, submainMessage;
+
+        this.addIconVideoUnavailableOldLayout();
+
+        mainMessage = this.document.getElementById('unavailable-message');
+        mainMessage.innerText = chrome.i18n.getMessage("videoUnavailableMessage");
+
+        submainMessage = this.document.getElementById('unavailable-submessage');
+        submainMessage.innerText = chrome.i18n.getMessage("sorryMessage");
+
+        this.removeSpinnerOldLayout();
+
+        this.showErrorAlert();
+    };
+
+    YoutubeInterfaceManager.prototype.addIconVideoUnavailableOldLayout = function () {
+        var icon = this.document.getElementById("player-unavailable").getElementsByClassName("icon")[0];
+        icon.style.backgroundImage = icon.getAttribute('previous_background_img');
+    };
+
+    YoutubeInterfaceManager.prototype.removeSpinnerOldLayout = function () {
+        this.hideElement(this.document.getElementsByClassName("ytp-spinner")[0]);
+    };
+
     YoutubeInterfaceManager.prototype.showErrorAlert = function () {
         var alertsDiv, alertContent, alertWrapper;
 
@@ -281,17 +414,11 @@ var YoutubeInterfaceManager;
         }
     };
 
-    YoutubeInterfaceManager.prototype.showFailureMessage = function () {
-        var mainMessage;
+    YoutubeInterfaceManager.prototype.isYoutubeVideoUnavailableOldLayout = function () {
+        var divPlayerUnavailable = this.document.getElementById("player-unavailable");
 
-        this.addIconVideoUnavailable();
-
-        mainMessage = this.document.querySelector('div.ytd-player-error-message-renderer');
-        mainMessage.innerHTML = '<p>' + chrome.i18n.getMessage("videoUnavailableMessage") + '</p>';
-        mainMessage.innerHTML += '<p>' + chrome.i18n.getMessage("noVideoFoundMessage") + ' :( </p>';
-
-        this.removeSpinner();
-
-        // this.showErrorAlert();
+        // Para que o vídeo seja considerado indisponível, é necessário que a div acima exista e que ela não a possua
+        // classe "hid", visto que esta classe tem como função esconder os elementos.
+        return divPlayerUnavailable && divPlayerUnavailable.className.indexOf("hid") === -1;
     };
 }());
