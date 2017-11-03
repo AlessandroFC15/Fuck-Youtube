@@ -104,11 +104,18 @@ var YoutubeInterfaceManager;
     };
 
     YoutubeInterfaceManager.prototype.resetChanges = function () {
+        this.showYouTubeVideoDiv();
+
         this.removeVideo();
 
         this.showSidebar();
 
         this.resetChangesToVideoInfo();
+    };
+
+    YoutubeInterfaceManager.prototype.showYouTubeVideoDiv = function () {
+        var youtubePlayerDiv = this.document.querySelector('#player.ytd-watch');
+        youtubePlayerDiv.style.display = 'block';
     };
 
     YoutubeInterfaceManager.prototype.makeNecessaryAdjustmentsToInterface = function () {
@@ -224,15 +231,25 @@ var YoutubeInterfaceManager;
     };
 
     YoutubeInterfaceManager.prototype.createVideoFrame = function (link) {
-        var outerDiv, divPlayerAPI, errorDiv, self = this;
+        var fuckYoutubePlayerDiv, divPlayerAPI, errorDiv, self = this, youtubePlayerDiv, outerDiv;
+
+        outerDiv = this.document.getElementById('top');
 
         this.removeSpinner();
 
         errorDiv = this.document.querySelector('ytd-playability-error-supported-renderers');
         errorDiv.removeAttribute('hidden');
 
-        outerDiv = this.document.getElementById("player");
-        outerDiv.removeAttribute('hidden');
+        fuckYoutubePlayerDiv = this.document.getElementById("player");
+        fuckYoutubePlayerDiv.removeAttribute('hidden');
+        fuckYoutubePlayerDiv.style.marginTop = '20px';
+        fuckYoutubePlayerDiv.style.width = "100%";
+        fuckYoutubePlayerDiv.style.minHeight = '500px';
+        fuckYoutubePlayerDiv.style.backgroundColor = "rgb(35,35,35)";
+
+        youtubePlayerDiv = this.document.querySelector('#player.ytd-watch');
+        youtubePlayerDiv.style.display = 'none';
+        outerDiv.insertAdjacentElement('afterbegin', fuckYoutubePlayerDiv);
 
         divPlayerAPI = this.document.getElementById("player-api");
         // This shows the previously hidden player holder.
