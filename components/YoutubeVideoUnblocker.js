@@ -1,4 +1,4 @@
-/*global YoutubeInterfaceManager, MirrorFinder */
+/*global YoutubeInterfaceManager, MirrorFinder, chrome */
 
 var YoutubeVideoUnblocker;
 
@@ -12,7 +12,6 @@ var YoutubeVideoUnblocker;
         this.interfaceManager = null;
         this.observer = null;
         this.isVideoUnavailable = undefined;
-        this.mirrorFinder = new MirrorFinder();
     };
 
     YoutubeVideoUnblocker.prototype.execute = function () {
@@ -28,7 +27,7 @@ var YoutubeVideoUnblocker;
     };
 
     YoutubeVideoUnblocker.prototype.executeForOldYouTubeLayout = function () {
-        var request, self = this;
+        var self = this;
 
         if (this.interfaceManager.isYoutubeVideoUnavailableOldLayout(document)) {
 
@@ -36,35 +35,31 @@ var YoutubeVideoUnblocker;
 
             this.interfaceManager.showLoadingFeedback();
 
-            this.mirrorFinder = new MirrorFinder(self.url);
-            request = this.mirrorFinder.createRequestToYouPak();
+            // We send a message to an event page to retrieve the video mirrors because we found a limitation, in
+            // which we are not allowed to make a HTTP request (to GenYouTube) from a HTTPS context (a YouTube page).
+            // Therefore, we have to make the request from a background script, an event page and not from the
+            // content script.
+            chrome.runtime.sendMessage({
+                action: "findMirrors",
+                url: self.url
+            }, function (response) {
+                var highestQualityVideoLink;
 
-            // Because we're dealing with an async request, we have to implement the callback below.
-            request.onreadystatechange = function () {
-                var links,
-                    highestQualityVideoLink;
+                console.log(response);
 
-                if (self.mirrorFinder.isXMLHttpRequestDone(request)) {
-                    try {
-                        links = self.mirrorFinder.findVideoLinksFromYouPak(request.responseText);
+                if (response instanceof Error) {
+                    self.interfaceManager.showFailureMessageOldLayout();
+                } else {
+                    highestQualityVideoLink = response['720'];
 
-                        highestQualityVideoLink = links[links.length - 1];
-
-                        self.interfaceManager.createVideoFrameOldLayout(highestQualityVideoLink);
-                    } catch (exception) {
-                        self.interfaceManager.showFailureMessageOldLayout();
-                    }
+                    self.interfaceManager.createVideoFrameOldLayout(highestQualityVideoLink);
                 }
-            };
-
-            request.send();
+            });
         }
     };
 
     YoutubeVideoUnblocker.prototype.executeForNewYouTubeLayout = function () {
-        var request, self = this,
-            links,
-            highestQualityVideoLink;
+        var self = this;
 
         this.observer = new MutationObserver(function (mutations) {
             if (self.interfaceManager.isYoutubeVideoUnavailable(mutations)) {
@@ -73,7 +68,16 @@ var YoutubeVideoUnblocker;
 
                     self.interfaceManager.makeNecessaryAdjustmentsToInterface();
 
-                    self.mirrorFinder.findMirrors(self.url, function (response) {
+                    // We send a message to an event page to retrieve the video mirrors because we found a limitation, in
+                    // which we are not allowed to make a HTTP request (to GenYouTube) from a HTTPS context (a YouTube page).
+                    // Therefore, we have to make the request from a background script, an event page and not from the
+                    // content script.
+                    chrome.runtime.sendMessage({
+                        action: "findMirrors",
+                        url: self.url
+                    }, function (response) {
+                        var highestQualityVideoLink;
+
                         console.log(response);
 
                         if (response instanceof Error) {
@@ -130,13 +134,7 @@ var YoutubeVideoUnblocker;
     youtubeVideoUnblocker = new YoutubeVideoUnblocker(document, window.location.toString());
     youtubeVideoUnblocker.prepareForUrlChanges();
 
-    // youtubeVideoUnblocker.execute();
-    console.log(new GenYouTubeMirrorFinder().findMirrors);
-
-    chrome.runtime.sendMessage({
-        action: "findMirrors",
-        genYouTubeMirrorFinderCallback: new GenYouTubeMirrorFinder().findMirrors
-    }, function (response) {
-        console.log(response);
-    });
+    youtubeVideoUnblocker.execute();
+    /*
+     */
 }());

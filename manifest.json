@@ -44,7 +44,10 @@
   ],
   "background": {
     "scripts": [
-      "eventPage.js"
+      "components/Utils.js",
+      "components/YouPakMirrorFinder.js",
+      "components/GenYouTubeMirrorFinder.js",
+      "components/MirrorFinder.js"
     ],
     "persistent": false
   },

@@ -1,4 +1,4 @@
-/* global YoutubeVideoUnblocker, InvalidYouTubeVideoURLException, NoVideoFoundException */
+/* global Utils, InvalidYouTubeVideoURLException, NoVideoFoundException */
 
 /**
  * This component is responsible for finding a video source that works (a mirror)
@@ -19,15 +19,15 @@ var GenYouTubeMirrorFinder;
     };
 
     GenYouTubeMirrorFinder.prototype.findMirrors = function (youtubeVideoURL, callback) {
-        if (YoutubeVideoUnblocker.isYoutubeVideoLink(youtubeVideoURL)) {
+        if (Utils.isYoutubeVideoLink(youtubeVideoURL)) {
             var request = new XMLHttpRequest(),
                 self = this;
 
             request.open("GET", youtubeVideoURL.replace("youtube", "genyoutube"), true);
 
             request.onreadystatechange = function () {
-                if (self.isXMLHttpRequestDone(request)) {
-                    var htmlDoc = self.getHTMLDocumentFromText(request.responseText),
+                if (Utils.isXMLHttpRequestDone(request)) {
+                    var htmlDoc = Utils.getHTMLDocumentFromText(request.responseText),
                         hdVideoIcon = htmlDoc.getElementsByClassName("glyphicon-hd-video")[0],
                         sdVideoIcon = htmlDoc.getElementsByClassName("glyphicon-sd-video")[0],
                         mirrors = {},
@@ -44,8 +44,6 @@ var GenYouTubeMirrorFinder;
 
                         mirrors['360'] = self.removeTitleParameterFromLink(linkTag.href);
                     }
-
-                    console.log(mirrors);
 
                     if (Object.keys(mirrors).length === 0) {
                         callback(new NoVideoFoundException());
@@ -75,28 +73,4 @@ var GenYouTubeMirrorFinder;
 
         return videoMirror.replace(/(&|\?)title=.*?(&|$)/, replaceRegex);
     };
-
-    GenYouTubeMirrorFinder.prototype.isXMLHttpRequestDone = function (request) {
-        // According to the documentation available at https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState,
-        // the number 4 represents DONE (" The operation is complete. ")
-        return request.readyState === 4;
-    };
-
-    GenYouTubeMirrorFinder.prototype.getHTMLDocumentFromText = function (text) {
-        return new DOMParser().parseFromString(text, "text/html");
-    };
-
-    /*MirrorFinder.prototype.findVideoLinksFromYouPak = function (responseText) {
-     var htmlDoc = this.getHTMLDocumentFromText(responseText),
-     videoTag = htmlDoc.getElementsByTagName("video")[0],
-     videoSources = videoTag.children;
-
-     if (videoTag === undefined) {
-     throw new NoVideoFoundException();
-     }
-
-     return Array.prototype.slice.call(videoSources).map(function (element) {
-     return element.src;
-     });
-     };*/
 }());

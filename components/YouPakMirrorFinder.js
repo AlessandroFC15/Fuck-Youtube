@@ -1,4 +1,4 @@
-/*global DOMParser, NoVideoFoundException, GenYouTubeMirrorFinder, YoutubeVideoUnblocker */
+/*global DOMParser, NoVideoFoundException, GenYouTubeMirrorFinder, Utils, InvalidYouTubeVideoURLException */
 
 /**
  * This component is responsible for finding a video source that works (a mirror)
@@ -19,13 +19,12 @@ var YouPakMirrorFinder;
     };
 
     YouPakMirrorFinder.prototype.findMirrors = function (url, callback) {
-        if (YoutubeVideoUnblocker.isYoutubeVideoLink(url)) {
-            var request = this.createRequestToYouPak(url),
-                self = this;
+        if (Utils.isYoutubeVideoLink(url)) {
+            var request = this.createRequestToYouPak(url);
 
             request.onreadystatechange = function () {
-                if (self.isXMLHttpRequestDone(request)) {
-                    var htmlDoc = self.getHTMLDocumentFromText(request.responseText),
+                if (Utils.isXMLHttpRequestDone(request)) {
+                    var htmlDoc = Utils.getHTMLDocumentFromText(request.responseText),
                         videoTag = htmlDoc.getElementsByTagName("video")[0],
                         videoSources = videoTag.children;
 
@@ -55,15 +54,4 @@ var YouPakMirrorFinder;
 
         return request;
     };
-
-    YouPakMirrorFinder.prototype.isXMLHttpRequestDone = function (request) {
-        // According to the documentation available at https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState,
-        // the number 4 represents DONE (" The operation is complete. ")
-        return request.readyState === 4;
-    };
-
-    YouPakMirrorFinder.prototype.getHTMLDocumentFromText = function (text) {
-        return new DOMParser().parseFromString(text, "text/html");
-    };
-
 }());

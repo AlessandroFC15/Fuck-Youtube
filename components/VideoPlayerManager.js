@@ -1,4 +1,4 @@
-/* globals VideoShortcutManager: FALSE */
+/* globals VideoShortcutManager: FALSE, chrome */
 
 /**
  * This component is responsible for behavior present in the video player that will be embedded within

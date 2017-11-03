@@ -1,6 +1,7 @@
-/* globals chrome: FALSE, i18n: FALSE, VideoPlayerManager: FALSE */
+/* globals chrome: FALSE, i18n: FALSE, VideoPlayerManager: FALSE, DOMException */
 /** @namespace chrome.extension.getURL **/
 /** @namespace chrome.i18n.getMessage **/
+/** @namespace chrome.storage.local **/
 
 /**
  * This component is responsible for all the changes made in the Youtube interface, such as adding/removing elements,
@@ -189,7 +190,8 @@ var YoutubeInterfaceManager;
     };
 
     YoutubeInterfaceManager.prototype.addLoadingSpinner = function () {
-        var spinner, loadingText, loadingFeedbackDiv = this.document.getElementsByTagName('ytd-player-error-message-renderer');
+        var spinner,
+            loadingFeedbackDiv = this.document.getElementsByTagName('ytd-player-error-message-renderer');
 
         spinner = this.document.createElement('div');
         spinner.className = "ytp-spinner";
@@ -222,7 +224,7 @@ var YoutubeInterfaceManager;
     };
 
     YoutubeInterfaceManager.prototype.createVideoFrame = function (link) {
-        var outerDiv, divPlayerAPI, errorDiv, self = this, ytd_watch_div;
+        var outerDiv, divPlayerAPI, errorDiv, self = this;
 
         this.removeSpinner();
 
@@ -323,8 +325,8 @@ var YoutubeInterfaceManager;
 
         icon.setAttribute('previous_background_img', window.getComputedStyle(icon, null).backgroundImage);
 
-        icon.style.backgroundImage = 'url(' + chrome.extension.getURL("/assets/pictures/logo.png") + ')';
-        icon.sytle.backgroundPosition = "center";
+        icon.style.backgroundImage = 'url(' + chrome.extension.getURL("/assets/pictures/logos/128.png") + ')';
+        icon.style.backgroundPosition = "center";
     };
 
     YoutubeInterfaceManager.prototype.addLoadingSpinnerOldLayout = function () {
