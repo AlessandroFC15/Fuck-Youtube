@@ -55,7 +55,7 @@ var YoutubeInterfaceManager;
         document.querySelector('#player.skeleton').setAttribute('hidden', '');
 
         if (this.videoPlayerManager) {
-            this.videoPlayerManager.video.remove();
+            this.videoPlayerManager.removeVideo();
         }
     };
 

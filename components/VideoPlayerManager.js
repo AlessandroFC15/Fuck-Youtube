@@ -122,8 +122,8 @@ var VideoPlayerManager;
     };
 
     VideoPlayerManager.prototype.createVideoElement = function (videoLink) {
-        var videoTag = this.interfaceManager.document.createElement("video"),
-            srcTag = this.interfaceManager.document.createElement("source"),
+        var videoTag = this.outerDiv.ownerDocument.createElement("video"),
+            srcTag = this.outerDiv.ownerDocument.createElement("source"),
             self = this;
 
         videoTag.controls = true;
@@ -199,6 +199,19 @@ var VideoPlayerManager;
             '</div>';
 
         return div.childNodes[0];
+    };
+
+    VideoPlayerManager.prototype.removeVideo = function () {
+        if (this.shortcutManager.video) {
+            this.shortcutManager.video.parentNode.removeChild(this.shortcutManager.video);
+            this.shortcutManager.video = null;
+        }
+
+        try {
+            this.outerDiv.removeChild(this.video);
+        } catch (exception) {
+            console.log(exception);
+        }
     };
 
     VideoPlayerManager.prototype.enablePlayPauseVideoControlOnClick = function (video) {

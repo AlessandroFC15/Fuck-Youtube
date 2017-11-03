@@ -135,6 +135,4 @@ var YoutubeVideoUnblocker;
     youtubeVideoUnblocker.prepareForUrlChanges();
 
     youtubeVideoUnblocker.execute();
-    /*
-     */
 }());

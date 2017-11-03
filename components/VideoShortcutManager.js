@@ -75,6 +75,10 @@ var VideoShortcutManager;
                 return keyPressed === keys["numPad" + number.toString()] || keyPressed === keys[number.toString()];
             }
 
+            if (!that.video) {
+                return;
+            }
+
             if (event.target.tagName !== "INPUT" && event.target.tagName !== "TEXTAREA") {
                 keyPressed = event.which || event.keyCode;
 
