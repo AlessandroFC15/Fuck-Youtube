@@ -12,18 +12,16 @@ var YoutubeVideoUnblocker;
         this.interfaceManager = null;
         this.observer = null;
         this.isVideoUnavailable = undefined;
-        this.mirrorFinder = null;
+        this.mirrorFinder = new MirrorFinder();
     };
 
     YoutubeVideoUnblocker.prototype.execute = function () {
-        if (this.isYoutubeVideoLink()) {
+        if (YoutubeVideoUnblocker.isYoutubeVideoLink(this.url)) {
             this.interfaceManager = new YoutubeInterfaceManager(document);
 
             if (this.isNewYouTubeLayout()) {
-                console.log('new');
                 this.executeForNewYouTubeLayout();
             } else {
-                console.log('old');
                 this.executeForOldYouTubeLayout();
             }
         }
@@ -40,8 +38,6 @@ var YoutubeVideoUnblocker;
 
             this.mirrorFinder = new MirrorFinder(self.url);
             request = this.mirrorFinder.createRequestToYouPak();
-
-            return;
 
             // Because we're dealing with an async request, we have to implement the callback below.
             request.onreadystatechange = function () {
@@ -66,7 +62,9 @@ var YoutubeVideoUnblocker;
     };
 
     YoutubeVideoUnblocker.prototype.executeForNewYouTubeLayout = function () {
-        var request, self = this;
+        var request, self = this,
+            links,
+            highestQualityVideoLink;
 
         this.observer = new MutationObserver(function (mutations) {
             if (self.interfaceManager.isYoutubeVideoUnavailable(mutations)) {
@@ -75,28 +73,17 @@ var YoutubeVideoUnblocker;
 
                     self.interfaceManager.makeNecessaryAdjustmentsToInterface();
 
-                    self.mirrorFinder = new MirrorFinder(self.url);
-                    request = self.mirrorFinder.createRequestToYouPak();
+                    self.mirrorFinder.findMirrors(self.url, function (response) {
+                        console.log(response);
 
-                    // Because we're dealing with an async request, we have to implement the callback below.
-                    request.onreadystatechange = function () {
-                        var links,
-                            highestQualityVideoLink;
+                        if (response instanceof Error) {
+                            self.interfaceManager.showFailureMessage();
+                        } else {
+                            highestQualityVideoLink = response['720'];
 
-                        if (self.mirrorFinder.isXMLHttpRequestDone(request)) {
-                            try {
-                                links = self.mirrorFinder.findVideoLinksFromYouPak(request.responseText);
-
-                                highestQualityVideoLink = links[links.length - 1];
-
-                                self.interfaceManager.createVideoFrame(highestQualityVideoLink);
-                            } catch (exception) {
-                                self.interfaceManager.showFailureMessage();
-                            }
+                            self.interfaceManager.createVideoFrame(highestQualityVideoLink);
                         }
-                    };
-
-                    request.send();
+                    });
                 }
             }
         });
@@ -132,8 +119,8 @@ var YoutubeVideoUnblocker;
         }, 500);
     };
 
-    YoutubeVideoUnblocker.prototype.isYoutubeVideoLink = function () {
-        return (/^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/watch\?(.*)(v=.+)(.*)$/).test(this.url);
+    YoutubeVideoUnblocker.isYoutubeVideoLink = function (url) {
+        return (/^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/watch\?(.*)(v=.+)(.*)$/).test(url);
     };
 
     YoutubeVideoUnblocker.prototype.isNewYouTubeLayout = function () {
@@ -142,5 +129,14 @@ var YoutubeVideoUnblocker;
 
     youtubeVideoUnblocker = new YoutubeVideoUnblocker(document, window.location.toString());
     youtubeVideoUnblocker.prepareForUrlChanges();
-    youtubeVideoUnblocker.execute();
+
+    // youtubeVideoUnblocker.execute();
+    console.log(new GenYouTubeMirrorFinder().findMirrors);
+
+    chrome.runtime.sendMessage({
+        action: "findMirrors",
+        genYouTubeMirrorFinderCallback: new GenYouTubeMirrorFinder().findMirrors
+    }, function (response) {
+        console.log(response);
+    });
 }());

@@ -14,6 +14,9 @@
   "permissions": [
     "*://youtube.com/*",
     "*://www.youtube.com/*",
+    "*://www.genyoutube.com/*",
+    "*://www.genyoutube.net/*",
+    "*://video.genyoutube.net/*",
     "*://www.youpak.com/*",
     "storage"
   ],
@@ -25,6 +28,8 @@
       "components/VideoShortcutManager.js",
       "components/VideoPlayerManager.js",
       "components/YoutubeInterfaceManager.js",
+      "components/GenYouTubeMirrorFinder.js",
+      "components/YouPakMirrorFinder.js",
       "components/MirrorFinder.js",
       "components/YoutubeVideoUnblocker.js"
     ],
@@ -37,7 +42,14 @@
   "web_accessible_resources": [
     "assets/*"
   ],
+  "background": {
+    "scripts": [
+      "eventPage.js"
+    ],
+    "persistent": false
+  },
 
   "icons": {
-    "128": "assets/pictures/logo.png" }
+    "128": "assets/pictures/logos/128.png"
+  }
 }

@@ -138,9 +138,6 @@ var VideoShortcutManager;
                     event.preventDefault();
                 }
             }
-
-            console.log(event.which);
-            console.log(event.keyCOde);
         });
     };
 }());

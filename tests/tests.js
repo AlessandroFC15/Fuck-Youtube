@@ -25,7 +25,7 @@
         for (i = 0; i < validLinks.length; i++) {
             youtubeVideoUnblocker = new YoutubeVideoUnblocker(null, validLinks[i]);
 
-            assert.equal(youtubeVideoUnblocker.isYoutubeVideoLink(validLinks[i]), true, validLinks[i] + " is valid!");
+            assert.equal(YoutubeVideoUnblocker.isYoutubeVideoLink(validLinks[i]), true, validLinks[i] + " is valid!");
         }
 
         invalidLinks = [
@@ -42,11 +42,11 @@
         for (i = 0; i < invalidLinks.length; i++) {
             youtubeVideoUnblocker = new YoutubeVideoUnblocker(null, invalidLinks[i]);
 
-            assert.equal(youtubeVideoUnblocker.isYoutubeVideoLink(invalidLinks[i]), false, invalidLinks[i] + " is NOT valid!");
+            assert.equal(YoutubeVideoUnblocker.isYoutubeVideoLink(invalidLinks[i]), false, invalidLinks[i] + " is NOT valid!");
         }
     });
 
-    QUnit.test("Test to check if a youtube video is unavailable", function (assert) {
+    /* QUnit.test("Test to check if a youtube video is unavailable", function (assert) {
         var testVideosUrls = function (listVideoUrls, shouldBeUnavailable) {
                 var done = assert.async(listVideoUrls.length),
 
@@ -89,7 +89,7 @@
 
         testVideosUrls(unavailableVideosUrls, true);
         testVideosUrls(availableVideosUrls, false);
-    });
+     });*/
 
     /*QUnit.test("Test to collect video sources from YouPak", function (assert) {
      var testYouPakLinks = function (listLinks, shouldBeValid) {

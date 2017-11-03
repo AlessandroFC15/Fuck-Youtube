@@ -51,7 +51,7 @@ var YoutubeInterfaceManager;
     };
 
     YoutubeInterfaceManager.prototype.removeVideo = function () {
-        document.querySelector('#player').setAttribute('hidden', '');
+        document.querySelector('#player.skeleton').setAttribute('hidden', '');
 
         if (this.videoPlayerManager) {
             this.videoPlayerManager.video.remove();
@@ -177,7 +177,7 @@ var YoutubeInterfaceManager;
         oldIconImg.remove();
 
         newIconImg = this.document.createElement('img');
-        newIconImg.src = chrome.extension.getURL("/assets/pictures/logo.png");
+        newIconImg.src = chrome.extension.getURL("/assets/pictures/logos/128.png");
         newIconImg.setAttribute('unavailable-src', '/yts/img/meh7-vflGevej7.png');
         iconDiv.appendChild(newIconImg);
     };

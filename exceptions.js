@@ -1,6 +1,6 @@
-/*global chrome*/
+/*global chrome, Error*/
 
-var NoVideoFoundException;
+var NoVideoFoundException, InvalidYouTubeVideoURLException;
 (function () {
     "use strict";
 
@@ -13,4 +13,14 @@ var NoVideoFoundException;
 
         this.name = 'NoVideoFoundException';
     };
+
+    NoVideoFoundException.prototype = new Error;
+
+    InvalidYouTubeVideoURLException = function () {
+        this.name = 'InvalidYouTubeVideoURLException';
+        this.message = "The url provided does not correspond to a YouTube video url";
+    };
+
+    InvalidYouTubeVideoURLException.prototype = new Error;
+
 }());

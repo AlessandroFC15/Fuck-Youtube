@@ -1,4 +1,4 @@
-/*global DOMParser, NoVideoFoundException */
+/*global DOMParser, NoVideoFoundException, YouPakMirrorFinder, GenYouTubeMirrorFinder */
 
 /**
  * This component is responsible for finding a video source that works (a mirror)
@@ -15,8 +15,27 @@ var MirrorFinder;
 (function () {
     "use strict";
 
-    MirrorFinder = function (url) {
-        this.url = url;
+    MirrorFinder = function () {
+        this.genYouTubeMirrorFinder = new GenYouTubeMirrorFinder();
+        this.youPakMirrorFinder = new YouPakMirrorFinder();
+    };
+
+    MirrorFinder.prototype.findMirrors = function (url, callback) {
+        var self = this;
+
+        this.genYouTubeMirrorFinder.findMirrors(url, function (response) {
+            console.log("GenYoutube: ");
+            console.log(response);
+
+            if (response instanceof Error) {
+                // In case of an error in GenYouTube, we will try to get from YouPak
+                self.youPakMirrorFinder.findMirrors(url, function (response) {
+                    callback(response);
+                });
+            } else {
+                callback(response);
+            }
+        });
     };
 
     MirrorFinder.prototype.createRequestToYouPak = function () {
