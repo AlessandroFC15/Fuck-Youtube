@@ -134,6 +134,11 @@ var YoutubeInterfaceManager;
         for (i = 0; i < mutations.length; i++) {
             mutation = mutations[i];
 
+            if (mutation.attributeName === "src" && mutation.target.nodeName === "IMG" &&
+                mutation.target.offsetParent.nodeName === "YTD-PLAYABILITY-ERROR-SUPPORTED-RENDERERS") {
+                return true;
+            }
+
             if (mutation.target.nodeName === "YTD-PLAYABILITY-ERROR-SUPPORTED-RENDERERS") {
                 if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
                     return true;
