@@ -134,6 +134,11 @@ var YoutubeInterfaceManager;
         for (i = 0; i < mutations.length; i++) {
             mutation = mutations[i];
 
+            if (mutation.attributeName === "loaded" && mutation.type === "attributes" &&
+                    mutation.target.nodeName === "YT-IMG-SHADOW" && mutation.target.offsetParent.nodeName === "YTD-PLAYABILITY-ERROR-SUPPORTED-RENDERERS") {
+                return true;
+            }
+
             if (mutation.attributeName === "src" && mutation.target.nodeName === "IMG" &&
                 mutation.target.offsetParent.nodeName === "YTD-PLAYABILITY-ERROR-SUPPORTED-RENDERERS") {
                 return true;

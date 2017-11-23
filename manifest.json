@@ -28,9 +28,6 @@
       "components/VideoShortcutManager.js",
       "components/VideoPlayerManager.js",
       "components/YoutubeInterfaceManager.js",
-      "components/GenYouTubeMirrorFinder.js",
-      "components/YouPakMirrorFinder.js",
-      "components/MirrorFinder.js",
       "components/YoutubeVideoUnblocker.js"
     ],
     "css": [
@@ -44,6 +41,7 @@
   ],
   "background": {
     "scripts": [
+      "exceptions.js",
       "components/Utils.js",
       "components/YouPakMirrorFinder.js",
       "components/GenYouTubeMirrorFinder.js",
