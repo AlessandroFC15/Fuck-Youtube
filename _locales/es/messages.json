@@ -21,5 +21,8 @@
   },
   "popupMessage": {
     "message": "<p> La extensión está <strong>en marcha!</strong></p> Puedes <strong>relajarte</strong> y <strong>disfrutarlo</strong>. :)</p> <p>Tan pronto como accedas a un video de YouTube que está bloqueado para tu región, <strong>la magia sucederá.</strong></p>"
+  },
+  "warningMessage": {
+    "message": "La extensión desbloquea solo los videos que están bloqueados para su región. <br><br>Este video puede haber sido eliminado o es privado."
   }
 }

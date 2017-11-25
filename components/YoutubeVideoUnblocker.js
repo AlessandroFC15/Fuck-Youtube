@@ -78,9 +78,7 @@ var YoutubeVideoUnblocker;
                     }, function (response) {
                         var highestQualityVideoLink;
 
-                        console.log(response);
-
-                        if (response instanceof Error) {
+                        if (response['name'] === "NoVideoFoundException") {
                             self.interfaceManager.showFailureMessage();
                         } else {
                             highestQualityVideoLink = response['720'];

@@ -20,5 +20,8 @@
   },
   "popupMessage": {
     "message": "<p> L'estensione è in esecuzione.</p> <p>Solo rilassatevi e godetelo.</p> <p>Non appena accedi a un video bloccato per la tua regione, la magia accadrà!</p>"
+  },
+  "warningMessage": {
+    "message": "L'estensione sblocca solo i video bloccati per la tua regione.<br><br>Questo video potrebbe essere stato cancellato o privato."
   }
 }

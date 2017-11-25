@@ -24,5 +24,8 @@
   },
   "popupMessage": {
     "message": "<p> The extension is <strong>up and running</strong>.</p> <p>Just <strong>relax</strong> and <strong>enjoy</strong> it.</p> <p>As soon as you access a YouTube video that is blocked for your region, <strong>the magic will happen!</strong></p>"
+  },
+  "warningMessage": {
+    "message": "The extension unblocks only videos that are blocked for your region. <br><br>This video may have been deleted or is private."
   }
 }

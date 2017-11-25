@@ -20,5 +20,8 @@
   },
   "popupMessage": {
     "message": "<p>Die Erweiterung läuft und läuft.</p> <p>Einfach nur entspannen und genießen.</p> <p>Sobald Sie auf ein Video zugreifen, das für Ihre Region gesperrt ist, wird die Magie passieren!</p>"
+  },
+  "warningMessage": {
+    "message": "De extensie deblokkeert alleen video's die zijn geblokkeerd voor uw regio. <br><br>Deze video is mogelijk verwijderd of privé."
   }
 }

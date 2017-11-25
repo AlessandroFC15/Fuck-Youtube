@@ -295,8 +295,9 @@ var YoutubeInterfaceManager;
         this.addIconVideoUnavailable();
 
         mainMessage = this.document.querySelector('div.ytd-player-error-message-renderer');
-        mainMessage.innerHTML = '<p>' + chrome.i18n.getMessage("videoUnavailableMessage") + '</p>';
-        mainMessage.innerHTML += '<p>' + chrome.i18n.getMessage("noVideoFoundMessage") + ' :( </p>';
+        // mainMessage.innerHTML = '<p>' + chrome.i18n.getMessage("videoUnavailableMessage") + '</p>';
+        mainMessage.innerHTML = '<p>' + chrome.i18n.getMessage("noVideoFoundMessage") + ' :( </p><br>';
+        mainMessage.innerHTML += '<p>' + chrome.i18n.getMessage("warningMessage") + '</p>';
 
         this.removeSpinner();
 

@@ -20,5 +20,8 @@
   },
   "popupMessage": {
     "message": "<p>L'extension est opérationnelle.</p> <p>Détendez-vous et profitez-en.</p> <p>Dès que vous accédez à une vidéo bloquée pour votre région, la magie se produira!</p>"
+  },
+  "warningMessage": {
+    "message": "L'extension débloque uniquement les vidéos bloquées pour votre région.<br><br>Cette vidéo a peut-être été supprimée ou privée."
   }
 }
