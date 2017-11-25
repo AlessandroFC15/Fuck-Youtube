@@ -216,7 +216,7 @@ var YoutubeInterfaceManager;
         oldIconImg.remove();
 
         newIconImg = this.document.createElement('img');
-        newIconImg.src = chrome.extension.getURL("/assets/pictures/logos/128.png");
+        newIconImg.src = chrome.extension.getURL("/assets/128.png");
         newIconImg.setAttribute('unavailable-src', '/yts/img/meh7-vflGevej7.png');
         iconDiv.appendChild(newIconImg);
     };
@@ -374,7 +374,7 @@ var YoutubeInterfaceManager;
 
         icon.setAttribute('previous_background_img', window.getComputedStyle(icon, null).backgroundImage);
 
-        icon.style.backgroundImage = 'url(' + chrome.extension.getURL("/assets/pictures/logos/128.png") + ')';
+        icon.style.backgroundImage = 'url(' + chrome.extension.getURL("/assets/128.png") + ')';
         icon.style.backgroundPosition = "center";
     };
 
