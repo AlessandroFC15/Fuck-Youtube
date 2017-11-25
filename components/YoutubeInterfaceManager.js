@@ -21,6 +21,8 @@ var YoutubeInterfaceManager;
     YoutubeInterfaceManager = function (document) {
         this.document = document;
         this.videoPlayerManager = null;
+        this.oldPlayerDiv = null;
+        this.oldPlayerDivParent = null;
     };
 
     YoutubeInterfaceManager.prototype.changeLoadingText = function () {
@@ -111,6 +113,8 @@ var YoutubeInterfaceManager;
         this.showSidebar();
 
         this.resetChangesToVideoInfo();
+
+        this.resetChangesToOldPlayerDiv();
     };
 
     YoutubeInterfaceManager.prototype.showYouTubeVideoDiv = function () {
@@ -126,6 +130,23 @@ var YoutubeInterfaceManager;
         this.changeLoadingText();
 
         this.addLoadingSpinner();
+    };
+
+    YoutubeInterfaceManager.prototype.removeOldPlayerDiv = function () {
+        var videoPlayer = this.document.getElementsByClassName("html5-video-player");
+
+        this.oldPlayerDiv = videoPlayer[0];
+        this.oldPlayerDivParent = this.oldPlayerDiv.parentNode;
+
+        this.oldPlayerDiv.remove();
+    };
+
+    YoutubeInterfaceManager.prototype.resetChangesToOldPlayerDiv = function () {
+        if (this.oldPlayerDiv) {
+            if (!this.oldPlayerDiv.parentNode) {
+                this.oldPlayerDivParent.appendChild(this.oldPlayerDiv);
+            }
+        }
     };
 
     YoutubeInterfaceManager.prototype.isYoutubeVideoUnavailable = function (mutations) {

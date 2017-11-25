@@ -84,6 +84,8 @@ var YoutubeVideoUnblocker;
                             highestQualityVideoLink = response['720'];
 
                             self.interfaceManager.createVideoFrame(highestQualityVideoLink);
+
+                            self.interfaceManager.removeOldPlayerDiv();
                         }
                     });
                 }
