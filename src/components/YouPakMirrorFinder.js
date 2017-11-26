@@ -26,9 +26,16 @@ var YouPakMirrorFinder;
                 if (Utils.isXMLHttpRequestDone(request)) {
                     var htmlDoc = Utils.getHTMLDocumentFromText(request.responseText),
                         videoTag = htmlDoc.getElementsByTagName("video")[0],
-                        videoSources = videoTag.children;
+                        videoSources;
 
-                    if (videoTag === undefined || videoSources.length === 0) {
+                    if (videoTag === undefined) {
+                        callback(new NoVideoFoundException());
+                        return;
+                    }
+
+                    videoSources = videoTag.children;
+
+                    if (videoSources.length === 0) {
                         callback(new NoVideoFoundException());
                         return;
                     }
