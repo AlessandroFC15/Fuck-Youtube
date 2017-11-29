@@ -132,6 +132,9 @@ var VideoPlayerManager;
         videoTag.style.width = "100%";
         videoTag.id = "videoTag";
         videoTag.className = "video-stream html5-main-video";
+        videoTag.onloadstart = function (){
+            self.interfaceManager.addFeedbackVideoAlmostReady();
+        };
 
         this.createVideoFunctions(videoTag);
 

@@ -24,5 +24,11 @@
   },
   "warningMessage": {
     "message": "La extensión desbloquea solo los videos que están bloqueados para su región. <br><br>Este video puede haber sido eliminado o es privado."
+  },
+  "videoAlmostReadyMessage": {
+    "message": "¡El video está casi listo!"
+  },
+  "lastWaitingMessage": {
+    "message": "Espera un poquito más ..."
   }
 }

@@ -23,5 +23,11 @@
   },
   "warningMessage": {
     "message": "この拡張機能は、あなたの地域でブロックされている動画のみをブロック解除します。<br><br>この動画は削除されているか、非公開です。"
+  },
+  "videoAlmostReadyMessage": {
+    "message": "ビデオはほぼ準備ができています！"
+  },
+  "lastWaitingMessage": {
+    "message": "ちょっと待って..."
   }
 }

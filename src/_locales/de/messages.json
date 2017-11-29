@@ -23,5 +23,11 @@
   },
   "warningMessage": {
     "message": "De extensie deblokkeert alleen video's die zijn geblokkeerd voor uw regio. <br><br>Deze video is mogelijk verwijderd of privé."
+  },
+  "videoAlmostReadyMessage": {
+    "message": "Das Video ist fast fertig!"
+  },
+  "lastWaitingMessage": {
+    "message": "Warte noch ein bisschen länger ..."
   }
 }

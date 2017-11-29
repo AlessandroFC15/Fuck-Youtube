@@ -23,6 +23,7 @@ var YoutubeInterfaceManager;
         this.videoPlayerManager = null;
         this.oldPlayerDiv = null;
         this.oldPlayerDivParent = null;
+        this.feedbackVideoAlmostReady = null;
     };
 
     YoutubeInterfaceManager.prototype.changeLoadingText = function () {
@@ -296,6 +297,7 @@ var YoutubeInterfaceManager;
         // We will only hide the loading screen, when the video is ready to play.
         this.videoPlayerManager.video.oncanplay = function () {
             self.hideLoadingScreen();
+            self.removeFeedbackVideoAlmostReady();
 
             chrome.storage.local.get('volumeChosen', function (data) {
                 if (data.volumeChosen) {
@@ -324,6 +326,26 @@ var YoutubeInterfaceManager;
 
         // this.showErrorAlert();
     };
+    
+    YoutubeInterfaceManager.prototype.addFeedbackVideoAlmostReady = function () {
+        this.feedbackVideoAlmostReady = document.createElement('p');
+
+        this.feedbackVideoAlmostReady.innerHTML = chrome.i18n.getMessage("videoAlmostReadyMessage") + "<br>" + chrome.i18n.getMessage("lastWaitingMessage")
+        this.feedbackVideoAlmostReady.style.position = "absolute";
+        this.feedbackVideoAlmostReady.style.width = "100%";
+        this.feedbackVideoAlmostReady.style.top = "40%";
+        this.feedbackVideoAlmostReady.style.fontSize = "18px";
+        this.feedbackVideoAlmostReady.style.color = "hsla(0, 0%, 100%, .8)";
+        this.feedbackVideoAlmostReady.style.textAlign = "center";
+
+        var parentDiv = document.getElementById('videoTag').parentNode.parentNode;
+
+        parentDiv.appendChild(this.feedbackVideoAlmostReady);
+    };
+
+    YoutubeInterfaceManager.prototype.removeFeedbackVideoAlmostReady = function () {
+        this.feedbackVideoAlmostReady.remove();
+    };
 
     // -------------------- OLD LAYOUT ------------------ //
 
@@ -350,7 +372,6 @@ var YoutubeInterfaceManager;
         // Hiding the sidebar
         this.hideElement(this.document.getElementById("watch7-sidebar"));
     };
-
 
     YoutubeInterfaceManager.prototype.showLoadingFeedback = function () {
         var mainMessage, submainMessage;

@@ -23,5 +23,11 @@
   },
   "warningMessage": {
     "message": "L'extension débloque uniquement les vidéos bloquées pour votre région.<br><br>Cette vidéo a peut-être été supprimée ou privée."
+  },
+  "videoAlmostReadyMessage": {
+    "message": "La vidéo est presque prête!"
+  },
+  "lastWaitingMessage": {
+    "message": "Attends un peu plus longtemps ..."
   }
 }

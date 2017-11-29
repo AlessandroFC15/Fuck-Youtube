@@ -23,5 +23,11 @@
   },
   "warningMessage": {
     "message": "L'estensione sblocca solo i video bloccati per la tua regione.<br><br>Questo video potrebbe essere stato cancellato o privato."
+  },
+  "videoAlmostReadyMessage": {
+    "message": "Il video è quasi pronto!"
+  },
+  "lastWaitingMessage": {
+    "message": "Aspetta un attimo ..."
   }
 }

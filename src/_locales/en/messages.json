@@ -27,5 +27,11 @@
   },
   "warningMessage": {
     "message": "The extension unblocks only videos that are blocked for your region. <br><br>This video may have been deleted or is private."
+  },
+  "videoAlmostReadyMessage": {
+    "message": "The video is almost ready!"
+  },
+  "lastWaitingMessage": {
+    "message": "Just hang on a second..."
   }
 }
