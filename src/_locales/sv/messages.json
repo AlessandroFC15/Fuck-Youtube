@@ -1,0 +1,37 @@
+{
+  "extensionDescription": {
+    "message": "Med denna förlängning kan du titta på YouTube-videor som blockeras för din region."
+  },
+  "workingToFindAMirrorMessage": {
+    "message": "F*ck Youtube försöker avblockera den här videon ..."
+  },
+
+  "loadingMessage": {
+    "message": "Denna process bör inte ta mer än några sekunder.",
+    "description": "Loading message"
+  },
+
+  "noVideoFoundMessage": {
+    "message": "F*ck Youtube försökte men kunde inte blockera den här videon. Förlåt."
+  },
+
+  "videoUnavailableMessage": {
+    "message": "Den här videon är otillgänglig!"
+  },
+
+  "sorryMessage": {
+    "message": "Förlåt."
+  },
+  "popupMessage": {
+    "message": "<p> Tillägget fungerar!</p> <p> Du kan koppla av och vara tyst :)</p> <p>När du har tillgång till en video som blockeras i ditt land kommer magiken att hända.</p>"
+  },
+  "warningMessage": {
+    "message": "Utvidgningen blockerar bara videor som blockeras för din region. <br><br>Den här videon kan ha raderats eller är privat."
+  },
+  "videoAlmostReadyMessage": {
+    "message": "Videon är nästan klar!"
+  },
+  "lastWaitingMessage": {
+    "message": "Vänta bara lite längre ..."
+  }
+}

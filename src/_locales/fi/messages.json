@@ -1,0 +1,37 @@
+{
+  "extensionDescription": {
+    "message": "Tämän laajennuksen avulla voit katsella YouTube-videoita, jotka on estetty alueellasi."
+  },
+  "workingToFindAMirrorMessage": {
+    "message": "F*ck Youtube yrittää poistaa tämän videon lukituksen ..."
+  },
+
+  "loadingMessage": {
+    "message": "Tämä prosessi ei saa kestää muutama sekunti.",
+    "description": "Loading message"
+  },
+
+  "noVideoFoundMessage": {
+    "message": "F * ck Youtube yritti mutta se ei voinut kumota tätä videota. Anteeksi."
+  },
+
+  "videoUnavailableMessage": {
+    "message": "Tämä video ei ole käytettävissä!"
+  },
+
+  "sorryMessage": {
+    "message": "Anteeksi."
+  },
+  "popupMessage": {
+    "message": "<p>Laajennus toimii!</p> <p>Voit rentoutua ja olla hiljainen :)</p> <p>Kun käytät maassasi estettyä videota, taikuutta tapahtuu.</p>"
+  },
+  "warningMessage": {
+    "message": "Laajennus poistaa vain sellaiset videot, jotka on estetty alueellasi. Tämä video on ehkä poistettu tai se on yksityinen."
+  },
+  "videoAlmostReadyMessage": {
+    "message": "Video on melkein valmis!"
+  },
+  "lastWaitingMessage": {
+    "message": "Odota hieman pidempään ..."
+  }
+}
