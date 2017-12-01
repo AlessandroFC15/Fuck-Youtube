@@ -10,7 +10,7 @@ A browser extension that allows the user to watch YouTube videos that are blocke
 
 ## Project Info
 
-- **Current Version**: 0.0.0.3
+- **Current Version**: 0.0.0.4
 
 - **Code Style**: [Crockford](http://javascript.crockford.com/code.html), checked by [JSCS](http://jscs.info/)
 
