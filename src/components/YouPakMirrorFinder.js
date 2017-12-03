@@ -44,7 +44,14 @@ var YouPakMirrorFinder;
                         return element.src;
                     });
 
-                    callback({'720': links[0]});
+                    callback(
+                        [
+                            {
+                                'resolution': 720,
+                                'link': links[0]
+                            }
+                        ]
+                    );
                 }
             };
 

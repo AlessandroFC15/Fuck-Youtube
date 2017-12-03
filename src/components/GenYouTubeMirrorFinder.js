@@ -30,19 +30,34 @@ var GenYouTubeMirrorFinder;
                     var htmlDoc = Utils.getHTMLDocumentFromText(request.responseText),
                         hdVideoIcon = htmlDoc.getElementsByClassName("glyphicon-hd-video")[0],
                         sdVideoIcon = htmlDoc.getElementsByClassName("glyphicon-sd-video")[0],
-                        mirrors = {},
-                        linkTag;
+                        mirrors = [],
+                        linkTag,
+                        videoSizeElement;
 
                     if (hdVideoIcon) {
                         linkTag = hdVideoIcon.parentNode.parentNode;
 
-                        mirrors['720'] = self.removeTitleParameterFromLink(linkTag.href);
+                        videoSizeElement = linkTag.getElementsByClassName('labelw')[0];
+
+                        if (videoSizeElement && videoSizeElement.textContent.indexOf("n/a") === -1) {
+                            mirrors.push({
+                                'resolution': 720,
+                                'link': self.removeTitleParameterFromLink(linkTag.href)
+                            });
+                        }
                     }
 
                     if (sdVideoIcon) {
                         linkTag = sdVideoIcon.parentNode.parentNode;
 
-                        mirrors['360'] = self.removeTitleParameterFromLink(linkTag.href);
+                        videoSizeElement = linkTag.getElementsByClassName('labelw')[0];
+
+                        if (videoSizeElement && videoSizeElement.textContent.indexOf("n/a") === -1) {
+                            mirrors.push({
+                                'resolution': 360,
+                                'link': self.removeTitleParameterFromLink(linkTag.href)
+                            });
+                        }
                     }
 
                     if (Object.keys(mirrors).length === 0) {

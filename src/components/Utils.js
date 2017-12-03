@@ -20,4 +20,14 @@ var Utils;
     Utils.getHTMLDocumentFromText = function (text) {
         return new DOMParser().parseFromString(text, "text/html");
     };
+
+    Utils.getIDFromYoutubeVideoLink = function (url) {
+        if (this.isYoutubeVideoLink(url)) {
+            var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
+
+            var match = url.match(regExp);
+
+            return (match) ? match[7] : false;
+        }
+    }
 }());

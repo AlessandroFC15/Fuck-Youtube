@@ -50,7 +50,7 @@ var YoutubeVideoUnblocker;
                 if (response instanceof Error) {
                     self.interfaceManager.showFailureMessageOldLayout();
                 } else {
-                    highestQualityVideoLink = response['720'];
+                     highestQualityVideoLink = response[0]['link'];
 
                     self.interfaceManager.createVideoFrameOldLayout(highestQualityVideoLink);
                 }
@@ -78,10 +78,10 @@ var YoutubeVideoUnblocker;
                     }, function (response) {
                         var highestQualityVideoLink;
 
-                        if (response['name'] === "NoVideoFoundException") {
+                        if (response === undefined || response['name'] === "NoVideoFoundException") {
                             self.interfaceManager.showFailureMessage();
                         } else {
-                            highestQualityVideoLink = response['720'];
+                            highestQualityVideoLink = response[0]['link'];
 
                             self.interfaceManager.createVideoFrame(highestQualityVideoLink);
 
