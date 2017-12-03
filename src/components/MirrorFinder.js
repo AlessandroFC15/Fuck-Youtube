@@ -30,6 +30,7 @@ var MirrorFinder;
     MirrorFinder = function () {
         this.genYouTubeMirrorFinder = new GenYouTubeMirrorFinder();
         this.youPakMirrorFinder = new YouPakMirrorFinder();
+        // this.proxyMirrorFinder = new ProxyMirrorFinder();
     };
 
     MirrorFinder.prototype.findMirrors = function (url, callback) {
@@ -40,6 +41,15 @@ var MirrorFinder;
                 // In case of an error in GenYouTube, we will try to get from YouPak
                 self.youPakMirrorFinder.findMirrors(url, function (response) {
                     callback(response);
+
+                    /*// In case of an error in YouPak, we will try to get from another proxy
+                    if (response instanceof Error) {
+                        self.proxyMirrorFinder.findMirrors(url, function (response) {
+                            callback(response);
+                        })
+                    } else {
+                        callback(response);
+                    }*/
                 });
             } else {
                 callback(response);
