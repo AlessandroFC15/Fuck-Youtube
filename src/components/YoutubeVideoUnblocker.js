@@ -21,7 +21,7 @@ var YoutubeVideoUnblocker;
             if (this.isNewYouTubeLayout()) {
                 this.executeForNewYouTubeLayout();
             } else {
-                this.executeForOldYouTubeLayout();
+                // this.executeForOldYouTubeLayout();
             }
         }
     };
@@ -85,7 +85,7 @@ var YoutubeVideoUnblocker;
 
                             self.interfaceManager.createVideoFrame(highestQualityVideoLink);
 
-                            self.interfaceManager.removeOldPlayerDiv();
+                            // self.interfaceManager.removeOldPlayerDiv();
                         }
                     });
                 }

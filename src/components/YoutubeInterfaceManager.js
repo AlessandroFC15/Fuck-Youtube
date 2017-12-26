@@ -55,7 +55,11 @@ var YoutubeInterfaceManager;
     };
 
     YoutubeInterfaceManager.prototype.removeVideo = function () {
-        document.querySelector('#player.skeleton').setAttribute('hidden', '');
+        var playerSkeleton = document.querySelector('#player.skeleton');
+
+        if (playerSkeleton) {
+            playerSkeleton.setAttribute('hidden', '');
+        }
 
         if (this.videoPlayerManager) {
             this.videoPlayerManager.removeVideo();
@@ -107,6 +111,8 @@ var YoutubeInterfaceManager;
     };
 
     YoutubeInterfaceManager.prototype.resetChanges = function () {
+        this.exitTheaterMode();
+
         this.showYouTubeVideoDiv();
 
         this.removeVideo();
@@ -118,9 +124,21 @@ var YoutubeInterfaceManager;
         this.resetChangesToOldPlayerDiv();
     };
 
+    YoutubeInterfaceManager.prototype.exitTheaterMode = function () {
+        var ytdWatch = document.querySelector('ytd-watch');
+
+        if (ytdWatch) {
+            ytdWatch.removeAttribute('theater-requested_');
+            ytdWatch.removeAttribute('theater');
+        }
+    };
+
     YoutubeInterfaceManager.prototype.showYouTubeVideoDiv = function () {
         var youtubePlayerDiv = this.document.querySelector('#player.ytd-watch');
-        youtubePlayerDiv.style.display = 'block';
+
+        if (youtubePlayerDiv) {
+            youtubePlayerDiv.style.display = 'block';
+        }
     };
 
     YoutubeInterfaceManager.prototype.makeNecessaryAdjustmentsToInterface = function () {
@@ -212,14 +230,15 @@ var YoutubeInterfaceManager;
     YoutubeInterfaceManager.prototype.replaceIconVideoUnavailable = function () {
         var iconDiv, oldIconImg, newIconImg;
 
-        iconDiv = this.document.querySelector('.ytd-player-error-message-renderer');
+        iconDiv = this.document.querySelector('ytd-player-error-message-renderer');
         oldIconImg = iconDiv.querySelector('img');
         oldIconImg.remove();
 
         newIconImg = this.document.createElement('img');
         newIconImg.src = chrome.extension.getURL("/assets/128.png");
         newIconImg.setAttribute('unavailable-src', '/yts/img/meh7-vflGevej7.png');
-        iconDiv.appendChild(newIconImg);
+
+        iconDiv.insertBefore(newIconImg, iconDiv.firstChild);
     };
 
     YoutubeInterfaceManager.prototype.addIconVideoUnavailable = function () {
