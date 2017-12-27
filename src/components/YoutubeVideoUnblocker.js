@@ -21,7 +21,7 @@ var YoutubeVideoUnblocker;
             if (this.isNewYouTubeLayout()) {
                 this.executeForNewYouTubeLayout();
             } else {
-                // this.executeForOldYouTubeLayout();
+                this.executeForOldYouTubeLayout();
             }
         }
     };
@@ -30,7 +30,6 @@ var YoutubeVideoUnblocker;
         var self = this;
 
         if (this.interfaceManager.isYoutubeVideoUnavailableOldLayout(document)) {
-
             this.interfaceManager.enableTheaterModeForOldLayout();
 
             this.interfaceManager.showLoadingFeedback();
@@ -45,12 +44,10 @@ var YoutubeVideoUnblocker;
             }, function (response) {
                 var highestQualityVideoLink;
 
-                console.log(response);
-
                 if (response instanceof Error) {
                     self.interfaceManager.showFailureMessageOldLayout();
                 } else {
-                     highestQualityVideoLink = response[0]['link'];
+                    highestQualityVideoLink = response[0]['link'];
 
                     self.interfaceManager.createVideoFrameOldLayout(highestQualityVideoLink);
                 }
