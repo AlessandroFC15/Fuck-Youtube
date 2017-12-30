@@ -1,3 +1,5 @@
+import VideoShortcutManager from './VideoShortcutManager';
+
 /* globals VideoShortcutManager: FALSE, chrome */
 
 /**
@@ -13,12 +15,8 @@
  *      - This component will create the video element and be responsible for all the behavior related to it.
  */
 
-var VideoPlayerManager;
-
-(function () {
-    "use strict";
-
-    VideoPlayerManager = function (videoLink, outerDiv, interfaceManager) {
+export default class VideoPlayerManager {
+    constructor(videoLink, outerDiv, interfaceManager) {
         this.interfaceManager = interfaceManager;
         this.outerDiv = outerDiv;
         this.video = this.createVideoElement(videoLink);
@@ -31,7 +29,7 @@ var VideoPlayerManager;
         this.outerDiv.appendChild(this.video);
     };
 
-    VideoPlayerManager.prototype.createVideoFunctions = function (video) {
+    createVideoFunctions(video) {
         function roundBy2Decimals(number) {
             return Math.round(number * 100) / 100;
         }
@@ -79,7 +77,7 @@ var VideoPlayerManager;
         };
 
         video.isFullScreenModeEnabled = function () {
-            var fullScreenElement = this.ownerDocument.webkitFullscreenElement;
+            const fullScreenElement = this.ownerDocument.webkitFullscreenElement;
 
             // TO-DO: Will only work on Chrome
 
@@ -121,8 +119,8 @@ var VideoPlayerManager;
         };
     };
 
-    VideoPlayerManager.prototype.createVideoElement = function (videoLink) {
-        var videoTag = this.outerDiv.ownerDocument.createElement("video"),
+    createVideoElement(videoLink) {
+        const videoTag = this.outerDiv.ownerDocument.createElement("video"),
             srcTag = this.outerDiv.ownerDocument.createElement("source"),
             self = this;
 
@@ -153,22 +151,18 @@ var VideoPlayerManager;
         return videoTag;
     };
 
-    VideoPlayerManager.prototype.createVideoFrame = function () {
-        return this.video;
-    };
-
-    VideoPlayerManager.prototype.enableVisualFeedbacks = function () {
+    enableVisualFeedbacks() {
         this.createAllFeedbackIcons();
 
         this.enablePlayPauseFeedback();
     };
 
-    VideoPlayerManager.prototype.enablePlayPauseFeedback = function () {
-        var self = this;
+    enablePlayPauseFeedback() {
+        const self = this;
 
         this.video.addEventListener("togglePlayPause", function () {
             function updateVisualFeedback(isVideoPaused) {
-                var feedback = self.interfaceManager.document.querySelector(isVideoPaused ? "#pauseFeedback" : "#playFeedback");
+                const feedback = self.interfaceManager.document.querySelector(isVideoPaused ? "#pauseFeedback" : "#playFeedback");
 
                 feedback.style.cssText = '';
 
@@ -181,16 +175,16 @@ var VideoPlayerManager;
         });
     };
 
-    VideoPlayerManager.prototype.createAllFeedbackIcons = function () {
-        var pauseFeedback = this.createFeedbackIcon('pauseFeedback', "M 12,26 16,26 16,10 12,10 z M 21,26 25,26 25,10 21,10 z"),
+    createAllFeedbackIcons() {
+        const pauseFeedback = this.createFeedbackIcon('pauseFeedback', "M 12,26 16,26 16,10 12,10 z M 21,26 25,26 25,10 21,10 z"),
             playFeedback = this.createFeedbackIcon('playFeedback', "M 12,26 18.5,22 18.5,14 12,10 z M 18.5,22 25,18 25,18 18.5,14 z");
 
         this.outerDiv.appendChild(pauseFeedback);
         this.outerDiv.appendChild(playFeedback);
     };
 
-    VideoPlayerManager.prototype.createFeedbackIcon = function (id, svgPath) {
-        var div = this.interfaceManager.document.createElement("div");
+    createFeedbackIcon(id, svgPath) {
+        let div = this.interfaceManager.document.createElement("div");
 
         div.innerHTML = '<div id="' + id + '" class="ytp-bezel" role="status" data-layer="4" style="display: none;">' +
             '<div class="ytp-bezel-icon">' +
@@ -204,7 +198,7 @@ var VideoPlayerManager;
         return div.childNodes[0];
     };
 
-    VideoPlayerManager.prototype.removeVideo = function () {
+    removeVideo() {
         if (this.shortcutManager.video) {
             this.shortcutManager.video.parentNode.removeChild(this.shortcutManager.video);
             this.shortcutManager.video = null;
@@ -217,20 +211,20 @@ var VideoPlayerManager;
         }
     };
 
-    VideoPlayerManager.prototype.enablePlayPauseVideoControlOnClick = function (video) {
+    enablePlayPauseVideoControlOnClick(video) {
         video.addEventListener('click', function () {
             this.togglePlayPause();
         });
     };
 
-    VideoPlayerManager.prototype.enableFullScreenModeOnDoubleClick = function (video) {
+    enableFullScreenModeOnDoubleClick(video) {
         video.addEventListener('dblclick', function () {
             video.toggleFullScreenMode();
         });
     };
 
-    VideoPlayerManager.prototype.enableLastVolumeChosenToBeSaved = function () {
-        var self = this;
+    enableLastVolumeChosenToBeSaved () {
+        const self = this;
 
         this.video.addEventListener("volumechange", function (event) {
             if (event.isTrusted) {
@@ -238,4 +232,4 @@ var VideoPlayerManager;
             }
         });
     };
-}());
+}

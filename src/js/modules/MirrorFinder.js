@@ -1,3 +1,7 @@
+import GenYouTubeMirrorFinder from './GenYouTubeMirrorFinder';
+import YouPakMirrorFinder from './YouPakMirrorFinder';
+import ProxyMirrorFinder from './ProxyMirrorFinder';
+
 /*global DOMParser, NoVideoFoundException, YouPakMirrorFinder, GenYouTubeMirrorFinder, chrome */
 
 /**
@@ -11,39 +15,24 @@
  *      - Hopefully, we find some video links when calling the function findVideoLinksFromYouPak.
  */
 
-var MirrorFinder;
-(function () {
-    "use strict";
-
-    chrome.runtime.onMessage.addListener(
-        function (request, sender, sendResponse) {
-            if (request.action === "findMirrors") {
-                var mirrorFinder = new MirrorFinder();
-
-                mirrorFinder.findMirrors(request.url, sendResponse);
-            }
-
-            // This 'return true' indicates that the call is async
-            return true;
-        });
-
-    MirrorFinder = function () {
+export default class MirrorFinder {
+    constructor() {
         this.genYouTubeMirrorFinder = new GenYouTubeMirrorFinder();
         this.youPakMirrorFinder = new YouPakMirrorFinder();
-        // this.proxyMirrorFinder = new ProxyMirrorFinder();
-    };
+        this.proxyMirrorFinder = new ProxyMirrorFinder();
+    }
 
-    MirrorFinder.prototype.findMirrors = function (url, callback) {
-        var self = this;
+    findMirrors(url, callback) {
+        const self = this;
 
-        this.genYouTubeMirrorFinder.findMirrors(url, function (response) {
+        this.youPakMirrorFinder.findMirrors(url, function (response) {
             if (response instanceof Error) {
-                // In case of an error in GenYouTube, we will try to get from YouPak
-                self.youPakMirrorFinder.findMirrors(url, function (response) {
+                // In case of an error in YouPak, we will try to get from GenYouTube
+                self.genYouTubeMirrorFinder.findMirrors(url, function (response) {
+                    // In case of an error in YouPak, we will try to get from another proxy
                     callback(response);
 
-                    /*// In case of an error in YouPak, we will try to get from another proxy
-                    if (response instanceof Error) {
+                    /*if (response instanceof Error) {
                         self.proxyMirrorFinder.findMirrors(url, function (response) {
                             callback(response);
                         })
@@ -55,5 +44,9 @@ var MirrorFinder;
                 callback(response);
             }
         });
+
+
+
+        /**/
     };
-}());
+}

@@ -7,9 +7,23 @@
 
   "default_locale": "en",
 
+  "icons": { "128": "assets/128.png" },
   "browser_action": {
-    "default_popup": "popup.html"
+    "default_popup": "popup/popup.html",
+    "default_icon": "assets/128.png"
   },
+  "background": { "scripts": ["js/background.js"] },
+
+  "content_scripts": [{
+    "matches": ["*://www.youtube.com/*"],
+    "js": [
+      "js/YoutubeVideoUnblocker.js"
+    ],
+    "css": [
+      "css/styles.css"
+    ],
+    "run_at": "document_idle"
+  }],
 
   "permissions": [
     "*://youtube.com/*",
@@ -18,39 +32,12 @@
     "*://www.genyoutube.net/*",
     "*://video.genyoutube.net/*",
     "*://www.youpak.com/*",
+    "*://redirector.googlevideo.com/*",
+    "*://r3---sn-uxaxh5g-cxal.googlevideo.com/*",
     "storage"
   ],
 
-  "content_scripts": [{
-    "matches": ["*://www.youtube.com/*"],
-    "js": [
-      "exceptions.js",
-      "components/VideoShortcutManager.js",
-      "components/VideoPlayerManager.js",
-      "components/YoutubeInterfaceManager.js",
-      "components/YoutubeVideoUnblocker.js"
-    ],
-    "css": [
-      "styles.css"
-    ],
-    "run_at": "document_idle"
-  }],
-
   "web_accessible_resources": [
     "assets/*"
-  ],
-  "background": {
-    "scripts": [
-      "exceptions.js",
-      "components/Utils.js",
-      "components/YouPakMirrorFinder.js",
-      "components/GenYouTubeMirrorFinder.js",
-      "components/MirrorFinder.js"
-    ],
-    "persistent": false
-  },
-
-  "icons": {
-    "128": "assets/128.png"
-  }
+  ]
 }
