@@ -12,8 +12,6 @@ import MirrorFinder from './modules/MirrorFinder';
 // to be able to issue command requests from this context), you may simply
 // omit the `hadnlers` parameter for good when invoking msg.init()
 
-console.log('BACKGROUND SCRIPT WORKS!'); // eslint-disable-line no-console
-
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
         console.log('Background received request');

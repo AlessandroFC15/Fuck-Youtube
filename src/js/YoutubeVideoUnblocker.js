@@ -71,10 +71,6 @@ class YoutubeVideoUnblocker {
                     }, function (response) {
                         let highestQualityVideoLink;
 
-                        console.log(response);
-                        console.log(response === undefined);
-                        console.log(typeof response);
-
                         if (response === undefined || response['name'] === "NoVideoFoundException") {
                             self.interfaceManager.showFailureMessage();
                         } else {

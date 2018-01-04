@@ -1,4 +1,5 @@
 import VideoPlayerManager from './VideoPlayerManager';
+import Sanitizer from "./sanitizer";
 
 /* globals chrome: FALSE, i18n: FALSE, VideoPlayerManager: FALSE, DOMException */
 /** @namespace chrome.extension.getURL **/
@@ -31,12 +32,18 @@ export default class YoutubeInterfaceManager {
         div = this.document.querySelector('div.ytd-player-error-message-renderer');
 
         if (div) {
-            div.innerHTML = chrome.i18n.getMessage("workingToFindAMirrorMessage").replace('F*ck Youtube',
-                "<span style='display: inline-block; color: #ff4646;'>F*ck Youtube</span>") + '</div>';
+            const text =  `<h1 style="color: white; margin-top: 40px">${chrome.i18n.getMessage("workingToFindAMirrorMessage").replace('F*ck Youtube',
+                "<span style='display: inline-block; color: #e70200;'>F*ck Youtube</span>")}</h1>`;
+
+            div.innerHTML = Sanitizer.escapeHTML(text);
         }
 
         loadingMessage = this.document.createElement('div');
         loadingMessage.className = "text";
+        loadingMessage.style.textAlign = "center";
+        loadingMessage.style.color = "white";
+        loadingMessage.style.fontSize = "15px";
+        loadingMessage.style.padding = "15px";
         loadingMessage.innerText = chrome.i18n.getMessage("loadingMessage");
 
         div.appendChild(loadingMessage);
@@ -143,12 +150,21 @@ export default class YoutubeInterfaceManager {
     makeNecessaryAdjustmentsToInterface() {
         this.enableTheaterModeForNewLayout();
 
+        this.adjustLayoutErrorDiv();
+
         this.replaceIconVideoUnavailable();
 
         this.changeLoadingText();
 
         this.addLoadingSpinner();
     };
+
+    adjustLayoutErrorDiv() {
+        const errorDiv = this.document.querySelector('ytd-player-error-message-renderer');
+
+        errorDiv.style.display = 'flex';
+        errorDiv.style.flexDirection = 'column';
+    }
 
     removeOldPlayerDiv() {
         const videoPlayer = this.document.getElementsByClassName("html5-video-player");
@@ -230,12 +246,13 @@ export default class YoutubeInterfaceManager {
         var iconDiv, oldIconImg, newIconImg;
 
         iconDiv = this.document.querySelector('ytd-player-error-message-renderer');
-        oldIconImg = iconDiv.querySelector('img');
+        oldIconImg = iconDiv.querySelector('yt-icon');
         oldIconImg.remove();
 
         newIconImg = this.document.createElement('img');
         newIconImg.src = chrome.extension.getURL("/assets/128.png");
         newIconImg.setAttribute('unavailable-src', '/yts/img/meh7-vflGevej7.png');
+        newIconImg.style.marginTop = '50px';
 
         iconDiv.insertBefore(newIconImg, iconDiv.firstChild);
     };
@@ -256,7 +273,7 @@ export default class YoutubeInterfaceManager {
         spinner.style.display = "inline-block";
         spinner.style.position = "relative";
         spinner.style.width = "20px";
-        spinner.style.top = "50px";
+        spinner.style.top = "-100px";
         spinner.style.left = "20px";
         spinner.innerHTML = '<div class="ytp-spinner-container">' +
             '<div class="ytp-spinner-rotator">' +
@@ -337,8 +354,8 @@ export default class YoutubeInterfaceManager {
 
         mainMessage = this.document.querySelector('div.ytd-player-error-message-renderer');
         // mainMessage.innerHTML = '<p>' + chrome.i18n.getMessage("videoUnavailableMessage") + '</p>';
-        mainMessage.innerHTML = '<p>' + chrome.i18n.getMessage("noVideoFoundMessage") + ' :( </p><br>';
-        mainMessage.innerHTML += '<p>' + chrome.i18n.getMessage("warningMessage") + '</p>';
+        mainMessage.innerHTML = Sanitizer.escapeHTML`<p>${chrome.i18n.getMessage("noVideoFoundMessage")} :(</p></br>`;
+        mainMessage.innerHTML = Sanitizer.escapeHTML`<p>${chrome.i18n.getMessage("warningMessage")}</p>`;
 
         this.removeSpinner();
 
@@ -348,7 +365,7 @@ export default class YoutubeInterfaceManager {
     addFeedbackVideoAlmostReady() {
         this.feedbackVideoAlmostReady = document.createElement('p');
 
-        this.feedbackVideoAlmostReady.innerHTML = chrome.i18n.getMessage("videoAlmostReadyMessage") + "<br>" + chrome.i18n.getMessage("lastWaitingMessage")
+        this.feedbackVideoAlmostReady.innerHTML = Sanitizer.escapeHTML(chrome.i18n.getMessage("videoAlmostReadyMessage") + "<br>" + chrome.i18n.getMessage("lastWaitingMessage"));
         this.feedbackVideoAlmostReady.style.position = "absolute";
         this.feedbackVideoAlmostReady.style.width = "100%";
         this.feedbackVideoAlmostReady.style.top = "40%";
@@ -399,7 +416,7 @@ export default class YoutubeInterfaceManager {
         this.removeErrorAlert();
 
         mainMessage = this.document.getElementById('unavailable-message');
-        mainMessage.innerHTML = chrome.i18n.getMessage("workingToFindAMirrorMessage").replace('F*ck Youtube', "<span style='display: inline-block; color: #ff4646;'>F*ck Youtube</span>");
+        mainMessage.innerHTML = Sanitizer.escapeHTML(chrome.i18n.getMessage("workingToFindAMirrorMessage").replace('F*ck Youtube', "<span style='display: inline-block; color: #ff4646;'>F*ck Youtube</span>"));
 
         submainMessage = this.document.getElementById('unavailable-submessage');
         submainMessage.innerText = chrome.i18n.getMessage("loadingMessage");

@@ -1,4 +1,5 @@
 import VideoShortcutManager from './VideoShortcutManager';
+import Sanitizer from './sanitizer';
 
 /* globals VideoShortcutManager: FALSE, chrome */
 
@@ -186,14 +187,14 @@ export default class VideoPlayerManager {
     createFeedbackIcon(id, svgPath) {
         let div = this.interfaceManager.document.createElement("div");
 
-        div.innerHTML = '<div id="' + id + '" class="ytp-bezel" role="status" data-layer="4" style="display: none;">' +
-            '<div class="ytp-bezel-icon">' +
-            '<svg height="100%" version="1.1" viewBox="0 0 36 36" width="100%">' +
-            '<use class="ytp-svg-shadow" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#ytp-id-' + id + '"></use>' +
-            '<path class="ytp-svg-fill" d="' + svgPath + '" id="ytp-id-' + id + '"></path>' +
-            '</svg>' +
-            '</div>' +
-            '</div>';
+        div.innerHTML = Sanitizer.escapeHTML`<div id="${id}" class="ytp-bezel" role="status" data-layer="4" style="display: none;"> 
+                                                <div class="ytp-bezel-icon">
+                                                    <svg height="100%" version="1.1" viewBox="0 0 36 36" width="100%">
+                                                        <use class="ytp-svg-shadow" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#ytp-id-${id}"></use> 
+                                                        <path class="ytp-svg-fill" d="${svgPath}" id="ytp-id-${id}"></path>
+                                                    </svg>
+                                                </div>
+                                             </div>`;
 
         return div.childNodes[0];
     };
