@@ -60,6 +60,10 @@ class YoutubeVideoUnblocker {
 
                     self.interfaceManager.makeNecessaryAdjustmentsToInterface();
 
+                    setTimeout(() => {
+                        self.interfaceManager.showFailureMessage();
+                    }, 3000);
+
                     // We send a message to an event page to retrieve the video mirrors because we found a limitation, in
                     // which we are not allowed to make a HTTP request (to GenYouTube) from a HTTPS context (a YouTube page).
                     // Therefore, we have to make the request from a background script, an event page and not from the
@@ -75,9 +79,6 @@ class YoutubeVideoUnblocker {
                             self.interfaceManager.showFailureMessage();
                         } else {
                             highestQualityVideoLink = response[0]['link'];
-
-                            console.log('Link');
-                            console.log(highestQualityVideoLink);
 
                             self.interfaceManager.createVideoFrame(highestQualityVideoLink);
 

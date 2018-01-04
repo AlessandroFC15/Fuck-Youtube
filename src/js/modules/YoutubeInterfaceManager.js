@@ -27,26 +27,33 @@ export default class YoutubeInterfaceManager {
     }
 
     changeLoadingText() {
-        let div, loadingMessage;
+        let div, loadingMessage, newDivMessage;
 
         div = this.document.querySelector('div.ytd-player-error-message-renderer');
+        div.style.display = "none";
+
+        newDivMessage = this.document.createElement("div");
+        newDivMessage.id = "createdErrorMessageDiv";
+        newDivMessage.style.color = "white";
+        newDivMessage.style.textAlign = "center";
+        newDivMessage.className = "ytd-player-error-message-renderer";
 
         if (div) {
-            const text =  `<h1 style="color: white; margin-top: 40px">${chrome.i18n.getMessage("workingToFindAMirrorMessage").replace('F*ck Youtube',
+            const text =  `<h1 style="margin-top: 40px">${chrome.i18n.getMessage("workingToFindAMirrorMessage").replace('F*ck Youtube',
                 "<span style='display: inline-block; color: #e70200;'>F*ck Youtube</span>")}</h1>`;
 
-            div.innerHTML = Sanitizer.escapeHTML(text);
+            newDivMessage.innerHTML = Sanitizer.escapeHTML(text);
         }
 
         loadingMessage = this.document.createElement('div');
         loadingMessage.className = "text";
-        loadingMessage.style.textAlign = "center";
-        loadingMessage.style.color = "white";
         loadingMessage.style.fontSize = "15px";
         loadingMessage.style.padding = "15px";
         loadingMessage.innerText = chrome.i18n.getMessage("loadingMessage");
 
-        div.appendChild(loadingMessage);
+        newDivMessage.appendChild(loadingMessage);
+
+        div.parentNode.appendChild(newDivMessage);
     };
 
     centerVideoPlayer() {
@@ -247,7 +254,7 @@ export default class YoutubeInterfaceManager {
 
         iconDiv = this.document.querySelector('ytd-player-error-message-renderer');
         oldIconImg = iconDiv.querySelector('yt-icon');
-        oldIconImg.remove();
+        oldIconImg.style.display = 'none';
 
         newIconImg = this.document.createElement('img');
         newIconImg.src = chrome.extension.getURL("/assets/128.png");
@@ -258,7 +265,7 @@ export default class YoutubeInterfaceManager {
     };
 
     addIconVideoUnavailable() {
-        var icon = this.document.querySelector('.ytd-player-error-message-renderer img');
+        const icon = this.document.querySelector('.ytd-playability-error-supported-renderers img');
 
         icon.src = icon.getAttribute('unavailable-src');
     };
@@ -352,10 +359,8 @@ export default class YoutubeInterfaceManager {
 
         this.addIconVideoUnavailable();
 
-        mainMessage = this.document.querySelector('div.ytd-player-error-message-renderer');
-        // mainMessage.innerHTML = '<p>' + chrome.i18n.getMessage("videoUnavailableMessage") + '</p>';
-        mainMessage.innerHTML = Sanitizer.escapeHTML`<p>${chrome.i18n.getMessage("noVideoFoundMessage")} :(</p></br>`;
-        mainMessage.innerHTML = Sanitizer.escapeHTML`<p>${chrome.i18n.getMessage("warningMessage")}</p>`;
+        mainMessage = this.document.querySelector('#createdErrorMessageDiv');
+        mainMessage.innerHTML = Sanitizer.escapeHTML`<p style="font-size: 20px; margin-top: 20px">${chrome.i18n.getMessage("noVideoFoundMessage")} :(</p></br>`;
 
         this.removeSpinner();
 
