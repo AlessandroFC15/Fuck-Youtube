@@ -1,3 +1,4 @@
+import "babel-polyfill";
 import MirrorFinder from './modules/MirrorFinder';
 
 // here we use SHARED message handlers, so all the contexts support the same

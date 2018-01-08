@@ -2,6 +2,7 @@ const path = require('path');
 
 module.exports = {
   entry: {
+    babel_polyfill: 'babel-polyfill',
     YoutubeVideoUnblocker: './src/js/YoutubeVideoUnblocker',
     background: './src/js/background',
   },
