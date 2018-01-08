@@ -196,6 +196,11 @@ export default class YoutubeInterfaceManager {
         for (i = 0; i < mutations.length; i++) {
             mutation = mutations[i];
 
+            if (mutation.type === "childList" && mutation.target.id === "player-container"
+                && mutation.removedNodes.length > 0 && mutation.removedNodes[0].nodeName === "YTD-PLAYER") {
+                return true;
+            }
+
             if (mutation.attributeName === "loaded" && mutation.type === "attributes" &&
                 mutation.target.nodeName === "YT-IMG-SHADOW" && mutation.target.offsetParent.nodeName === "YTD-PLAYABILITY-ERROR-SUPPORTED-RENDERERS") {
                 return true;
@@ -250,7 +255,7 @@ export default class YoutubeInterfaceManager {
 
     // This function replaces the Youtube icon used to represent a unavailable video with the extension's main icon.
     replaceIconVideoUnavailable() {
-        var iconDiv, oldIconImg, newIconImg;
+        let iconDiv, oldIconImg, newIconImg;
 
         iconDiv = this.document.querySelector('ytd-player-error-message-renderer');
         oldIconImg = iconDiv.querySelector('yt-icon');
@@ -271,7 +276,7 @@ export default class YoutubeInterfaceManager {
     };
 
     addLoadingSpinner() {
-        var spinner,
+        let spinner,
             loadingFeedbackDiv = this.document.getElementsByTagName('ytd-player-error-message-renderer');
 
         spinner = this.document.createElement('div');
@@ -355,7 +360,7 @@ export default class YoutubeInterfaceManager {
     };
 
     showFailureMessage() {
-        var mainMessage;
+        let mainMessage;
 
         this.addIconVideoUnavailable();
 
@@ -378,7 +383,7 @@ export default class YoutubeInterfaceManager {
         this.feedbackVideoAlmostReady.style.color = "hsla(0, 0%, 100%, .8)";
         this.feedbackVideoAlmostReady.style.textAlign = "center";
 
-        var parentDiv = document.getElementById('videoTag').parentNode.parentNode;
+        let parentDiv = document.getElementById('videoTag').parentNode.parentNode;
 
         parentDiv.appendChild(this.feedbackVideoAlmostReady);
     };
@@ -390,7 +395,7 @@ export default class YoutubeInterfaceManager {
     // -------------------- OLD LAYOUT ------------------ //
 
     enableTheaterModeForOldLayout() {
-        var theaterBackground, divPage, divVideoInfo;
+        let theaterBackground, divPage, divVideoInfo;
 
         theaterBackground = this.document.getElementById("theater-background");
         theaterBackground.style.background = "transparent";
@@ -414,7 +419,7 @@ export default class YoutubeInterfaceManager {
     };
 
     showLoadingFeedback() {
-        var mainMessage, submainMessage;
+        let mainMessage, submainMessage;
 
         this.replaceIconVideoUnavailableOldLayout();
 
@@ -431,7 +436,7 @@ export default class YoutubeInterfaceManager {
 
     // This function replaces the Youtube icon used to represent a unavailable video with the extension's main icon.
     replaceIconVideoUnavailableOldLayout() {
-        var icon = this.document.getElementById("player-unavailable").getElementsByClassName("icon")[0];
+        const icon = this.document.getElementById("player-unavailable").getElementsByClassName("icon")[0];
 
         icon.setAttribute('previous_background_img', window.getComputedStyle(icon, null).backgroundImage);
 
@@ -440,9 +445,9 @@ export default class YoutubeInterfaceManager {
     };
 
     addLoadingSpinnerOldLayout() {
-        var mainMessage = this.document.getElementById('unavailable-message');
+        let mainMessage = this.document.getElementById('unavailable-message');
 
-        var spinner = this.document.createElement('div');
+        let spinner = this.document.createElement('div');
         spinner.className = "ytp-spinner";
         spinner.style.display = "inline-block";
         spinner.style.position = "relative";
@@ -466,7 +471,7 @@ export default class YoutubeInterfaceManager {
     };
 
     createVideoFrameOldLayout(link) {
-        var divPlayerAPI, self = this;
+        let divPlayerAPI, self = this;
 
         divPlayerAPI = this.document.getElementById("player-api");
         // This shows the previously hidden player holder.
@@ -483,7 +488,7 @@ export default class YoutubeInterfaceManager {
     };
 
     showFailureMessageOldLayout() {
-        var mainMessage, submainMessage;
+        let mainMessage, submainMessage;
 
         this.addIconVideoUnavailableOldLayout();
 
@@ -499,7 +504,7 @@ export default class YoutubeInterfaceManager {
     };
 
     addIconVideoUnavailableOldLayout() {
-        var icon = this.document.getElementById("player-unavailable").getElementsByClassName("icon")[0];
+        const icon = this.document.getElementById("player-unavailable").getElementsByClassName("icon")[0];
         icon.style.backgroundImage = icon.getAttribute('previous_background_img');
     };
 
@@ -508,7 +513,7 @@ export default class YoutubeInterfaceManager {
     };
 
     showErrorAlert() {
-        var alertsDiv, alertContent, alertWrapper;
+        let alertsDiv, alertContent, alertWrapper;
 
         alertsDiv = this.document.getElementById('error-box') || this.document.getElementById('editor-progress-alert-template');
 
@@ -527,7 +532,7 @@ export default class YoutubeInterfaceManager {
     };
 
     isYoutubeVideoUnavailableOldLayout() {
-        var divPlayerUnavailable = this.document.getElementById("player-unavailable");
+        const divPlayerUnavailable = this.document.getElementById("player-unavailable");
 
         // Para que o vídeo seja considerado indisponível, é necessário que a div acima exista e que ela não a possua
         // classe "hid", visto que esta classe tem como função esconder os elementos.
