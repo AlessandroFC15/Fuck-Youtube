@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/AlessandroFC15/Fuck-Youtube.svg?branch=master)](https://travis-ci.org/AlessandroFC15/Fuck-Youtube) 
 
+<p><img width="20" src="https://ffp4g1ylyit3jdyti1hqcvtb-wpengine.netdna-ssl.com/firefox/files/2017/12/firefox-logo-300x310.png"> <a href="https://addons.mozilla.org/en-US/firefox/addon/f-ck-youtube/">Available for Firefox</a></p>
+
 A browser extension that allows the user to watch YouTube videos that are blocked for a certain region.
 
 <p align="center">
