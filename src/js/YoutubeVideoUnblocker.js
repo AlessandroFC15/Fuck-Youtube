@@ -1,7 +1,7 @@
 import YoutubeInterfaceManager from './modules/YoutubeInterfaceManager';
 
 class YoutubeVideoUnblocker {
-    constructor (document, url) {
+    constructor(document, url) {
         this.document = document;
         this.url = url;
         this.interfaceManager = null;
@@ -50,7 +50,7 @@ class YoutubeVideoUnblocker {
         }
     };
 
-   executeForNewYouTubeLayout() {
+    executeForNewYouTubeLayout() {
         const self = this;
 
         this.observer = new MutationObserver(function (mutations) {
@@ -59,10 +59,6 @@ class YoutubeVideoUnblocker {
                     self.isVideoUnavailable = true;
 
                     self.interfaceManager.makeNecessaryAdjustmentsToInterface();
-
-                    setTimeout(() => {
-                        self.interfaceManager.showFailureMessage();
-                    }, 3000);
 
                     // We send a message to an event page to retrieve the video mirrors because we found a limitation, in
                     // which we are not allowed to make a HTTP request (to GenYouTube) from a HTTPS context (a YouTube page).

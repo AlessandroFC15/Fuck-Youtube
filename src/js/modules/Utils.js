@@ -17,6 +17,21 @@ export default class Utils {
         return new DOMParser().parseFromString(text, "text/html");
     };
 
+    static async makeRequest(url) {
+        return new Promise((resolve, reject) => {
+            let request = new XMLHttpRequest();
+            request.open("GET", url, true);
+
+            request.onreadystatechange = function () {
+                if (this.readyState === 4) {
+                    resolve(this);
+                }
+            };
+
+            request.send();
+        })
+    }
+
     static getIDFromYoutubeVideoLink (url) {
         if (this.isYoutubeVideoLink(url)) {
             const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
