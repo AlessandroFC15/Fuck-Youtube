@@ -27,13 +27,13 @@ export default class MirrorFinder {
     findMirrors(url, callback) {
         const self = this;
 
-        this.youPakMirrorFinder.findMirrors(url, function (response) {
+        this.tubeUnblockMirrorFinder.findMirrors(url, function (response) {
             if (response instanceof Error) {
-                // In case of an error in YouPak, we will try to get from GenYouTube
+                // In case of an error in TubeUnblock, we will try to get from GenYouTube
                 self.genYouTubeMirrorFinder.findMirrors(url, function (response) {
-                    // In case of an error in YouPak, we will try to get from another proxy
+                    // In case of an error in GenYouTube, we will try to get from YouPak
                     if (response instanceof Error) {
-                        self.tubeUnblockMirrorFinder.findMirrors(url, function (response) {
+                        self.youPakMirrorFinder.findMirrors(url, function (response) {
                             callback(response);
                         })
                     } else {
