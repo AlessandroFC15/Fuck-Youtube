@@ -51,14 +51,14 @@ export default class TubeUnblockMirrorFinder {
 
             const mirrorData = /updateSrc\(\[(.*?)\]\)/g.exec(newRequest.responseText);
 
-            if (! mirrorData[1]) {
+            if (! mirrorData || ! mirrorData[1]) {
                 callback(new NoVideoFoundException());
                 return;
             }
 
             const videoSrc = /src: "(.*?)"/g.exec(mirrorData[1]);
 
-            if (videoSrc[1]) {
+            if (videoSrc && videoSrc[1]) {
                 mirrors.push({
                     'resolution': 360,
                     'link': self.baseUrl + videoSrc[1]
