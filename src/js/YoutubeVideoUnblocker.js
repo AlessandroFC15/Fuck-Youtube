@@ -1,20 +1,15 @@
-/*global YoutubeInterfaceManager, MirrorFinder, chrome */
+import YoutubeInterfaceManager from './modules/YoutubeInterfaceManager';
 
-var YoutubeVideoUnblocker;
-
-(function () {
-    "use strict";
-
-    var youtubeVideoUnblocker;
-
-    YoutubeVideoUnblocker = function (document, url) {
+class YoutubeVideoUnblocker {
+    constructor(document, url) {
+        this.document = document;
         this.url = url;
         this.interfaceManager = null;
         this.observer = null;
         this.isVideoUnavailable = undefined;
     };
 
-    YoutubeVideoUnblocker.prototype.execute = function () {
+    execute() {
         if (YoutubeVideoUnblocker.isYoutubeVideoLink(this.url)) {
             this.interfaceManager = new YoutubeInterfaceManager(document);
 
@@ -24,13 +19,12 @@ var YoutubeVideoUnblocker;
                 this.executeForOldYouTubeLayout();
             }
         }
-    };
+    }
 
-    YoutubeVideoUnblocker.prototype.executeForOldYouTubeLayout = function () {
-        var self = this;
+    executeForOldYouTubeLayout() {
+        const self = this;
 
-        if (this.interfaceManager.isYoutubeVideoUnavailableOldLayout(document)) {
-
+        if (this.interfaceManager.isYoutubeVideoUnavailableOldLayout(this.document)) {
             this.interfaceManager.enableTheaterModeForOldLayout();
 
             this.interfaceManager.showLoadingFeedback();
@@ -43,14 +37,12 @@ var YoutubeVideoUnblocker;
                 action: "findMirrors",
                 url: self.url
             }, function (response) {
-                var highestQualityVideoLink;
-
-                console.log(response);
+                let highestQualityVideoLink;
 
                 if (response instanceof Error) {
                     self.interfaceManager.showFailureMessageOldLayout();
                 } else {
-                     highestQualityVideoLink = response[0]['link'];
+                    highestQualityVideoLink = response[0]['link'];
 
                     self.interfaceManager.createVideoFrameOldLayout(highestQualityVideoLink);
                 }
@@ -58,8 +50,8 @@ var YoutubeVideoUnblocker;
         }
     };
 
-    YoutubeVideoUnblocker.prototype.executeForNewYouTubeLayout = function () {
-        var self = this;
+    executeForNewYouTubeLayout() {
+        const self = this;
 
         this.observer = new MutationObserver(function (mutations) {
             if (self.interfaceManager.isYoutubeVideoUnavailable(mutations)) {
@@ -72,11 +64,12 @@ var YoutubeVideoUnblocker;
                     // which we are not allowed to make a HTTP request (to GenYouTube) from a HTTPS context (a YouTube page).
                     // Therefore, we have to make the request from a background script, an event page and not from the
                     // content script.
+
                     chrome.runtime.sendMessage({
                         action: "findMirrors",
                         url: self.url
                     }, function (response) {
-                        var highestQualityVideoLink;
+                        let highestQualityVideoLink;
 
                         if (response === undefined || response['name'] === "NoVideoFoundException") {
                             self.interfaceManager.showFailureMessage();
@@ -85,7 +78,7 @@ var YoutubeVideoUnblocker;
 
                             self.interfaceManager.createVideoFrame(highestQualityVideoLink);
 
-                            self.interfaceManager.removeOldPlayerDiv();
+                            // self.interfaceManager.removeOldPlayerDiv();
                         }
                     });
                 }
@@ -101,8 +94,8 @@ var YoutubeVideoUnblocker;
         });
     };
 
-    YoutubeVideoUnblocker.prototype.prepareForUrlChanges = function () {
-        var self = this;
+    prepareForUrlChanges() {
+        const self = this;
 
         // Set a interval to check for url changes
         setInterval(function () {
@@ -123,16 +116,16 @@ var YoutubeVideoUnblocker;
         }, 500);
     };
 
-    YoutubeVideoUnblocker.isYoutubeVideoLink = function (url) {
+    isNewYouTubeLayout() {
+        return this.document.getElementById('watch7-content') === null;
+    };
+
+    static isYoutubeVideoLink(url) {
         return (/^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/watch\?(.*)(v=.+)(.*)$/).test(url);
     };
+}
 
-    YoutubeVideoUnblocker.prototype.isNewYouTubeLayout = function () {
-        return document.getElementById('watch7-content') === null;
-    };
+const youtubeVideoUnblocker = new YoutubeVideoUnblocker(document, window.location.toString());
+youtubeVideoUnblocker.prepareForUrlChanges();
 
-    youtubeVideoUnblocker = new YoutubeVideoUnblocker(document, window.location.toString());
-    youtubeVideoUnblocker.prepareForUrlChanges();
-
-    youtubeVideoUnblocker.execute();
-}());
+youtubeVideoUnblocker.execute();

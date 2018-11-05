@@ -9,18 +9,15 @@
  *      - The <video> tag passed as input now supports certain keyboard commands to control its behavior.
  */
 
-var VideoShortcutManager;
-(function () {
-    "use strict";
-
-    VideoShortcutManager = function (videoTag) {
+export default class VideoShortcutManager {
+    constructor(videoTag) {
         this.video = videoTag;
         this.document = videoTag.ownerDocument;
 
         this.enableYouTubeShortcuts();
     };
 
-    VideoShortcutManager.prototype.getKeyCodes = function () {
+    static getKeyCodes(){
         return {
             "spacebar": 32,
             "k": 75,
@@ -64,11 +61,11 @@ var VideoShortcutManager;
         };
     };
 
-    VideoShortcutManager.prototype.enableYouTubeShortcuts = function () {
-        var that = this;
+    enableYouTubeShortcuts() {
+        const that = this;
 
         this.document.addEventListener("keydown", function (event) {
-            var keys = that.getKeyCodes(),
+            let keys = VideoShortcutManager.getKeyCodes(),
                 keyPressed;
 
             function isNumberPressed(keyPressed, number) {
@@ -142,4 +139,4 @@ var VideoShortcutManager;
             }
         });
     };
-}());
+}

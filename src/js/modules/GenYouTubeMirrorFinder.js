@@ -1,3 +1,6 @@
+import Utils from './Utils';
+import { NoVideoFoundException, InvalidYouTubeVideoURLException } from './Exceptions';
+
 /* global Utils, InvalidYouTubeVideoURLException, NoVideoFoundException */
 
 /**
@@ -11,23 +14,21 @@
  *      - Hopefully, we find some video links when calling the function findMirrors.
  */
 
-var GenYouTubeMirrorFinder;
-(function () {
-    "use strict";
+export default class GenYouTubeMirrorFinder {
+    constructor() {}
 
-    GenYouTubeMirrorFinder = function () {
-    };
-
-    GenYouTubeMirrorFinder.prototype.findMirrors = function (youtubeVideoURL, callback) {
+    findMirrors(youtubeVideoURL, callback) {
         if (Utils.isYoutubeVideoLink(youtubeVideoURL)) {
-            var request = new XMLHttpRequest(),
+            let request = new XMLHttpRequest(),
                 self = this;
+
+            console.log('>> Trying GenYouTube <<');
 
             request.open("GET", youtubeVideoURL.replace("youtube", "genyoutube"), true);
 
             request.onreadystatechange = function () {
                 if (Utils.isXMLHttpRequestDone(request)) {
-                    var htmlDoc = Utils.getHTMLDocumentFromText(request.responseText),
+                    let htmlDoc = Utils.getHTMLDocumentFromText(request.responseText),
                         hdVideoIcon = htmlDoc.getElementsByClassName("glyphicon-hd-video")[0],
                         sdVideoIcon = htmlDoc.getElementsByClassName("glyphicon-sd-video")[0],
                         mirrors = [],
@@ -77,7 +78,7 @@ var GenYouTubeMirrorFinder;
 
     // The links provided by the GenYoutube platform usually come with a parameter called title that makes the video
     // get downloaded. This method aims to remove that parameter and return a link without that parameter
-    GenYouTubeMirrorFinder.prototype.removeTitleParameterFromLink = function (videoMirror) {
+    removeTitleParameterFromLink(videoMirror) {
         function replaceRegex(match, p1, p2, offset, string) {
             if ((p1 === "?") || (p1 === p2)) {
                 return p1;
@@ -88,4 +89,4 @@ var GenYouTubeMirrorFinder;
 
         return videoMirror.replace(/(&|\?)title=.*?(&|$)/, replaceRegex);
     };
-}());
+}

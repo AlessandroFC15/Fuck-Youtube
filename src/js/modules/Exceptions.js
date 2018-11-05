@@ -1,10 +1,7 @@
-/*global chrome, Error*/
+export class NoVideoFoundException extends Error {
+    constructor() {
+        super();
 
-var NoVideoFoundException, InvalidYouTubeVideoURLException;
-(function () {
-    "use strict";
-
-    NoVideoFoundException = function () {
         if (chrome.i18n) {
             this.message = chrome.i18n.getMessage("noVideoFoundMessage");
         } else {
@@ -13,14 +10,13 @@ var NoVideoFoundException, InvalidYouTubeVideoURLException;
 
         this.name = 'NoVideoFoundException';
     };
+}
 
-    NoVideoFoundException.prototype = new Error;
+export class InvalidYouTubeVideoURLException extends Error {
+    constructor() {
+        super();
 
-    InvalidYouTubeVideoURLException = function () {
         this.name = 'InvalidYouTubeVideoURLException';
         this.message = "The url provided does not correspond to a YouTube video url";
-    };
-
-    InvalidYouTubeVideoURLException.prototype = new Error;
-
-}());
+    }
+}

@@ -1,4 +1,5 @@
-/* global Utils, InvalidYouTubeVideoURLException, NoVideoFoundException */
+import Utils from './Utils';
+import { NoVideoFoundException, InvalidYouTubeVideoURLException } from './Exceptions';
 
 /**
  * This component is responsible for finding a video source that works (a mirror)
@@ -11,22 +12,19 @@
  *      - Hopefully, we find some video links when calling the function findMirrors.
  */
 
-var ProxyMirrorFinder;
-(function () {
-    "use strict";
-
-    ProxyMirrorFinder = function () {
+export default class ProxyMirrorFinder {
+    constructor() {
         this.baseUrl = "https://fr.ytproxy.unixfox.eu"
-    };
+    }
 
-    ProxyMirrorFinder.prototype.findMirrors = function (youtubeVideoURL, callback) {
+    findMirrors(youtubeVideoURL, callback) {
         console.log('Trying proxy...');
 
         if (Utils.isYoutubeVideoLink(youtubeVideoURL)) {
-            var request = new XMLHttpRequest(),
+            let request = new XMLHttpRequest(),
                 self = this;
 
-            var idYoutubeVideo = Utils.getIDFromYoutubeVideoLink(youtubeVideoURL);
+            const idYoutubeVideo = Utils.getIDFromYoutubeVideoLink(youtubeVideoURL);
 
             if (! idYoutubeVideo) {
                 callback(new NoVideoFoundException());
@@ -35,7 +33,7 @@ var ProxyMirrorFinder;
             request.open("GET", this.baseUrl + "/target/" + idYoutubeVideo, true);
 
             request.onreadystatechange = function () {
-                var responseData,
+                let responseData,
                     mirrors = [];
 
                 if (Utils.isXMLHttpRequestDone(request)) {
@@ -61,4 +59,4 @@ var ProxyMirrorFinder;
             throw new InvalidYouTubeVideoURLException();
         }
     };
-}());
+}
