@@ -18,6 +18,8 @@ import Sanitizer from "./sanitizer";
  */
 
 export default class YoutubeInterfaceManager {
+    static tagNameErrorMessageRenderer = 'yt-player-error-message-renderer';
+
     constructor(document) {
         this.document = document;
         this.videoPlayerManager = null;
@@ -29,14 +31,14 @@ export default class YoutubeInterfaceManager {
     changeLoadingText() {
         let div, loadingMessage, newDivMessage;
 
-        div = this.document.querySelector('div.ytd-player-error-message-renderer');
+        div = this.document.querySelector(`div.${YoutubeInterfaceManager.tagNameErrorMessageRenderer}`);
         div.style.display = "none";
 
         newDivMessage = this.document.createElement("div");
         newDivMessage.id = "createdErrorMessageDiv";
         newDivMessage.style.color = "white";
         newDivMessage.style.textAlign = "center";
-        newDivMessage.className = "ytd-player-error-message-renderer";
+        newDivMessage.className = YoutubeInterfaceManager.tagNameErrorMessageRenderer;
 
         if (div) {
             const text =  `<h1 style="margin-top: 40px">${chrome.i18n.getMessage("workingToFindAMirrorMessage").replace('F*ck Youtube',
@@ -57,11 +59,11 @@ export default class YoutubeInterfaceManager {
     };
 
     centerVideoPlayer() {
-        const watchElement = this.document.getElementsByTagName('ytd-watch');
+        const watchElement = this.document.getElementsByTagName('ytd-watch-flexy');
 
         if (watchElement.length > 0) {
             watchElement[0].setAttribute('theater-requested_', '');
-            watchElement[0].setAttribute('theater', '');
+            // watchElement[0].setAttribute('theater', '');
         } else {
             throw new DOMException();
         }
@@ -167,7 +169,7 @@ export default class YoutubeInterfaceManager {
     };
 
     adjustLayoutErrorDiv() {
-        const errorDiv = this.document.querySelector('ytd-player-error-message-renderer');
+        const errorDiv = this.document.querySelector(YoutubeInterfaceManager.tagNameErrorMessageRenderer);
 
         errorDiv.style.display = 'flex';
         errorDiv.style.flexDirection = 'column';
@@ -229,6 +231,12 @@ export default class YoutubeInterfaceManager {
                     return true;
                 }
             }
+
+            if (mutation.target.nodeName === "YT-PLAYABILITY-ERROR-SUPPORTED-RENDERERS") {
+                if (mutation.type === "childList" && mutation.addedNodes.length >= 1) {
+                    return true;
+                }
+            }
         }
 
         return false;
@@ -257,7 +265,7 @@ export default class YoutubeInterfaceManager {
     replaceIconVideoUnavailable() {
         let iconDiv, oldIconImg, newIconImg;
 
-        iconDiv = this.document.querySelector('ytd-player-error-message-renderer');
+        iconDiv = this.document.querySelector(YoutubeInterfaceManager.tagNameErrorMessageRenderer);
         oldIconImg = iconDiv.querySelector('yt-icon');
         oldIconImg.style.display = 'none';
 
@@ -270,14 +278,14 @@ export default class YoutubeInterfaceManager {
     };
 
     addIconVideoUnavailable() {
-        const icon = this.document.querySelector('.ytd-playability-error-supported-renderers img');
+        const icon = this.document.querySelector('.yt-playability-error-supported-renderers img');
 
         icon.src = icon.getAttribute('unavailable-src');
     };
 
     addLoadingSpinner() {
         let spinner,
-            loadingFeedbackDiv = this.document.getElementsByTagName('ytd-player-error-message-renderer');
+            loadingFeedbackDiv = this.document.getElementsByTagName(YoutubeInterfaceManager.tagNameErrorMessageRenderer);
 
         spinner = this.document.createElement('div');
         spinner.className = "ytp-spinner";
@@ -312,11 +320,11 @@ export default class YoutubeInterfaceManager {
     createVideoFrame(link) {
         let fuckYoutubePlayerDiv, divPlayerAPI, errorDiv, self = this, youtubePlayerDiv, outerDiv;
 
-        outerDiv = this.document.getElementById('top');
+        outerDiv = this.document.querySelector('ytd-page-manager');
 
         this.removeSpinner();
 
-        errorDiv = this.document.querySelector('ytd-playability-error-supported-renderers');
+        errorDiv = this.document.querySelector('yt-playability-error-supported-renderers');
         errorDiv.removeAttribute('hidden');
 
         fuckYoutubePlayerDiv = this.document.getElementById("player");
@@ -326,7 +334,7 @@ export default class YoutubeInterfaceManager {
         fuckYoutubePlayerDiv.style.minHeight = '500px';
         fuckYoutubePlayerDiv.style.backgroundColor = "rgb(35,35,35)";
 
-        youtubePlayerDiv = this.document.querySelector('#player.ytd-watch');
+        youtubePlayerDiv = this.document.querySelector('ytd-watch-flexy');
         youtubePlayerDiv.style.display = 'none';
         outerDiv.insertAdjacentElement('afterbegin', fuckYoutubePlayerDiv);
 
