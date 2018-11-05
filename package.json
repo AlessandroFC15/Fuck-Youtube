@@ -38,10 +38,13 @@
     "webpack": "2.2.1",
     "webpack-dev-server": "1.16.2",
     "webpack-node-externals": "1.5.4",
-    "webpack-version-file-plugin": "0.2.2"
+    "webpack-version-file-plugin": "0.3.3"
   },
   "export-symbol": "extensionSkeleton.exports",
   "babel": {
-    "presets": [ "env", "stage-2" ]
+    "presets": [
+      "env",
+      "stage-2"
+    ]
   }
 }
