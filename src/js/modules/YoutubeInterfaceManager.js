@@ -237,6 +237,11 @@ export default class YoutubeInterfaceManager {
                     return true;
                 }
             }
+
+            if (mutation.target.className === "ytp-bound-time-right" && mutation.type === "childList"
+                && mutation.addedNodes.length > 0 && mutation.addedNodes[0].nodeValue === "0:00") {
+                return true
+            }
         }
 
         return false;
