@@ -204,12 +204,6 @@ export default class VideoPlayerManager {
             this.shortcutManager.video.parentNode.removeChild(this.shortcutManager.video);
             this.shortcutManager.video = null;
         }
-
-        try {
-            this.outerDiv.removeChild(this.video);
-        } catch (exception) {
-            console.log(exception);
-        }
     };
 
     enablePlayPauseVideoControlOnClick(video) {

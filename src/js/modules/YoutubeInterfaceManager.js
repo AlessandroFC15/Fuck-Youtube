@@ -41,7 +41,7 @@ export default class YoutubeInterfaceManager {
         newDivMessage.className = YoutubeInterfaceManager.tagNameErrorMessageRenderer;
 
         if (div) {
-            const text =  `<h1 style="margin-top: 40px">${chrome.i18n.getMessage("workingToFindAMirrorMessage").replace('F*ck Youtube',
+            const text = `<h1 style="margin-top: 40px">${chrome.i18n.getMessage("workingToFindAMirrorMessage").replace('F*ck Youtube',
                 "<span style='display: inline-block; color: #e70200;'>F*ck Youtube</span>")}</h1>`;
 
             newDivMessage.innerHTML = Sanitizer.escapeHTML(text);
@@ -140,7 +140,7 @@ export default class YoutubeInterfaceManager {
     };
 
     exitTheaterMode() {
-        const ytdWatch = document.querySelector('ytd-watch');
+        const ytdWatch = document.querySelector('ytd-watch-flexy');
 
         if (ytdWatch) {
             ytdWatch.removeAttribute('theater-requested_');
@@ -149,7 +149,7 @@ export default class YoutubeInterfaceManager {
     };
 
     showYouTubeVideoDiv() {
-        const youtubePlayerDiv = this.document.querySelector('#player.ytd-watch');
+        const youtubePlayerDiv = this.document.querySelector('ytd-player');
 
         if (youtubePlayerDiv) {
             youtubePlayerDiv.style.display = 'block';
@@ -171,7 +171,6 @@ export default class YoutubeInterfaceManager {
     adjustLayoutErrorDiv() {
         const errorDiv = this.document.querySelector(YoutubeInterfaceManager.tagNameErrorMessageRenderer);
 
-        errorDiv.style.display = 'flex';
         errorDiv.style.flexDirection = 'column';
     }
 
@@ -190,6 +189,12 @@ export default class YoutubeInterfaceManager {
                 this.oldPlayerDivParent.appendChild(this.oldPlayerDiv);
             }
         }
+
+        let playerTheaterContainer = document.getElementById('player-theater-container');
+        playerTheaterContainer.style.minHeight = '0';
+        playerTheaterContainer.style.marginBottom = '0';
+
+        document.getElementById('player-container').style.minHeight = '0';
     };
 
     isYoutubeVideoUnavailable(mutations) {
@@ -203,12 +208,12 @@ export default class YoutubeInterfaceManager {
                 return true;
             }
 
-            if (mutation.attributeName === "loaded" && mutation.type === "attributes" &&
+            if (mutation.attributeName === "loaded" && mutation.type === "attributes" && mutation.target.offsetParent &&
                 mutation.target.nodeName === "YT-IMG-SHADOW" && mutation.target.offsetParent.nodeName === "YTD-PLAYABILITY-ERROR-SUPPORTED-RENDERERS") {
                 return true;
             }
 
-            if (mutation.attributeName === "src" && mutation.target.nodeName === "IMG" &&
+            if (mutation.attributeName === "src" && mutation.target.nodeName === "IMG" && mutation.target.offsetParent &&
                 mutation.target.offsetParent.nodeName === "YTD-PLAYABILITY-ERROR-SUPPORTED-RENDERERS") {
                 return true;
             }
@@ -219,7 +224,7 @@ export default class YoutubeInterfaceManager {
                 } else if (mutation.type === "attributes" && mutation.attributeName === "hidden") {
                     element = document.getElementsByTagName('ytd-playability-error-supported-renderers')[0];
 
-                    if (!element.hidden) {
+                    if (element && !element.hidden) {
                         return true;
                     }
                 }
@@ -227,7 +232,7 @@ export default class YoutubeInterfaceManager {
                 mutation.type === "attributes" && mutation.attributeName === "hidden" && mutation.oldValue === null) {
                 element = document.getElementsByTagName('ytd-playability-error-supported-renderers')[0];
 
-                if (!element.hidden) {
+                if (element && !element.hidden) {
                     return true;
                 }
             }
@@ -325,21 +330,30 @@ export default class YoutubeInterfaceManager {
     createVideoFrame(link) {
         let fuckYoutubePlayerDiv, divPlayerAPI, errorDiv, self = this, youtubePlayerDiv, outerDiv;
 
-        outerDiv = this.document.querySelector('ytd-page-manager');
+        outerDiv = this.document.querySelector('#player-container');
 
         this.removeSpinner();
 
         errorDiv = this.document.querySelector('yt-playability-error-supported-renderers');
         errorDiv.removeAttribute('hidden');
 
+        let minHeight = '500px';
+
         fuckYoutubePlayerDiv = this.document.getElementById("player");
         fuckYoutubePlayerDiv.removeAttribute('hidden');
-        fuckYoutubePlayerDiv.style.marginTop = '20px';
+        fuckYoutubePlayerDiv.style.marginTop = '0';
         fuckYoutubePlayerDiv.style.width = "100%";
-        fuckYoutubePlayerDiv.style.minHeight = '500px';
+        fuckYoutubePlayerDiv.style.minHeight = minHeight;
         fuckYoutubePlayerDiv.style.backgroundColor = "rgb(35,35,35)";
 
-        youtubePlayerDiv = this.document.querySelector('ytd-watch-flexy');
+        document.getElementById('player-container').style.minHeight = minHeight;
+
+        let playerTheaterContainer = document.getElementById('player-theater-container');
+
+        playerTheaterContainer.style.minHeight = minHeight;
+        playerTheaterContainer.style.marginBottom = "20px";
+
+        youtubePlayerDiv = this.document.querySelector('ytd-player');
         youtubePlayerDiv.style.display = 'none';
         outerDiv.insertAdjacentElement('afterbegin', fuckYoutubePlayerDiv);
 
@@ -347,9 +361,6 @@ export default class YoutubeInterfaceManager {
         // This shows the previously hidden player holder.
         divPlayerAPI.classList.remove("off-screen-target");
         divPlayerAPI.innerHTML = '';
-        divPlayerAPI.style.marginTop = "-24px";
-
-        //console.log(this.document.getElementById('movie_player'));
 
         // By creating the video player manager, we create the video frame
         this.videoPlayerManager = new VideoPlayerManager(link, divPlayerAPI, this);
