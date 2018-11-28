@@ -245,7 +245,9 @@ export default class YoutubeInterfaceManager {
 
             if (mutation.target.className === "ytp-bound-time-right" && mutation.type === "childList"
                 && mutation.addedNodes.length > 0 && mutation.addedNodes[0].nodeValue === "0:00") {
-                return true
+                if (document.getElementsByTagName('yt-player-error-message-renderer').length > 0) {
+                    return true
+                }
             }
         }
 
