@@ -26,6 +26,7 @@ export default class YoutubeInterfaceManager {
         this.oldPlayerDiv = null;
         this.oldPlayerDivParent = null;
         this.feedbackVideoAlmostReady = null;
+        this.loadingFeedbackDiv = null;
     }
 
     changeLoadingText() {
@@ -62,8 +63,8 @@ export default class YoutubeInterfaceManager {
         const watchElement = this.document.getElementsByTagName('ytd-watch-flexy');
 
         if (watchElement.length > 0) {
-            watchElement[0].setAttribute('theater-requested_', '');
-            // watchElement[0].setAttribute('theater', '');
+            // watchElement[0].setAttribute('theater-requested_', '');
+            watchElement[0].setAttribute('theater', '');
         } else {
             throw new DOMException();
         }
@@ -128,15 +129,15 @@ export default class YoutubeInterfaceManager {
     resetChanges() {
         this.exitTheaterMode();
 
-        this.showYouTubeVideoDiv();
+        // this.showYouTubeVideoDiv();
 
         this.removeVideo();
 
-        this.showSidebar();
+        // this.showSidebar();
 
-        this.resetChangesToVideoInfo();
+        // this.resetChangesToVideoInfo();
 
-        this.resetChangesToOldPlayerDiv();
+        // this.resetChangesToOldPlayerDiv();
     };
 
     exitTheaterMode() {
@@ -159,14 +160,42 @@ export default class YoutubeInterfaceManager {
     makeNecessaryAdjustmentsToInterface() {
         this.enableTheaterModeForNewLayout();
 
-        this.adjustLayoutErrorDiv();
-
-        this.replaceIconVideoUnavailable();
-
-        this.changeLoadingText();
-
-        this.addLoadingSpinner();
+        this.addLoadingFeedback();
     };
+
+    addLoadingFeedback() {
+        const playerTheaterContainer = document.getElementById('player-theater-container');
+
+        this.loadingFeedbackDiv = document.createElement('div');
+        this.loadingFeedbackDiv.id = "yt-loading-feedback";
+        this.loadingFeedbackDiv.style.textAlign = 'center';
+
+        const extensionImg = this.document.createElement('img');
+        extensionImg.src = chrome.extension.getURL("/assets/128.png");
+        extensionImg.setAttribute('unavailable-src', '/yts/img/meh7-vflGevej7.png');
+        extensionImg.style.marginTop = '120px';
+
+        const newDivMessage = this.document.createElement("div");
+        newDivMessage.id = "createdErrorMessageDiv";
+        newDivMessage.style.color = "white";
+        newDivMessage.style.textAlign = "center";
+        newDivMessage.innerHTML = Sanitizer.escapeHTML(`<h1 style="margin: 0">${chrome.i18n.getMessage("workingToFindAMirrorMessage").replace('F*ck Youtube',
+            "<span style='display: inline-block; color: #e70200;'>F*ck Youtube</span>")}</h1>`);
+
+        const loadingMessage = this.document.createElement('div');
+        loadingMessage.className = "text";
+        loadingMessage.style.fontSize = "15px";
+        loadingMessage.style.padding = "15px";
+        loadingMessage.innerText = chrome.i18n.getMessage("loadingMessage");
+
+        newDivMessage.appendChild(loadingMessage);
+
+        this.loadingFeedbackDiv.appendChild(extensionImg);
+        this.loadingFeedbackDiv.appendChild(newDivMessage);
+        this.addLoadingSpinner(this.loadingFeedbackDiv);
+
+        playerTheaterContainer.appendChild(this.loadingFeedbackDiv);
+    }
 
     adjustLayoutErrorDiv() {
         const errorDiv = this.document.querySelector(YoutubeInterfaceManager.tagNameErrorMessageRenderer);
@@ -226,29 +255,13 @@ export default class YoutubeInterfaceManager {
     enableTheaterModeForNewLayout() {
         this.centerVideoPlayer();
 
-        this.hideSidebar();
+        // this.hideSidebar();
 
-        this.centerVideoInfo();
+        // this.centerVideoInfo();
 
         /* theaterBackground = this.document.getElementById("theater-background");
          theaterBackground.style.background = "transparent";
          */
-    };
-
-    // This function replaces the Youtube icon used to represent a unavailable video with the extension's main icon.
-    replaceIconVideoUnavailable() {
-        let iconDiv, oldIconImg, newIconImg;
-
-        iconDiv = this.document.querySelector(YoutubeInterfaceManager.tagNameErrorMessageRenderer);
-        oldIconImg = iconDiv.querySelector('yt-icon');
-        oldIconImg.style.display = 'none';
-
-        newIconImg = this.document.createElement('img');
-        newIconImg.src = chrome.extension.getURL("/assets/128.png");
-        newIconImg.setAttribute('unavailable-src', '/yts/img/meh7-vflGevej7.png');
-        newIconImg.style.marginTop = '50px';
-
-        iconDiv.insertBefore(newIconImg, iconDiv.firstChild);
     };
 
     addIconVideoUnavailable() {
@@ -257,17 +270,14 @@ export default class YoutubeInterfaceManager {
         icon.src = icon.getAttribute('unavailable-src');
     };
 
-    addLoadingSpinner() {
-        let spinner,
-            loadingFeedbackDiv = this.document.getElementsByTagName(YoutubeInterfaceManager.tagNameErrorMessageRenderer);
-
-        spinner = this.document.createElement('div');
+    addLoadingSpinner(parentDiv) {
+        const spinner = this.document.createElement('div');
         spinner.className = "ytp-spinner";
         spinner.id = "createdSpinner";
         spinner.style.display = "inline-block";
         spinner.style.position = "relative";
         spinner.style.width = "20px";
-        spinner.style.top = "-100px";
+        spinner.style.top = "10px";
         spinner.style.left = "20px";
         spinner.innerHTML = '<div class="ytp-spinner-container">' +
             '<div class="ytp-spinner-rotator">' +
@@ -280,7 +290,7 @@ export default class YoutubeInterfaceManager {
             '</div>' +
             '</div>';
 
-        loadingFeedbackDiv[0].appendChild(spinner);
+        parentDiv.appendChild(spinner);
     };
 
     removeSpinner() {
@@ -292,42 +302,14 @@ export default class YoutubeInterfaceManager {
     };
 
     createVideoFrame(link) {
-        let fuckYoutubePlayerDiv, divPlayerAPI, errorDiv, self = this, youtubePlayerDiv, outerDiv;
+        let self = this, outerDiv;
 
-        outerDiv = this.document.querySelector('#player-container');
+        this.loadingFeedbackDiv.remove();
 
-        this.removeSpinner();
-
-        errorDiv = this.document.querySelector('yt-playability-error-supported-renderers');
-        errorDiv.removeAttribute('hidden');
-
-        let minHeight = '500px';
-
-        fuckYoutubePlayerDiv = this.document.getElementById("player");
-        fuckYoutubePlayerDiv.removeAttribute('hidden');
-        fuckYoutubePlayerDiv.style.marginTop = '0';
-        fuckYoutubePlayerDiv.style.width = "100%";
-        fuckYoutubePlayerDiv.style.minHeight = minHeight;
-        fuckYoutubePlayerDiv.style.backgroundColor = "rgb(35,35,35)";
-
-        document.getElementById('player-container').style.minHeight = minHeight;
-
-        let playerTheaterContainer = document.getElementById('player-theater-container');
-
-        playerTheaterContainer.style.minHeight = minHeight;
-        playerTheaterContainer.style.marginBottom = "20px";
-
-        youtubePlayerDiv = this.document.querySelector('ytd-player');
-        youtubePlayerDiv.style.display = 'none';
-        outerDiv.insertAdjacentElement('afterbegin', fuckYoutubePlayerDiv);
-
-        divPlayerAPI = this.document.getElementById("player-api");
-        // This shows the previously hidden player holder.
-        divPlayerAPI.classList.remove("off-screen-target");
-        divPlayerAPI.innerHTML = '';
+        outerDiv = this.document.querySelector('#player-theater-container');
 
         // By creating the video player manager, we create the video frame
-        this.videoPlayerManager = new VideoPlayerManager(link, divPlayerAPI, this);
+        this.videoPlayerManager = new VideoPlayerManager(link, outerDiv, this);
 
         // We will only hide the loading screen, when the video is ready to play.
         this.videoPlayerManager.video.oncanplay = function () {
