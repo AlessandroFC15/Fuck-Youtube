@@ -203,49 +203,11 @@ export default class YoutubeInterfaceManager {
         for (i = 0; i < mutations.length; i++) {
             mutation = mutations[i];
 
-            if (mutation.type === "childList" && mutation.target.id === "player-container"
-                && mutation.removedNodes.length > 0 && mutation.removedNodes[0].nodeName === "YTD-PLAYER") {
-                return true;
-            }
-
-            if (mutation.attributeName === "loaded" && mutation.type === "attributes" && mutation.target.offsetParent &&
-                mutation.target.nodeName === "YT-IMG-SHADOW" && mutation.target.offsetParent.nodeName === "YTD-PLAYABILITY-ERROR-SUPPORTED-RENDERERS") {
-                return true;
-            }
-
-            if (mutation.attributeName === "src" && mutation.target.nodeName === "IMG" && mutation.target.offsetParent &&
-                mutation.target.offsetParent.nodeName === "YTD-PLAYABILITY-ERROR-SUPPORTED-RENDERERS") {
-                return true;
-            }
-
-            if (mutation.target.nodeName === "YTD-PLAYABILITY-ERROR-SUPPORTED-RENDERERS") {
-                if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
-                    return true;
-                } else if (mutation.type === "attributes" && mutation.attributeName === "hidden") {
-                    element = document.getElementsByTagName('ytd-playability-error-supported-renderers')[0];
-
-                    if (element && !element.hidden) {
-                        return true;
-                    }
-                }
-            } else if (mutation.target.nodeName === "YT-PAGE-NAVIGATION-PROGRESS" &&
-                mutation.type === "attributes" && mutation.attributeName === "hidden" && mutation.oldValue === null) {
-                element = document.getElementsByTagName('ytd-playability-error-supported-renderers')[0];
-
-                if (element && !element.hidden) {
-                    return true;
-                }
-            }
-
-            if (mutation.target.nodeName === "YT-PLAYABILITY-ERROR-SUPPORTED-RENDERERS") {
-                if (mutation.type === "childList" && mutation.addedNodes.length >= 1) {
-                    return true;
-                }
-            }
-
-            if (mutation.target.className === "ytp-bound-time-right" && mutation.type === "childList"
-                && mutation.addedNodes.length > 0 && mutation.addedNodes[0].nodeValue === "0:00") {
+            if (mutation.target.nodeName === "YTD-APP" && mutation.type === 'childList'
+                && mutation.addedNodes.length === 1) {
                 if (document.getElementsByTagName('yt-player-error-message-renderer').length > 0) {
+                    console.log(">> Aqui crl <<");
+
                     return true
                 }
             }
