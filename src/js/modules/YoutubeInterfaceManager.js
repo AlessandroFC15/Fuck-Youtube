@@ -29,36 +29,6 @@ export default class YoutubeInterfaceManager {
         this.loadingFeedbackDiv = null;
     }
 
-    changeLoadingText() {
-        let div, loadingMessage, newDivMessage;
-
-        div = this.document.querySelector(`div.${YoutubeInterfaceManager.tagNameErrorMessageRenderer}`);
-        div.style.display = "none";
-
-        newDivMessage = this.document.createElement("div");
-        newDivMessage.id = "createdErrorMessageDiv";
-        newDivMessage.style.color = "white";
-        newDivMessage.style.textAlign = "center";
-        newDivMessage.className = YoutubeInterfaceManager.tagNameErrorMessageRenderer;
-
-        if (div) {
-            const text = `<h1 style="margin-top: 40px">${chrome.i18n.getMessage("workingToFindAMirrorMessage").replace('F*ck Youtube',
-                "<span style='display: inline-block; color: #e70200;'>F*ck Youtube</span>")}</h1>`;
-
-            newDivMessage.innerHTML = Sanitizer.escapeHTML(text);
-        }
-
-        loadingMessage = this.document.createElement('div');
-        loadingMessage.className = "text";
-        loadingMessage.style.fontSize = "15px";
-        loadingMessage.style.padding = "15px";
-        loadingMessage.innerText = chrome.i18n.getMessage("loadingMessage");
-
-        newDivMessage.appendChild(loadingMessage);
-
-        div.parentNode.appendChild(newDivMessage);
-    };
-
     centerVideoPlayer() {
         const watchElement = this.document.getElementsByTagName('ytd-watch-flexy');
 
@@ -129,15 +99,11 @@ export default class YoutubeInterfaceManager {
     resetChanges() {
         this.exitTheaterMode();
 
-        // this.showYouTubeVideoDiv();
-
         this.removeVideo();
 
         // this.showSidebar();
 
         // this.resetChangesToVideoInfo();
-
-        // this.resetChangesToOldPlayerDiv();
     };
 
     exitTheaterMode() {
@@ -146,14 +112,6 @@ export default class YoutubeInterfaceManager {
         if (ytdWatch) {
             ytdWatch.removeAttribute('theater-requested_');
             ytdWatch.removeAttribute('theater');
-        }
-    };
-
-    showYouTubeVideoDiv() {
-        const youtubePlayerDiv = this.document.querySelector('ytd-player');
-
-        if (youtubePlayerDiv) {
-            youtubePlayerDiv.style.display = 'block';
         }
     };
 
@@ -197,48 +155,15 @@ export default class YoutubeInterfaceManager {
         playerTheaterContainer.appendChild(this.loadingFeedbackDiv);
     }
 
-    adjustLayoutErrorDiv() {
-        const errorDiv = this.document.querySelector(YoutubeInterfaceManager.tagNameErrorMessageRenderer);
-
-        errorDiv.style.flexDirection = 'column';
-    }
-
-    removeOldPlayerDiv() {
-        const videoPlayer = this.document.getElementsByClassName("html5-video-player");
-
-        this.oldPlayerDiv = videoPlayer[0];
-        this.oldPlayerDivParent = this.oldPlayerDiv.parentNode;
-
-        this.oldPlayerDiv.remove();
-    };
-
-    resetChangesToOldPlayerDiv() {
-        if (this.oldPlayerDiv) {
-            if (!this.oldPlayerDiv.parentNode) {
-                this.oldPlayerDivParent.appendChild(this.oldPlayerDiv);
-            }
-        }
-
-        let playerTheaterContainer = document.getElementById('player-theater-container');
-        playerTheaterContainer.style.minHeight = '0';
-        playerTheaterContainer.style.marginBottom = '0';
-
-        document.getElementById('player-container').style.minHeight = '0';
-    };
-
     isYoutubeVideoUnavailable(mutations) {
-        let element, mutation, i;
+        let mutation, i;
 
         for (i = 0; i < mutations.length; i++) {
             mutation = mutations[i];
 
             if (mutation.target.nodeName === "YTD-APP" && mutation.type === 'childList'
-                && mutation.addedNodes.length === 1) {
-                if (document.getElementsByTagName('yt-player-error-message-renderer').length > 0) {
-                    console.log(">> Aqui crl <<");
-
-                    return true
-                }
+                && mutation.addedNodes.length === 1 && document.getElementsByTagName('yt-player-error-message-renderer').length > 0) {
+                return true
             }
         }
 
