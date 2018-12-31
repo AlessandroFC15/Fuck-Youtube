@@ -24,7 +24,7 @@ A browser extension that allows the user to watch YouTube videos that are blocke
 
 ### Installation:
 
-    git clone github.com/AlessandroFC15/Fuck-Youtube.git
+    git clone https://github.com/AlessandroFC15/Fuck-Youtube.git
 
     # in case you don't have webpack yet:
     sudo npm install -g webpack
