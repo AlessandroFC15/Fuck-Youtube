@@ -1,6 +1,5 @@
 import GenYouTubeMirrorFinder from './GenYouTubeMirrorFinder';
 import YouPakMirrorFinder from './YouPakMirrorFinder';
-import ProxyMirrorFinder from './ProxyMirrorFinder';
 import TubeUnblockMirrorFinder from './TubeUnblockMirrorFinder';
 
 /*global DOMParser, NoVideoFoundException, YouPakMirrorFinder, GenYouTubeMirrorFinder, chrome */
@@ -21,7 +20,6 @@ export default class MirrorFinder {
         this.genYouTubeMirrorFinder = new GenYouTubeMirrorFinder();
         this.youPakMirrorFinder = new YouPakMirrorFinder();
         this.tubeUnblockMirrorFinder = new TubeUnblockMirrorFinder();
-        this.proxyMirrorFinder = new ProxyMirrorFinder();
     }
 
     findMirrors(url, callback) {
@@ -39,14 +37,6 @@ export default class MirrorFinder {
                     } else {
                         callback(response);
                     }
-
-                    /*if (response instanceof Error) {
-                        self.proxyMirrorFinder.findMirrors(url, function (response) {
-                            callback(response);
-                        })
-                    } else {
-                        callback(response);
-                    }*/
                 });
             } else {
                 callback(response);

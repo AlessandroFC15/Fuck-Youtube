@@ -14,7 +14,7 @@ import { NoVideoFoundException, InvalidYouTubeVideoURLException } from './Except
 
 export default class TubeUnblockMirrorFinder {
     constructor() {
-        this.baseUrl = "https://tubeunblock.me"
+        this.baseUrl = "https://tubeunblock.com"
     }
 
     async findMirrors(youtubeVideoURL, callback) {
@@ -24,7 +24,7 @@ export default class TubeUnblockMirrorFinder {
         console.log('Trying TubeUnblock...');
 
         if (Utils.isYoutubeVideoLink(youtubeVideoURL)) {
-            const tubeUnblockLink = youtubeVideoURL.replace("www.youtube.com", "tubeunblock.me");
+            const tubeUnblockLink = youtubeVideoURL.replace("www.youtube.com", "tubeunblock.com");
 
             const request = await Utils.makeRequest(tubeUnblockLink);
 
