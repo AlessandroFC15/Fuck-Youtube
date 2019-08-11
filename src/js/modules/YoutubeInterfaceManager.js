@@ -101,6 +101,8 @@ export default class YoutubeInterfaceManager {
 
         this.removeVideo();
 
+        this.removeLoadingFeedback();
+
         // this.showSidebar();
 
         // this.resetChangesToVideoInfo();
@@ -154,6 +156,13 @@ export default class YoutubeInterfaceManager {
         this.addLoadingSpinner(this.loadingFeedbackDiv);
 
         playerTheaterContainer.appendChild(this.loadingFeedbackDiv);
+    }
+
+    removeLoadingFeedback() {
+        if (this.loadingFeedbackDiv) {
+            this.loadingFeedbackDiv.parentNode.removeChild(this.loadingFeedbackDiv);
+            this.loadingFeedbackDiv = null;
+        }
     }
 
     isYoutubeVideoUnavailable(mutations) {
