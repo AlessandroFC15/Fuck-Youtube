@@ -129,6 +129,7 @@ export default class YoutubeInterfaceManager {
         this.loadingFeedbackDiv.style.textAlign = 'center';
 
         const extensionImg = this.document.createElement('img');
+        extensionImg.id = 'fuck-youtube-icon';
         extensionImg.src = chrome.extension.getURL("/assets/128.png");
         extensionImg.setAttribute('unavailable-src', '/yts/img/meh7-vflGevej7.png');
         extensionImg.style.marginTop = '120px';
@@ -190,7 +191,7 @@ export default class YoutubeInterfaceManager {
     };
 
     addIconVideoUnavailable() {
-        const icon = this.document.querySelector('.yt-playability-error-supported-renderers img');
+        const icon = this.document.getElementById('fuck-youtube-icon');
 
         icon.src = icon.getAttribute('unavailable-src');
     };
