@@ -18,13 +18,9 @@ import Sanitizer from "./sanitizer";
  */
 
 export default class YoutubeInterfaceManager {
-    static tagNameErrorMessageRenderer = 'yt-player-error-message-renderer';
-
     constructor(document) {
         this.document = document;
         this.videoPlayerManager = null;
-        this.oldPlayerDiv = null;
-        this.oldPlayerDivParent = null;
         this.feedbackVideoAlmostReady = null;
         this.loadingFeedbackDiv = null;
     }
@@ -33,7 +29,6 @@ export default class YoutubeInterfaceManager {
         const watchElement = this.document.getElementsByTagName('ytd-watch-flexy');
 
         if (watchElement.length > 0) {
-            // watchElement[0].setAttribute('theater-requested_', '');
             watchElement[0].setAttribute('theater', '');
         } else {
             throw new DOMException();
@@ -52,60 +47,12 @@ export default class YoutubeInterfaceManager {
         }
     };
 
-    hideSidebar() {
-        const sideBarDiv = this.document.getElementById('related');
-
-        if (sideBarDiv) {
-            sideBarDiv.setAttribute('hidden', '');
-        }
-    };
-
-    showSidebar() {
-        const sideBarDiv = this.document.getElementById('related');
-
-        if (sideBarDiv) {
-            sideBarDiv.removeAttribute('hidden');
-        }
-    };
-
-    centerVideoInfo() {
-        let divVideoInfoTop, divVideoInfoBottom;
-
-        divVideoInfoTop = this.document.getElementById('info');
-        if (divVideoInfoTop) {
-            divVideoInfoTop.style.padding = "0";
-        }
-
-        divVideoInfoBottom = this.document.getElementById('meta');
-        if (divVideoInfoBottom) {
-            divVideoInfoBottom.style.padding = "0";
-        }
-    };
-
-    resetChangesToVideoInfo() {
-        let divVideoInfoTop, divVideoInfoBottom;
-
-        divVideoInfoTop = this.document.getElementById('info');
-        if (divVideoInfoTop) {
-            divVideoInfoTop.style.padding = null;
-        }
-
-        divVideoInfoBottom = this.document.getElementById('meta');
-        if (divVideoInfoBottom) {
-            divVideoInfoBottom.style.padding = null;
-        }
-    };
-
     resetChanges() {
         this.exitTheaterMode();
 
         this.removeVideo();
 
         this.removeLoadingFeedback();
-
-        // this.showSidebar();
-
-        // this.resetChangesToVideoInfo();
     };
 
     exitTheaterMode() {
@@ -189,14 +136,6 @@ export default class YoutubeInterfaceManager {
     // This function enables theater mode on a Youtube video page, centering the video frame and also hides the sidebar
     enableTheaterModeForNewLayout() {
         this.centerVideoPlayer();
-
-        // this.hideSidebar();
-
-        // this.centerVideoInfo();
-
-        /* theaterBackground = this.document.getElementById("theater-background");
-         theaterBackground.style.background = "transparent";
-         */
     };
 
     addIconVideoUnavailable() {
@@ -273,8 +212,6 @@ export default class YoutubeInterfaceManager {
         mainMessage.innerHTML = Sanitizer.escapeHTML`<p style="font-size: 20px; margin-top: 20px">${chrome.i18n.getMessage("noVideoFoundMessage")} :(</p></br>`;
 
         this.removeSpinner();
-
-        // this.showErrorAlert();
     };
 
     addFeedbackVideoAlmostReady() {
