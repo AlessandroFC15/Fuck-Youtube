@@ -77,8 +77,6 @@ class YoutubeVideoUnblocker {
                             highestQualityVideoLink = response[0]['link'];
 
                             self.interfaceManager.createVideoFrame(highestQualityVideoLink);
-
-                            // self.interfaceManager.removeOldPlayerDiv();
                         }
                     });
                 }
