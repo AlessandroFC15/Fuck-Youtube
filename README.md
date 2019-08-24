@@ -42,9 +42,9 @@ Then to start a developing session (with watch), run:
 
     npm start
 
-To build production code + crx:
+To build CRX file and source code zip file for production:
 
-    npm run build
+    ./scripts/prepare_release.sh
     
 ## Dependencies
 
