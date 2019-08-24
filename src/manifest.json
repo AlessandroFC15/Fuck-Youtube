@@ -4,16 +4,13 @@
   "name": "F*ck YouTube",
   "description": "__MSG_extensionDescription__",
   "version": "1.0.0",
-
   "default_locale": "en",
-
   "icons": { "128": "assets/128.png" },
   "browser_action": {
     "default_popup": "popup/popup.html",
     "default_icon": "assets/128.png"
   },
   "background": { "scripts": ["js/background.js"] },
-
   "content_scripts": [{
     "matches": ["*://www.youtube.com/*"],
     "js": [
@@ -24,7 +21,6 @@
     ],
     "run_at": "document_idle"
   }],
-
   "permissions": [
     "https://fuck-youtube-server.herokuapp.com/*",
     "*://www.youtube.com/*",
@@ -33,7 +29,6 @@
     "*://r3---sn-uxaxh5g-cxal.googlevideo.com/*",
     "storage"
   ],
-
   "web_accessible_resources": [
     "assets/*"
   ]
