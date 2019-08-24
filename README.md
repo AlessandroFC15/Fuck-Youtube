@@ -12,6 +12,8 @@ A browser extension that allows the user to watch YouTube videos that are blocke
 
 ## Project Info
 
+This project uses [Semantic Versioning](https://semver.org/).
+
 - **Current Version**: 0.0.1.0 (Latest version only available on Firefox)
 
 - **Code Style**: [Crockford](http://javascript.crockford.com/code.html), checked by [JSCS](http://jscs.info/)
@@ -43,6 +45,11 @@ Then to start a developing session (with watch), run:
 To build production code + crx:
 
     npm run build
+    
+## Dependencies
+
+In order to find an alternative url for blocked videos, this extensions uses an API offered 
+by [fuck-youtube-server](https://github.com/AlessandroFC15/fuck-youtube-server), which is also open-source. 
 
 ## Featured On
 
