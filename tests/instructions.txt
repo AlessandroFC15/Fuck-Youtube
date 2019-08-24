@@ -1,8 +1,0 @@
-INSTRUCTIONS FOR TESTING
-------------------------
-
-Pre-Requisites:
-    > Install and activate Chrome extension:
-        - Allow-Control-Allow-Origin: *
-
-1. Open test.html in Chrome.
