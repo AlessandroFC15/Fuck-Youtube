@@ -26,13 +26,8 @@
   }],
 
   "permissions": [
-    "*://youtube.com/*",
+    "https://fuck-youtube-server.herokuapp.com/*",
     "*://www.youtube.com/*",
-    "*://www.genyoutube.com/*",
-    "*://www.genyoutube.net/*",
-    "*://video.genyoutube.net/*",
-    "*://www.youpak.com/*",
-    "*://tubeunblock.me/*",
     "*://tubeunblock.com/*",
     "*://redirector.googlevideo.com/*",
     "*://r3---sn-uxaxh5g-cxal.googlevideo.com/*",
