@@ -8,8 +8,7 @@ const CrxPlugin = require('crx-webpack-plugin');
 const config = require('./config.js');
 const pkg = require('../package.json');
 
-const appName = `${pkg.name}-${pkg.version}`;
-
+const appName = `${pkg.name}`;
 
 module.exports = _.merge({}, config, {
   output: {
