@@ -3,17 +3,14 @@
   "manifest_version": 2,
   "name": "F*ck YouTube",
   "description": "__MSG_extensionDescription__",
-  "version": "0.0.1.1",
-
+  "version": "1.0.0",
   "default_locale": "en",
-
   "icons": { "128": "assets/128.png" },
   "browser_action": {
     "default_popup": "popup/popup.html",
     "default_icon": "assets/128.png"
   },
   "background": { "scripts": ["js/background.js"] },
-
   "content_scripts": [{
     "matches": ["*://www.youtube.com/*"],
     "js": [
@@ -24,21 +21,14 @@
     ],
     "run_at": "document_idle"
   }],
-
   "permissions": [
-    "*://youtube.com/*",
+    "https://fuck-youtube-server.herokuapp.com/*",
     "*://www.youtube.com/*",
-    "*://www.genyoutube.com/*",
-    "*://www.genyoutube.net/*",
-    "*://video.genyoutube.net/*",
-    "*://www.youpak.com/*",
-    "*://tubeunblock.me/*",
     "*://tubeunblock.com/*",
     "*://redirector.googlevideo.com/*",
     "*://r3---sn-uxaxh5g-cxal.googlevideo.com/*",
     "storage"
   ],
-
   "web_accessible_resources": [
     "assets/*"
   ]

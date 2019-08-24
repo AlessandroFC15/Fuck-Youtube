@@ -1,4 +1,5 @@
 import YoutubeInterfaceManager from './modules/YoutubeInterfaceManager';
+import { getIdFromYoutubeUrl } from "./utils";
 
 class YoutubeVideoUnblocker {
     constructor(document, url) {
@@ -29,24 +30,15 @@ class YoutubeVideoUnblocker {
 
             this.interfaceManager.showLoadingFeedback();
 
-            // We send a message to an event page to retrieve the video mirrors because we found a limitation, in
-            // which we are not allowed to make a HTTP request (to GenYouTube) from a HTTPS context (a YouTube page).
-            // Therefore, we have to make the request from a background script, an event page and not from the
-            // content script.
-            chrome.runtime.sendMessage({
-                action: "findMirrors",
-                url: self.url
-            }, function (response) {
-                let highestQualityVideoLink;
-
-                if (response instanceof Error) {
+            self.getAlternativeVideoSrc(getIdFromYoutubeUrl(self.url))
+                .then(url => {
+                    url
+                        ? self.interfaceManager.createVideoFrameOldLayout(url)
+                        : self.interfaceManager.showFailureMessageOldLayout();
+                })
+                .catch(err => {
                     self.interfaceManager.showFailureMessageOldLayout();
-                } else {
-                    highestQualityVideoLink = response[0]['link'];
-
-                    self.interfaceManager.createVideoFrameOldLayout(highestQualityVideoLink);
-                }
-            });
+                })
         }
     };
 
@@ -60,25 +52,15 @@ class YoutubeVideoUnblocker {
 
                     self.interfaceManager.makeNecessaryAdjustmentsToInterface();
 
-                    // We send a message to an event page to retrieve the video mirrors because we found a limitation, in
-                    // which we are not allowed to make a HTTP request (to GenYouTube) from a HTTPS context (a YouTube page).
-                    // Therefore, we have to make the request from a background script, an event page and not from the
-                    // content script.
-
-                    chrome.runtime.sendMessage({
-                        action: "findMirrors",
-                        url: self.url
-                    }, function (response) {
-                        let highestQualityVideoLink;
-
-                        if (response === undefined || response['name'] === "NoVideoFoundException") {
+                    self.getAlternativeVideoSrc(getIdFromYoutubeUrl(self.url))
+                        .then(url => {
+                            url
+                                ? self.interfaceManager.createVideoFrame(url)
+                                : self.interfaceManager.showFailureMessage();
+                        })
+                        .catch(err => {
                             self.interfaceManager.showFailureMessage();
-                        } else {
-                            highestQualityVideoLink = response[0]['link'];
-
-                            self.interfaceManager.createVideoFrame(highestQualityVideoLink);
-                        }
-                    });
+                        })
                 }
             }
         });
@@ -117,6 +99,19 @@ class YoutubeVideoUnblocker {
     isNewYouTubeLayout() {
         return this.document.getElementById('watch7-content') === null;
     };
+
+    getAlternativeVideoSrc(videoId) {
+        return new Promise((resolve, reject) => {
+            try {
+                chrome.runtime.sendMessage({
+                    contentScriptQuery: "queryVideoSrc",
+                    videoId: videoId
+                }, url => resolve(url))
+            } catch (err) {
+                reject(err)
+            }
+        })
+    }
 
     static isYoutubeVideoLink(url) {
         return (/^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/watch\?(.*)(v=.+)(.*)$/).test(url);
