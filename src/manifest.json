@@ -3,7 +3,7 @@
   "manifest_version": 2,
   "name": "F*ck YouTube",
   "description": "__MSG_extensionDescription__",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "default_locale": "en",
   "icons": { "128": "assets/128.png" },
   "browser_action": {
